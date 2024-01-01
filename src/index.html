@@ -11,6 +11,27 @@
 </head>
 
 <body>
+  <div id="desktop">
+    <!-- Icons in the dock to open windows -->
+    <div id="dock">
+        <img src="icon.png" class="dock-icon" data-app="app1"> <!-- Replace icon.png with your icon -->
+    </div>
+</div>
+
+<!-- Template for window -->
+<template id="windowTemplate">
+    <div class="window">
+        <div class="title-bar">
+            <span class="title">App Window</span>
+            <button class="close-button">X</button>
+        </div>
+        <div class="content">
+            <!-- App content goes here -->
+        </div>
+    </div>
+</template>
+
+<script src="script.js"></script>
   <h1>Personal Web Desktop</h1>
   <p>You have some work to do...</p>
 </body>

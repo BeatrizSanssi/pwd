@@ -1,3 +1,18 @@
-body {
-	background: #ffffff;
+body, html {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+#desktop {
+    height: 90%;
+    background-color: #f0f0f0;
+}
+
+#dock {
+    height: 10%;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
