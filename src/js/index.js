@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 import './components/memory/memory-game.js'
+
 document.addEventListener('DOMContentLoaded', function () {
   const desktop = document.getElementById('desktop')
   const dockIcons = document.querySelectorAll('.dock-icon')

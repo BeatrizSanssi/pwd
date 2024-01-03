@@ -2,6 +2,9 @@ body, html {
     margin: 0;
     height: 100%;
     overflow: hidden;
+	background-color: #ffc0cb;
+    background-image: linear-gradient(#eaea5f, #ffc0cb);
+    background-repeat: no-repeat;
 }
 
 #desktop {
@@ -19,6 +22,11 @@ body, html {
     width: 50px;
     height: 50px;
     cursor: pointer;
+	align-items: center;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 .window {
