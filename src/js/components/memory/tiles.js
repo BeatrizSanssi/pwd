@@ -1,6 +1,6 @@
 /**
  * The flipping- tile web component module.
- * 
+ *
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
  */
@@ -82,7 +82,7 @@ template.innerHTML = `
      }
  
      #back {
-       background:#ffe001 url("${IMG_URL}") no-repeat center/50%;
+       background:#ffe001 url(./Memory-pictures/PlantsLitenLiten.jpg) no-repeat center/50%;
      }
  
      slot {
@@ -116,107 +116,107 @@ customElements.define('my-flipping-tile',
 /**
  * Represents a flipping tile.
  */
-class extends HTMLElement {
-   /**
-    * The element representing the tile.
-    *
-    * @type {HTMLButtonElement}
-    */
-   #tile
+  class extends HTMLElement {
+    /**
+     * The element representing the tile.
+     *
+     * @type {HTMLButtonElement}
+     */
+    #tile
 
-   /**
-    * Creates an instance of the current type.
-    */
-   constructor () {
-     super()
+    /**
+     * Creates an instance of the current type.
+     */
+    constructor () {
+      super()
 
-     // Attach a shadow DOM tree to this element and
-     // append the template to the shadow root.
-     this.attachShadow({ mode: 'open' })
-       .appendChild(template.content.cloneNode(true))
+      // Attach a shadow DOM tree to this element and
+      // append the template to the shadow root.
+      this.attachShadow({ mode: 'open' })
+        .appendChild(template.content.cloneNode(true))
 
-     // Get the tile element in the shadow root.
-     this.#tile = this.shadowRoot.querySelector('#tile')
-   }
+      // Get the tile element in the shadow root.
+      this.#tile = this.shadowRoot.querySelector('#tile')
+    }
 
-   /**
-    * Attributes to monitor for changes.
-    *
-    * @returns {string[]} A string array of attributes to monitor.
-    */
-   static get observedAttributes () {
-     return ['face-up', 'disabled', 'hidden']
-   }
+    /**
+     * Attributes to monitor for changes.
+     *
+     * @returns {string[]} A string array of attributes to monitor.
+     */
+    static get observedAttributes () {
+      return ['face-up', 'disabled', 'hidden']
+    }
 
- /**
-      * Called after the element is inserted into the DOM.
-      */
- connectedCallback () {
-    this.addEventListener('click', (event) => {
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.addEventListener('click', (event) => {
       // Flip if main button, no other button or key pressed.
-      if (event.button === 0 &&
+        if (event.button === 0 &&
         event.buttons < 2 &&
         !event.altKey &&
         !event.ctrlKey &&
         !event.metaKey &&
         !event.shiftKey) {
-        this.#flip()
-      }
-    })
-  }
+          this.#flip()
+        }
+      })
+    }
 
-  /**
-   * Called when observed attribute(s) changes.
-   *
-   * @param {string} name - The attribute's name.
-   * @param {*} oldValue - The old value.
-   * @param {*} newValue - The new value.
-   */
-  attributeChangedCallback (name, oldValue, newValue) {
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name - The attribute's name.
+     * @param {*} oldValue - The old value.
+     * @param {*} newValue - The new value.
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
     // Enable or disable the button inside the shadow DOM.
-    if (name === 'disabled' || name === 'hidden') {
+      if (name === 'disabled' || name === 'hidden') {
       // Determine if the disabled attribute should be present or absent.
-      const isPresent = Boolean(newValue) || newValue === ''
+        const isPresent = Boolean(newValue) || newValue === ''
 
-      if (isPresent) {
-        this.#tile.setAttribute('disabled', '')
-        this.blur()
-      } else {
-        this.#tile.removeAttribute('disabled')
+        if (isPresent) {
+          this.#tile.setAttribute('disabled', '')
+          this.blur()
+        } else {
+          this.#tile.removeAttribute('disabled')
+        }
       }
     }
-  }
 
-  /**
-   * Specifies whether this instance contains the same content as another tile.
-   *
-   * @param {*} other - The tile to test for equality
-   * @returns {boolean} true if other has the same content as this tile instance.
-   */
-  isEqual (other) {
-    return this.isEqualNode(other)
-  }
-
-  /**
-   * Flips the current instance, if it is not disabled.
-   */
-  #flip () {
-    // Do nothing if the element is disabled or hidden.
-    if (this.hasAttribute('disabled') ||
-      this.hasAttribute('hidden')) {
-      return
+    /**
+     * Specifies whether this instance contains the same content as another tile.
+     *
+     * @param {*} other - The tile to test for equality
+     * @returns {boolean} true if other has the same content as this tile instance.
+     */
+    isEqual (other) {
+      return this.isEqualNode(other)
     }
 
-    // Toggle the face-up attribute.
-    this.hasAttribute('face-up')
-      ? this.removeAttribute('face-up')
-      : this.setAttribute('face-up', '')
+    /**
+     * Flips the current instance, if it is not disabled.
+     */
+    #flip () {
+    // Do nothing if the element is disabled or hidden.
+      if (this.hasAttribute('disabled') ||
+      this.hasAttribute('hidden')) {
+        return
+      }
 
-    // Raise the my-flipping-tile:flip event.
-    this.dispatchEvent(new CustomEvent('my-flipping-tile:flip', {
-      bubbles: true,
-      detail: { faceUp: this.hasAttribute('face-up') }
-    }))
+      // Toggle the face-up attribute.
+      this.hasAttribute('face-up')
+        ? this.removeAttribute('face-up')
+        : this.setAttribute('face-up', '')
+
+      // Raise the my-flipping-tile:flip event.
+      this.dispatchEvent(new CustomEvent('my-flipping-tile:flip', {
+        bubbles: true,
+        detail: { faceUp: this.hasAttribute('face-up') }
+      }))
+    }
   }
-}
 )
