@@ -27,19 +27,13 @@ customElements.define('memory-game',
    * Represents a memory game
    */
   class extends HTMLElement {
-    /**
-     * The game board element.
-     *
-     * @type {HTMLDivElement}
-     */
+    // Define class properties
+    cardsArray = []
+    lockBoard = false
+    firstCard = null
+    secondCard = null
+    hasFlippedCard = false
     #gameBoard
-
-    /**
-     * The tile template element.
-     *
-     * @type {HTMLTemplateElement}
-     */
-    #tileTemplate
 
     /**
      * Creates an instance of the current type.
@@ -55,7 +49,7 @@ customElements.define('memory-game',
       // Get the game board element in the shadow root.
       this.#gameBoard = this.shadowRoot.querySelector('#game-board')
 
-      // Define the card images.
+      // Define the card images and create memory grid.
       const cardImages = [
         'img/cat1.png',
         'img/cat2.png',
@@ -69,50 +63,34 @@ customElements.define('memory-game',
         'img/sleepingKoala.png',
         'img/monkeyface.png'
       ]
-
-      // Duplicate each image to create pairs
-      const cardsArray = [...cardImages, ...cardImages]
-
-      // Shuffle and create the memory grid
+      this.cardsArray = [...cardImages, ...cardImages]
+      this.handleCardClick = this.handleCardClick.bind(this)
       this.createMemoryGrid()
     }
 
     /**
-     * Shuffle the cards.
+     * Called after the element is inserted into the DOM.
      *
-     * @param {Array} array - The array of cards to shuffle.
+     * @param {Event} event - The click event.
      */
-    shuffle (array) {
-      for (let i = array.length - 1; i > 0; i--) {
+    onClick (event) {
+      event.preventDefault()
+      this.
+    }
+
+    /**
+     * Shuffle the cards.
+     */
+    shuffle () {
+      for (let i = this.cardsArray.length - 1; i > 0; i--) {
         const randomIndex = Math.floor(Math.random() * (i + 1))
-      ;[array[i], array[randomIndex]] = [array[randomIndex], array[i]]
+      ;[this.cardsArray[i], this.cardsArray[randomIndex]] = [this.cardsArray[randomIndex], this.cardsArray[i]]
       }
     }
 
-    /* ardsArray.forEach(image => {
-        const card = document.createElement('div')
-        card.classList.add('memory-card')
-        card.dataset.image = image
-
-        // Front of the card (hidden initially)
-        const cardFront = document.createElement('img')
-        cardFront.src = image
-        cardFront.classList.add('card-image', 'front')
-        card.appendChild(cardFront)
-
-        // Back of the card (visible initially)
-        const cardBack = document.createElement('img')
-        cardBack.src = 'img/card-back.png' // Path to your back image
-        cardBack.classList.add('card-image', 'back')
-        card.appendChild(cardBack)
-
-        card.addEventListener('click', handleCardClick)
-        grid.appendChild(card)
-      }) /*
-
-  /**
-    * Create the memory grid.
-    */
+    /**
+     * Create the memory grid.
+     */
     createMemoryGrid () {
       this.shuffle()
       this.cardsArray.forEach(image => {
@@ -139,50 +117,53 @@ customElements.define('memory-game',
 
     /**
      * Handle card click.
+     *
+     * @param {Event} event - The click event.
      */
-    handleCardClick () {
-      if (lockBoard || this === firstCard) return
+    handleCardClick (event) {
+      const card = event.target.closest('.memory-card')
+      if (this.lockBoard || card === this.firstCard) return
 
       this.classList.toggle('flipped')
 
-      if (!hasFlippedCard) {
-        hasFlippedCard = true
-        firstCard = this
+      if (!this.hasFlippedCard) {
+        this.hasFlippedCard = true
+        this.firstCard = card
         return
       }
 
-      secondCard = this
-      checkForMatch()
+      this.secondCard = card
+      this.checkForMatch()
     }
 
     /**
      * Check for match.
      */
     checkForMatch () {
-      const isMatch = firstCard.dataset.image === secondCard.dataset.image
+      const isMatch = this.firstCard.dataset.image === this.secondCard.dataset.image
 
-      isMatch ? disableCards() : unflipCards()
+      isMatch ? this.disableCards() : this.unflipCards()
     }
 
     /**
      * Disable cards.
      */
     disableCards () {
-      firstCard.removeEventListener('click', handleCardClick)
-      secondCard.removeEventListener('click', handleCardClick)
-      resetBoard()
+      this.firstCard.removeEventListener('click', this.handleCardClick)
+      this.secondCard.removeEventListener('click', this.handleCardClick)
+      this.resetBoard()
     }
 
     /**
      * Unflip cards.
      */
     unflipCards () {
-      lockBoard = true
+      this.lockBoard = true
       setTimeout(() => {
-        firstCard.firstChild.style.display = 'none'
-        secondCard.firstChild.style.display = 'none'
+        this.firstCard.firstChild.style.display = 'none'
+        this.secondCard.firstChild.style.display = 'none'
 
-        resetBoard()
+        this.resetBoard()
       }, 1500)
     }
 
@@ -190,12 +171,12 @@ customElements.define('memory-game',
      * Reset board.
      */
     resetBoard () {
-      hasFlippedCard = false
-      lockBoard = false
-      firstCard = null
-      secondCard = null
-      firstCard = null
-      secondCard = null
+      this.hasFlippedCard = false
+      this.lockBoard = false
+      this.firstCard = null
+      this.secondCard = null
+      this.firstCard = null
+      this.secondCard = null
     }
 
     /* document.addEventListener('DOMContentLoaded', function () {
@@ -216,8 +197,8 @@ customElements.define('memory-game',
      */
     startGame (gridSize) {
       // Reset attempts
-      attemptCount = 0
-      attemptCountElement.innerText = attemptCount
+      this.attemptCount = 0
+      this.attemptCountElement.innerText = this.attemptCount
 
       // Create and display the memory grid based on selected size
       // Implement logic for randomized tiles
@@ -238,7 +219,4 @@ customElements.define('memory-game',
       // Check for match or flip back after delay
       // Update attempt count
     }
-
-    // Additional functions for checking matches, flipping tiles back, etc.
   })
-    
