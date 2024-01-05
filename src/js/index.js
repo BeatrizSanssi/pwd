@@ -4,8 +4,7 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
  */
-import '../components/memory/index.js'
-import '../components/messenger/index.js'
+import '../js/components/memory-game/index.js'
 
 // Define template.
 const template = document.createElement('template')
@@ -49,7 +48,9 @@ customElements.define('desktop-app',
       this.desktop = document.getElementById('desktop')
       const dockIcons = document.querySelectorAll('.dock-icon')
       dockIcons.forEach(icon => {
-        icon.addEventListener('click', () => this.openWindow(icon.dataset.app))
+        icon.addEventListener('click', function () {
+            this.openWindow(icon.dataset.app)
+        })
       })
     }
 
@@ -60,18 +61,19 @@ customElements.define('desktop-app',
      * @returns {void}
      */
     openWindow (appName) {
+      console.log('openWindow called with:', appName)
       const windowTemplate = document.getElementById('windowTemplate')
       const windowClone = windowTemplate.content.cloneNode(true)
       const newWindow = windowClone.querySelector('.window')
       const titleBar = newWindow.querySelector('.title-bar')
       const closeButton = newWindow.querySelector('.close-button')
-      const contentArea = newWindow.querySelector('.content') // Ensure this is in your template
+      const contentArea = newWindow.querySelector('.content')
 
       // Specific app content
       if (appName === 'memoryGame') {
         const memoryGame = document.createElement('memory-game')
         contentArea.appendChild(memoryGame)
-      } else if (appName === 'messenger-app') {
+      } else if (appName === 'messengerApp') {
         const messengerApp = document.createElement('messenger-app')
         contentArea.appendChild(messengerApp)
       }

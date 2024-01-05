@@ -1,0 +1,17 @@
+.window {
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    border: 1px solid #000;
+  }
+  
+  .title-bar {
+    background-color: #ddd;
+    cursor: move;
+    padding: 5px;
+  }
+  
+  .close-btn {
+    float: right;
+    cursor: pointer;
+  }

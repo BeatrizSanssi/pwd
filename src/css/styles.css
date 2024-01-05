@@ -2,8 +2,8 @@ body, html {
     margin: 0;
     height: 100%;
     overflow: hidden;
-	background-color: #ffc0cb;
-    background-image: linear-gradient(#eaea5f, #ffc0cb);
+	background-color: rgb(76, 99, 76);
+    background-image: linear-gradient(rgb(73, 89, 55), #ddffc0);
     background-repeat: no-repeat;
 }
 
@@ -14,41 +14,26 @@ body, html {
 
 #dock {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+	display: flex;
+	flex-direction: row;
+    top: 30px;
+    left: 30px;
 }
 
 .dock-icon {
-    width: 50px;
-    height: 50px;
+	margin: 10px;
+	padding: 10px;
+    width: 100px;
+    height: 100px;
     cursor: pointer;
 	align-items: center;
 	background-color: transparent;
 	background-repeat: no-repeat;
 	border-radius: 5px;
 	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+	transition: transform 0.2s;
 }
 
-.window {
-    width: 300px;
-    height: 200px;
-    position: absolute;
-    border: 1px solid black;
-    background-color: white;
+.dock-icon:hover {
+	transform: scale(1.1);
 }
-
-.title-bar {
-    background-color: #ddd;
-    cursor: move;
-    padding: 5px;
-}
-
-.close-button {
-    float: right;
-    cursor: pointer;
-}
-
-.content {
-    padding: 10px;
-}
-

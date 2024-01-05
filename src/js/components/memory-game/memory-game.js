@@ -4,6 +4,7 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
  */
+
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
@@ -47,7 +48,7 @@ customElements.define('memory-game',
         .appendChild(template.content.cloneNode(true))
 
       // Get the game board element in the shadow root.
-      this.#gameBoard = this.shadowRoot.querySelector('#game-board')
+      this.#gameBoard = this.shadowRoot.getElementById('game-board')
 
       // Define the card images and create memory grid.
       const cardImages = [
@@ -66,16 +67,6 @@ customElements.define('memory-game',
       this.cardsArray = [...cardImages, ...cardImages]
       this.handleCardClick = this.handleCardClick.bind(this)
       this.createMemoryGrid()
-    }
-
-    /**
-     * Called after the element is inserted into the DOM.
-     *
-     * @param {Event} event - The click event.
-     */
-    onClick (event) {
-      event.preventDefault()
-      this.
     }
 
     /**
@@ -124,7 +115,7 @@ customElements.define('memory-game',
       const card = event.target.closest('.memory-card')
       if (this.lockBoard || card === this.firstCard) return
 
-      this.classList.toggle('flipped')
+      card.classList.toggle('flipped')
 
       if (!this.hasFlippedCard) {
         this.hasFlippedCard = true
