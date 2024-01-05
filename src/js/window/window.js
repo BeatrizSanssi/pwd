@@ -9,7 +9,56 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
+  .window {
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.title-bar {
+    background-color: #ddd;
+    cursor: move;
+    padding: 5px;
+}
+
+.close-button {
+    float: right;
+    cursor: pointer;
+}
+
+.content {
+    padding: 10px;
+}
+
+.window {
+width: 300px;
+height: 200px;
+position: absolute;
+border: 1px solid #000;
+}
+  
+  .title-bar {
+background-color: #ddd;
+cursor: move;
+padding: 5px;
+}
+  
+  .close-btn {
+float: right;
+cursor: pointer;
+  }
+
 </style>
+<div class="window">
+  <div class="title-bar">
+    <button class="close-btn">Close</button>
+  </div>
+  <div class="content">
+    <slot name="content"></slot>
+  </div>
+</div>
 `
 /*
  * Define custom element.
