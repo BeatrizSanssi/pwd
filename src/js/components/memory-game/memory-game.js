@@ -9,11 +9,33 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-  /* Add your CSS styles here */
-  .memory-card {
-    /* styles for memory card */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px;
+    margin: 20px;
+}
+
+.memory-card {
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
   }
-  /* ... other styles ... */
+  
+  .front, .back {
+    position: absolute;
+    backface-visibility: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .back {
+    transform: rotateY(180deg);
+  }
+  
+  .memory-card.flipped {
+    transform: rotateY(180deg);
+  }
+  
 </style>
 <div id="game-board" class="memory-grid">
   <!-- Memory grid will be here -->
