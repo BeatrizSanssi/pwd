@@ -69,7 +69,7 @@ customElements.define('app-window',
    */
   class extends HTMLElement {
     // Define class properties
-    #window
+    appWindow
     /**
      * Creates an instance of the current type.
      */
@@ -82,38 +82,68 @@ customElements.define('app-window',
         .appendChild(template.content.cloneNode(true))
 
       // Get the window element in the shadow root.
-      this.#window = this.shadowRoot.getElementById('app-window')
-
-      const myWindow = document.getElementById('myWindow')
-      const titleBar = myWindow.querySelector('.title-bar')
+      this.appWindow = this.shadowRoot.getElementById('app-window')
 
       // Add dragging functionality
       let isDragging = false
       let xOffset = 0
       let yOffset = 0
 
-      titleBar.addEventListener('mousedown', function (e) {
+      // const myWindow = document.getElementById('myWindow')
+      const titleBar = this.appWindow.querySelector('.title-bar')
+
+      titleBar.addEventListener('mousedown', (e) => {
         isDragging = true
-        xOffset = myWindow.offsetLeft - e.clientX
-        yOffset = myWindow.offsetTop - e.clientY
+        xOffset = this.appWindow.offsetLeft - e.clientX
+        yOffset = this.appWindow.offsetTop - e.clientY
       })
 
-      document.addEventListener('mousemove', function (e) {
+      document.addEventListener('mousemove', (e) => {
         if (isDragging) {
-          myWindow.style.left = e.clientX + xOffset + 'px'
-          myWindow.style.top = e.clientY + yOffset + 'px'
+          this.appWindow.style.left = e.clientX + xOffset + 'px'
+          this.appWindow.style.top = e.clientY + yOffset + 'px'
         }
       })
 
-      document.addEventListener('mouseup', function () {
+      document.addEventListener('mouseup', () => {
         isDragging = false
       })
 
       // Add close functionality
-      myWindow.querySelector('.close-btn').addEventListener('click', function () {
-        myWindow.style.display = 'none'
+      const closeButton = this.window.querySelector('.close-btn')
+      closeButton.addEventListener('click', () => {
+        this.closeWindow()
       })
     }
+
+    /**
+     * Insert content into the window.
+     */
+    addContent () {
+      // Add functionality to insert content into the window
+      // ...your code here...
+    }
+
+    /**
+     * Open the window.
+     *
+     * @param {string} app - The app to open.
+     */
+    openWindow (app) {
+      // Add functionality to open the window
+      // ...your code here...
+      this.style.display = 'block'
+    }
+
+    /**
+     * Close the window.
+     */
+    closeWindow () {
+      this.style.display = 'none'
+      // Add functionality to close the window
+      // ...your code here...
+    }
+    // ... other methods like minimize, maximize, etc.
     // Add functionality to insert content into the window
     // ...your code here...
   })

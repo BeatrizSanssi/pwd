@@ -14,8 +14,13 @@ template.innerHTML = `
 <style>
    
    </style>
+   <div id="desktop">
+    <dock-icons>
     <memory-game></memory-game>
     <messenger-app></messenger-app>
+    </dock-icons>
+    <app-window></app-window>
+    </div>
 `
 customElements.define('desktop-app',
   /**
@@ -47,10 +52,10 @@ customElements.define('desktop-app',
      * Sets up event listeners.
      */
     setUpEventListeners () {
-      this.desktop = document.getElementById('desktop')
-      const dockIcons = document.querySelectorAll('.dock-icon')
+      this.desktop = this.shadowRoot.getElementById('desktop')
+      const dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
       dockIcons.forEach(icon => {
-        icon.addEventListener('click', function () {
+        icon.addEventListener('click', () => {
           this.openWindow(icon.dataset.app)
         })
       })
@@ -63,22 +68,15 @@ customElements.define('desktop-app',
      */
     openWindow (appName) {
       console.log('openWindow called with:', appName)
-      const newWindow = document.createElement('app-window') // Create an instance of your custom window element
-      const titleBar = newWindow.shadowRoot.querySelector('.title-bar') // Find elements within your custom window
-      const closeButton = newWindow.shadowRoot.querySelector('.close-button')
-      const contentArea = newWindow.shadowRoot.querySelector('.content')
+      const newWindow = document.createElement('app-window')
 
-      // Specific app content
       if (appName === 'memoryGame') {
         const memoryGame = document.createElement('memory-game')
-        contentArea.appendChild(memoryGame)
+        newWindow.appendChild(memoryGame)
       } else if (appName === 'messengerApp') {
         const messengerApp = document.createElement('messenger-app')
-        contentArea.appendChild(messengerApp)
+        newWindow.appendChild(messengerApp)
       }
-
-      titleBar.addEventListener('mousedown', this.startDrag)
-      closeButton.addEventListener('click', () => newWindow.remove())
 
       this.desktop.appendChild(newWindow)
     }
