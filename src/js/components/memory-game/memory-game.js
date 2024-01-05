@@ -38,6 +38,18 @@ template.innerHTML = `
   
 </style>
 <div id="game-board" class="memory-grid">
+<div id="gameControls">
+    <select id="gridSizeSelector">
+        <option value="4x4">4x4</option>
+        <option value="4x2">4x2</option>
+        <option value="2x2">2x2</option>
+    </select>
+    <button id="startGame">Start Game</button>
+    <p>Attempts: <span id="attemptCount">0</span></p>
+</div>
+<div id="memoryGame" class="game">
+    <div class="memory-grid"></div>
+</div>
   <!-- Memory grid will be here -->
 </div>
 `

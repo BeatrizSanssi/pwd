@@ -16,10 +16,18 @@
   <div id="desktop">
     <!-- Icons in the dock to open windows -->
     <div id="dock">
-        <img src="/src/css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame">
-        <img src="/src/css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp"><!-- Replace icon.png with your icon -->
+      <img src="/src/css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame">
+      <img src="/src/css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp">
     </div>
 </div>
+
+<window>
+  <div slot="content">
+    <!-- Your content goes here -->
+    <h2>Hello, this is some content!</h2>
+    <p>This is a sample window content.</p>
+  </div>
+</window>
 
 <!-- Template for window -->
 <template id="windowTemplate">

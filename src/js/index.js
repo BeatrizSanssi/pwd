@@ -5,6 +5,8 @@
  * @version 1.0.0
  */
 import '../js/components/memory-game/index.js'
+import '../js/components/messenger-app/index.js'
+import '../js/components/window/window.js'
 
 // Define template.
 const template = document.createElement('template')
@@ -14,6 +16,7 @@ template.innerHTML = `
    </style>
     <memory-game></memory-game>
     <messenger-app></messenger-app>
+    <window></window>
 `
 customElements.define('desktop-app',
   /**
@@ -49,7 +52,7 @@ customElements.define('desktop-app',
       const dockIcons = document.querySelectorAll('.dock-icon')
       dockIcons.forEach(icon => {
         icon.addEventListener('click', function () {
-            this.openWindow(icon.dataset.app)
+          this.openWindow(icon.dataset.app)
         })
       })
     }
@@ -58,16 +61,13 @@ customElements.define('desktop-app',
      * Opens a new window.
      *
      * @param {string} appName - The name of the app to open.
-     * @returns {void}
      */
     openWindow (appName) {
       console.log('openWindow called with:', appName)
-      const windowTemplate = document.getElementById('windowTemplate')
-      const windowClone = windowTemplate.content.cloneNode(true)
-      const newWindow = windowClone.querySelector('.window')
-      const titleBar = newWindow.querySelector('.title-bar')
-      const closeButton = newWindow.querySelector('.close-button')
-      const contentArea = newWindow.querySelector('.content')
+      const newWindow = document.createElement('window') // Create an instance of your custom window element
+      const titleBar = newWindow.shadowRoot.querySelector('.title-bar') // Find elements within your custom window
+      const closeButton = newWindow.shadowRoot.querySelector('.close-button')
+      const contentArea = newWindow.shadowRoot.querySelector('.content')
 
       // Specific app content
       if (appName === 'memoryGame') {
