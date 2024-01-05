@@ -1,1 +1,1 @@
-import './window.js'
+import './app-window.js'

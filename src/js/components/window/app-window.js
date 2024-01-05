@@ -63,7 +63,7 @@ cursor: pointer;
 /*
  * Define custom element.
  */
-customElements.define('window',
+customElements.define('app-window',
   /**
    * Represents a memory game
    */
@@ -82,7 +82,7 @@ customElements.define('window',
         .appendChild(template.content.cloneNode(true))
 
       // Get the window element in the shadow root.
-      this.#window = this.shadowRoot.getElementById('window')
+      this.#window = this.shadowRoot.getElementById('app-window')
 
       const myWindow = document.getElementById('myWindow')
       const titleBar = myWindow.querySelector('.title-bar')

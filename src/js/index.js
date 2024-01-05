@@ -6,17 +6,16 @@
  */
 import '../js/components/memory-game/index.js'
 import '../js/components/messenger-app/index.js'
-import '../js/components/window/window.js'
+import '../js/components/window/index.js'
 
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-    /* Add your CSS styles here */
+   
    </style>
     <memory-game></memory-game>
     <messenger-app></messenger-app>
-    <window></window>
 `
 customElements.define('desktop-app',
   /**
@@ -64,7 +63,7 @@ customElements.define('desktop-app',
      */
     openWindow (appName) {
       console.log('openWindow called with:', appName)
-      const newWindow = document.createElement('window') // Create an instance of your custom window element
+      const newWindow = document.createElement('app-window') // Create an instance of your custom window element
       const titleBar = newWindow.shadowRoot.querySelector('.title-bar') // Find elements within your custom window
       const closeButton = newWindow.shadowRoot.querySelector('.close-button')
       const contentArea = newWindow.shadowRoot.querySelector('.content')
