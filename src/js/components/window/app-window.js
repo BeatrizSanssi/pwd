@@ -33,7 +33,7 @@ cursor: pointer;
   }
 
 </style>
-<div id="app-window">
+<div class="app-window">
   <div class="title-bar">Hello </div>
     <button class="close-btn">Close</button>
   <div class="content">
