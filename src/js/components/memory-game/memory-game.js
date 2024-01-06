@@ -89,6 +89,7 @@ customElements.define('memory-game',
     // Define class properties
     #memoryGame
     #memoryGrid
+    #attemptCount
     #startGame
     #gridSizeSelector
     cardsArray = []
@@ -115,7 +116,7 @@ customElements.define('memory-game',
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
-      this.attemptCountElement = this.shadowRoot.getElementById('attemptCount')
+      this.#attemptCount = this.shadowRoot.getElementById('attemptCount')
 
       // Define the card images and create memory grid
       const cardImages = [
@@ -144,7 +145,7 @@ customElements.define('memory-game',
         this.shuffle(this.cardsArray)
       }
       // Add eventlistener to the start game button
-      this.#startGame.addEventListener('click', (event) => {
+      this.#startGame.addEventListener('click', () => {
         const gridSize = this.#gridSizeSelector.value
         this.startGame(gridSize)
       })
@@ -153,16 +154,14 @@ customElements.define('memory-game',
     /**
      * Called after the element is inserted into the DOM.
      *
-     * @param {event} event - The start the game event.
      * @param {string} gridSize - The size of the grid.
      */
-    async startGame (event, gridSize) {
+    async startGame (gridSize = '4x4') {
       console.log('startGame called with:', gridSize)
       // Reset attempts
-      this.attemptCount = 0
-      this.attemptCountElement.innerText = this.attemptCount
+      this.#attemptCount = 0
+      this.attemptCountElement.innerText = this.#attemptCount
       // Reset the game board
-      // this.#gameBoard.innerHTML = ''
       this.resetBoard()
       await this.createMemoryGrid()
     }
@@ -196,7 +195,12 @@ customElements.define('memory-game',
      */
     async createMemoryGrid () {
       // await this.shuffle()
-      this.#gameBoard.innerHTML = ''
+      // this.#gameBoard.innerHTML = ''
+
+      // Duplicate the images to create pairs
+      this.cardsArray = [...this.cardsArray, ...this.cardsArray]
+
+      // Shuffle the array of images
       await this.shuffle
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
