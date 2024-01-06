@@ -89,6 +89,7 @@ customElements.define('memory-game',
     // Define class properties
     #memoryGame
     #memoryGrid
+    attemptCountElement
     #attemptCount
     #startGame
     #gridSizeSelector
@@ -114,9 +115,9 @@ customElements.define('memory-game',
       this.#memoryGame = this.shadowRoot.querySelector('.memory-game')
       this.#gameBoard = this.shadowRoot.getElementById('game-board')
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
-      this.#startGame = this.shadowRoot.getElementById('start-game')
-      this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
-      this.#attemptCount = this.shadowRoot.getElementById('attemptCount')
+      // this.#startGame = this.shadowRoot.getElementById('start-game')
+      // this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      // this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
 
       // Define the card images and create memory grid
       const cardImages = [
@@ -141,6 +142,14 @@ customElements.define('memory-game',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      this.#startGame = this.shadowRoot.getElementById('start-game')
+      this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
+
+      if (!this.attemptCountElement) {
+        console.error('Attempt count element not found')
+        return
+      }
       if (this.cardsArray) {
         this.shuffle(this.cardsArray)
       }
