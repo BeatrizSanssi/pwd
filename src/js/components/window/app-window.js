@@ -9,7 +9,7 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-  .window {
+  .app-window {
     width: 300px;
     height: 200px;
     position: absolute;
@@ -23,26 +23,8 @@ template.innerHTML = `
     padding: 5px;
 }
 
-.close-button {
-    float: right;
-    cursor: pointer;
-}
-
 .content {
     padding: 10px;
-}
-
-.window {
-width: 300px;
-height: 200px;
-position: absolute;
-border: 1px solid #000;
-}
-  
-  .title-bar {
-background-color: #ddd;
-cursor: move;
-padding: 5px;
 }
   
   .close-btn {
@@ -51,13 +33,12 @@ cursor: pointer;
   }
 
 </style>
-<div class="app-Window">
-  <div class="title-bar">
+<div id="app-window">
+  <div class="title-bar">Hello </div>
     <button class="close-btn">Close</button>
-  </div>
   <div class="content">
     <slot name="content"></slot>
-  </div>
+</div>
 </div>
 `
 /*
@@ -65,11 +46,22 @@ cursor: pointer;
  */
 customElements.define('app-window',
   /**
-   * Represents a memory game
+   * Represents a window element.
    */
   class extends HTMLElement {
-    // Define class properties
-    appWindow
+    #appWindow
+    /**
+     * The title bar div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #titleBar
+    /**
+     * The close button element.
+     *
+     * @type {HTMLButtonElement}
+     */
+    #closeBtn
     /**
      * Creates an instance of the current type.
      */
@@ -82,62 +74,83 @@ customElements.define('app-window',
         .appendChild(template.content.cloneNode(true))
 
       // Get the window element in the shadow root.
-      this.appWindow = this.shadowRoot.getElementById('app-window')
+      this.#appWindow = this.shadowRoot.querySelector('.app-window')
+      this.#titleBar = this.shadowRoot.querySelector('.title-bar')
+      this.#closeBtn = this.shadowRoot.querySelector('.close-btn')
 
+      // Add event listeners
+      /* this.#appWindow.addEventListener('click', (e) => {
+        e.stopPropagation()
+      }) */
+      this.#closeBtn.addEventListener('click', (event) => {
+        this.closeWindow()
+      })
+      this.#titleBar.addEventListener('mousedown', (event) => {
+        isDragging = true
+        xOffset = this.#appWindow.offsetLeft - event.clientX
+        yOffset = this.#appWindow.offsetTop - event.clientY
+      })
       // Add dragging functionality
       let isDragging = false
       let xOffset = 0
       let yOffset = 0
 
-      // const myWindow = document.getElementById('myWindow')
-      const titleBar = this.appWindow.querySelector('.title-bar')
-
-      titleBar.addEventListener('mousedown', (e) => {
-        isDragging = true
-        xOffset = this.appWindow.offsetLeft - e.clientX
-        yOffset = this.appWindow.offsetTop - e.clientY
-      })
-
-      document.addEventListener('mousemove', (e) => {
+      // this.#titleBar = this.#appWindow.querySelector('title-bar')
+      document.addEventListener('mousemove', (event) => {
         if (isDragging) {
-          this.appWindow.style.left = e.clientX + xOffset + 'px'
-          this.appWindow.style.top = e.clientY + yOffset + 'px'
+          this.#appWindow.style.left = event.clientX + xOffset + 'px'
+          this.#appWindow.style.top = event.clientY + yOffset + 'px'
         }
       })
 
-      document.addEventListener('mouseup', () => {
+      document.addEventListener('mouseup', (event) => {
         isDragging = false
       })
+    }
 
-      // Add close functionality
-      const closeButton = this.appWindow.querySelector('.close-btn')
-      closeButton.addEventListener('click', () => {
-        this.closeWindow()
-      })
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    async connectedCallback () {
+      this.openWindow()
     }
 
     /**
      * Insert content into the window.
      */
-    addContent () {
-      // Add functionality to insert content into the window
-      // ...your code here...
+    async addContent () {
+      const content = this.shadowRoot.querySelector('.content')
+      content.innerHTML = `
+      <memory-game></memory-game>
+      <messenger-app></messenger-app>
+      `
     }
 
     /**
      * Open the window.
      *
      * @param {string} app - The app to open.
+     * @param {object} content - The content to insert.
+     * @param {string} title - The title of the window.
+     * @param {event} event - The event object.
      */
-    openWindow (app) {
-      this.style.display = 'block'
+    async openWindow (app, content, title, event) {
+      this.#closeBtn.style.display = 'block'
+      this.#titleBar.style.display = 'block'
+      await this.addContent()
     }
 
     /**
      * Close the window.
+     *
+     * @param {event} event - The event object.
      */
-    closeWindow () {
-      this.style.display = 'none'
+    closeWindow (event) {
+      event.preventDefault()
+      console.log('closeWindow called')
+      this.#closeBtn.style.display = 'none'
+      this.#titleBar.style.display = 'none'
+      this.#appWindow.style.display = 'none'
     }
     // ... other methods like minimize, maximize, etc.
     // Add functionality to insert content into the window

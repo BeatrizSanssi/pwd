@@ -54,12 +54,13 @@ customElements.define('desktop-app',
    * Represents the desktop app.
    */
   class extends HTMLElement {
-    desktop
-    dockIcons
-    dock
-    memoryGame
-    messengerApp
-    appWindow
+    #desktop
+    #dockIcons
+    #dockIcon
+    #dock
+    #memoryGame
+    #messengerApp
+    #appWindow
     /**
      * Creates an instance of the current type.
      */
@@ -72,12 +73,12 @@ customElements.define('desktop-app',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       // Initialize the components and elements.
-      this.desktop = this.shadowRoot.getElementById('desktop')
-      this.dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
-      this.memoryGame = this.shadowRoot.querySelector('memory-game')
-      this.messengerApp = this.shadowRoot.querySelector('messenger-app')
-      this.appWindow = this.shadowRoot.querySelector('app-window')
-      this.dock = this.shadowRoot.getElementById('dock')
+      this.#desktop = this.shadowRoot.getElementById('desktop')
+      this.#dockIcons = this.shadowRoot.querySelectorAll('dock-icon')
+      this.#memoryGame = this.shadowRoot.querySelector('memory-game')
+      this.#messengerApp = this.shadowRoot.querySelector('messenger-app')
+      this.#appWindow = this.shadowRoot.querySelector('app-window')
+      this.#dock = this.shadowRoot.getElementById('dock')
     }
 
     /**
@@ -92,9 +93,9 @@ customElements.define('desktop-app',
      * Sets up event listeners.
      */
     setUpEventListeners () {
-      this.desktop = this.shadowRoot.getElementById('desktop')
-      const dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
-      dockIcons.forEach(icon => {
+      // this.desktop = this.shadowRoot.getElementById('desktop')
+      this.#dockIcons = this.shadowRoot.querySelectorAll('dock-icon')
+      this.#dockIcons.forEach(icon => {
         icon.addEventListener('click', () => {
           this.openWindow(icon.dataset.app)
         })
@@ -118,7 +119,7 @@ customElements.define('desktop-app',
         newWindow.appendChild(messengerApp)
       }
 
-      this.desktop.appendChild(newWindow)
+      this.shadowRoot.getElementById('desktop').appendChild(newWindow)
     }
 
     /**
@@ -152,11 +153,14 @@ customElements.define('desktop-app',
        * Handles the mouse up event.
        */
       const onUp = () => {
-        window.removeEventListener('mousemove', onMove)
-        window.removeEventListener('mouseup', onUp)
+        this.#appWindow.removeEventListener('mousemove', onMove)
+        this.#appWindow.removeEventListener('mousemove', onMove)
+          .removeEventListener('mouseup', onUp)
       }
 
-      window.addEventListener('mousemove', onMove)
-      window.addEventListener('mouseup', onUp)
+      this.#appWindow.removeEventListener('mousemove', onMove)
+        .addEventListener('mousemove', onMove)
+      this.#appWindow.removeEventListener('mousemove', onMove)
+        .addEventListener('mouseup', onUp)
     }
   })
