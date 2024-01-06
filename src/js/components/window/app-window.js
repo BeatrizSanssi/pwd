@@ -51,7 +51,7 @@ cursor: pointer;
   }
 
 </style>
-<div class="window">
+<div class="app-Window">
   <div class="title-bar">
     <button class="close-btn">Close</button>
   </div>
@@ -110,7 +110,7 @@ customElements.define('app-window',
       })
 
       // Add close functionality
-      const closeButton = this.window.querySelector('.close-btn')
+      const closeButton = this.appWindow.querySelector('.close-btn')
       closeButton.addEventListener('click', () => {
         this.closeWindow()
       })
@@ -130,8 +130,6 @@ customElements.define('app-window',
      * @param {string} app - The app to open.
      */
     openWindow (app) {
-      // Add functionality to open the window
-      // ...your code here...
       this.style.display = 'block'
     }
 
@@ -140,8 +138,6 @@ customElements.define('app-window',
      */
     closeWindow () {
       this.style.display = 'none'
-      // Add functionality to close the window
-      // ...your code here...
     }
     // ... other methods like minimize, maximize, etc.
     // Add functionality to insert content into the window
