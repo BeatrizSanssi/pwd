@@ -37,6 +37,7 @@ template.innerHTML = `
   }
   
 </style>
+<div class="memory-game">
 <div id="game-board" class="memory-grid">
 <div id="gameControls">
     <select id="gridSizeSelector">
@@ -47,9 +48,8 @@ template.innerHTML = `
     <button id="startGame">Start Game</button>
     <p>Attempts: <span id="attemptCount">0</span></p>
 </div>
-<div id="memoryGame" class="game">
-    <div class="memory-grid"></div>
 </div>
+
   <!-- Memory grid will be here -->
 </div>
 `
@@ -63,6 +63,8 @@ customElements.define('memory-game',
    */
   class extends HTMLElement {
     // Define class properties
+    #memoryGame
+    #memoryGrid
     cardsArray = []
     lockBoard = false
     firstCard = null
@@ -82,25 +84,32 @@ customElements.define('memory-game',
         .appendChild(template.content.cloneNode(true))
 
       // Get the game board element in the shadow root.
+      this.#memoryGame = this.shadowRoot.querySelector('.memory-game')
       this.#gameBoard = this.shadowRoot.getElementById('game-board')
-
+      this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
       // Define the card images and create memory grid.
       const cardImages = [
-        'img/cat1.png',
-        'img/cat2.png',
-        'img/monkey.png',
-        'img/sloth.png',
-        'img/hedgehogInSocks.png',
-        'img/freezingBunnyInHat.png',
-        'img/smartMouseWithGlasses.png',
-        'img/dog2.png',
-        'img/dog3.png',
-        'img/sleepingKoala.png',
-        'img/monkeyface.png'
+        'js/components/memory-game/img/cat1.png',
+        'js/components/memory-game/img/cat2.png',
+        'js/components/memory-game/img/monkey.png',
+        'js/components/memory-game/img/sloth.png',
+        'js/components/memory-game/img/hedgehogInSocks.png',
+        'js/components/memory-game/img/freezingBunnyInHat.png',
+        'js/components/memory-game/img/smartMouseWithGlasses.png',
+        'js/components/memory-game/img/dog2.png',
+        'js/components/memory-game/img/dog3.png',
+        'js/components/memory-game/img/sleepingKoala.png',
+        'js/components/memory-game/img/monkeyface.png'
       ]
       this.cardsArray = [...cardImages, ...cardImages]
       this.handleCardClick = this.handleCardClick.bind(this)
-      this.createMemoryGrid()
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    async connectedCallback () {
+      await this.createMemoryGrid()
     }
 
     /**
@@ -116,8 +125,8 @@ customElements.define('memory-game',
     /**
      * Create the memory grid.
      */
-    createMemoryGrid () {
-      this.shuffle()
+    async createMemoryGrid () {
+      await this.shuffle()
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
@@ -131,7 +140,7 @@ customElements.define('memory-game',
 
         // Back of the card (visible initially)
         const cardBack = document.createElement('img')
-        cardBack.src = 'img/card-back.png' // Path to your back image
+        cardBack.src = 'js/components/memory-game/img/PlantsLitenLiten.jpg' // Path to your back image
         cardBack.classList.add('card-image', 'back')
         card.appendChild(cardBack)
 
