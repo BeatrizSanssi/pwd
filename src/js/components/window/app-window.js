@@ -10,9 +10,9 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
   .app-window {
-    width: 300px;
-    height: 200px;
-    position: absolute;
+    width: 500px;
+    height: 500px;
+    position: relative;
     border: 1px solid black;
     background-color: white;
 }
