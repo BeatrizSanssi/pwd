@@ -321,18 +321,4 @@ customElements.define('memory-game',
           const gridSize = gridSizeSelector.value
           startGame(gridSize)
         }) */
-
-    // Function to handle tile flip
-    /**
-     * Flip a tile.
-     *
-     * @param {HTMLElement} tile - The tile to flip.
-     */
-    flipTile (tile) {
-
-      // Flip tile logic
-      // Ensure only two tiles can be flipped at a time
-      // Check for match or flip back after delay
-      // Update attempt count
-    }
   })
