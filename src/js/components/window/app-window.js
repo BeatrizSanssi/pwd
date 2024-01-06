@@ -50,6 +50,9 @@ customElements.define('app-window',
    */
   class extends HTMLElement {
     #appWindow
+    #isDragging = false
+    #startX
+    #startY
     /**
      * The title bar div element.
      *
@@ -78,8 +81,8 @@ customElements.define('app-window',
       this.#titleBar = this.shadowRoot.querySelector('.title-bar')
       this.#closeBtn = this.shadowRoot.querySelector('.close-btn')
 
-      this.onMove = this.onMove.bind(this)
-      this.onUp = this.onUp.bind(this)
+      // this.onMove = this.onMove.bind(this)
+      // this.onUp = this.onUp.bind(this)
       // Add event listeners
       /* this.#appWindow.addEventListener('click', (e) => {
         e.stopPropagation()
@@ -87,14 +90,25 @@ customElements.define('app-window',
       this.#closeBtn.addEventListener('click', () => {
         this.closeWindow()
       })
-      /* this.#titleBar.addEventListener('mousedown', (event) => {
-        isDragging = true
-        xOffset = this.#appWindow.offsetLeft - event.clientX
-        yOffset = this.#appWindow.offsetTop - event.clientY
-      }) */
-      this.#appWindow.addEventListener('mousemove', this.onMove)
-      this.#appWindow.addEventListener('mouseup', this.onUp)
+      this.#titleBar.addEventListener('mousedown', (event) => {
+        this.#isDragging = true
+        this.#startX = event.clientX - this.#appWindow.offsetLeft
+        this.#startY = event.clientY - this.#appWindow.offsetTop
+      })
+      document.addEventListener('mousemove', (event) => {
+        if (this.#isDragging) {
+          this.#appWindow.style.left = (event.clientX - this.#startX) + 'px'
+          this.#appWindow.style.top = (event.clientY - this.#startY) + 'px'
+        }
+      })
+
+      document.addEventListener('mouseup', () => {
+        this.#isDragging = false
+      })
     }
+    // this.#appWindow.addEventListener('mousemove', this.onMove)
+    // this.#appWindow.addEventListener('mouseup', this.onUp)
+
     /* // Add dragging functionality
       let isDragging = false
       let xOffset = 0
@@ -133,13 +147,9 @@ customElements.define('app-window',
 
     /**
      * Open the window.
-     *
-     * @param {string} app - The app to open.
-     * @param {object} content - The content to insert.
-     * @param {string} title - The title of the window.
-     * @param {event} event - The event object.
      */
-    async openWindow (app, content, title, event) {
+    async openWindow () {
+      this.#appWindow.style.display = 'block'
       this.#closeBtn.style.display = 'block'
       this.#titleBar.style.display = 'block'
       await this.addContent()
@@ -172,8 +182,6 @@ customElements.define('app-window',
      */
     closeWindow () {
       console.log('closeWindow called')
-      this.#closeBtn.style.display = 'none'
-      this.#titleBar.style.display = 'none'
       this.#appWindow.style.display = 'none'
     }
     // ... other methods like minimize, maximize, etc.
