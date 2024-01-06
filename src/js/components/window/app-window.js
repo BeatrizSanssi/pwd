@@ -78,19 +78,24 @@ customElements.define('app-window',
       this.#titleBar = this.shadowRoot.querySelector('.title-bar')
       this.#closeBtn = this.shadowRoot.querySelector('.close-btn')
 
+      this.onMove = this.onMove.bind(this)
+      this.onUp = this.onUp.bind(this)
       // Add event listeners
       /* this.#appWindow.addEventListener('click', (e) => {
         e.stopPropagation()
       }) */
-      this.#closeBtn.addEventListener('click', (event) => {
+      this.#closeBtn.addEventListener('click', () => {
         this.closeWindow()
       })
-      this.#titleBar.addEventListener('mousedown', (event) => {
+      /* this.#titleBar.addEventListener('mousedown', (event) => {
         isDragging = true
         xOffset = this.#appWindow.offsetLeft - event.clientX
         yOffset = this.#appWindow.offsetTop - event.clientY
-      })
-      // Add dragging functionality
+      }) */
+      this.#appWindow.addEventListener('mousemove', this.onMove)
+      this.#appWindow.addEventListener('mouseup', this.onUp)
+    }
+    /* // Add dragging functionality
       let isDragging = false
       let xOffset = 0
       let yOffset = 0
@@ -106,7 +111,7 @@ customElements.define('app-window',
       document.addEventListener('mouseup', (event) => {
         isDragging = false
       })
-    }
+    } */
 
     /**
      * Called after the element is inserted into the DOM.
@@ -141,12 +146,31 @@ customElements.define('app-window',
     }
 
     /**
-     * Close the window.
+     * Start dragging the window.
      *
-     * @param {event} event - The event object.
+     * @param {MouseEvent} event - The event object.
      */
-    closeWindow (event) {
-      event.preventDefault()
+    onMove (event) {
+      console.log('onMove called')
+      this.#appWindow.style.left = event.clientX + 'px'
+      this.#appWindow.style.top = event.clientY + 'px'
+    }
+
+    /**
+     * Stop dragging the window.
+     *
+     * @param {MouseEvent} event - The event object.
+     */
+    onUp (event) {
+      console.log('onUp called')
+      this.#appWindow.style.left = event.clientX + 'px'
+      this.#appWindow.style.top = event.clientY + 'px'
+    }
+
+    /**
+     * Close the window.
+     */
+    closeWindow () {
       console.log('closeWindow called')
       this.#closeBtn.style.display = 'none'
       this.#titleBar.style.display = 'none'

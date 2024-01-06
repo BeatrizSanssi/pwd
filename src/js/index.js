@@ -74,7 +74,7 @@ customElements.define('desktop-app',
 
       // Initialize the components and elements.
       this.#desktop = this.shadowRoot.getElementById('desktop')
-      this.#dockIcons = this.shadowRoot.querySelectorAll('dock-icon')
+      this.#dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
       this.#memoryGame = this.shadowRoot.querySelector('memory-game')
       this.#messengerApp = this.shadowRoot.querySelector('messenger-app')
       this.#appWindow = this.shadowRoot.querySelector('app-window')
