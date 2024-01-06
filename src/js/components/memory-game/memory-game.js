@@ -17,36 +17,60 @@ template.innerHTML = `
 }
 
 .memory-card {
+    position: relative;
+    max-width: 100px;
+    max-height: 100px;
+    perspective: 1000px;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
     transform-style: preserve-3d;
     transition: transform 0.5s;
-  }
+    transform: rotateY(0deg);
+    cursor: pointer;
+}
+
+.card-inner.flipped {
+    transform: rotateY(180deg);
+}
   
-  .front, .back {
+.front, .back {
     position: absolute;
     backface-visibility: hidden;
     width: 100%;
     height: 100%;
   }
-  
-  .back {
+
+  .front {
     transform: rotateY(180deg);
   }
   
-  .memory-card.flipped {
+  .back {
+    transform: rotateY(0deg);
+  }
+  
+  .memory-card.flipped .card-inner {
     transform: rotateY(180deg);
   }
   
 </style>
 <div class="memory-game">
 <div id="game-board" class="memory-grid">
-<div id="gameControls">
+<div id="game-controls">
     <select id="gridSizeSelector">
         <option value="4x4">4x4</option>
         <option value="4x2">4x2</option>
         <option value="2x2">2x2</option>
     </select>
-    <button id="startGame">Start Game</button>
+    <button id="start-game" type="button">Start Game</button>
     <p>Attempts: <span id="attemptCount">0</span></p>
+    </div>
+  <div class="memory-card">
+    <div class="card-inner">
+      </div>
+  </div>
 </div>
 </div>
 
@@ -65,6 +89,8 @@ customElements.define('memory-game',
     // Define class properties
     #memoryGame
     #memoryGrid
+    #startGame
+    #gridSizeSelector
     cardsArray = []
     lockBoard = false
     firstCard = null
@@ -87,7 +113,11 @@ customElements.define('memory-game',
       this.#memoryGame = this.shadowRoot.querySelector('.memory-game')
       this.#gameBoard = this.shadowRoot.getElementById('game-board')
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
-      // Define the card images and create memory grid.
+      this.#startGame = this.shadowRoot.getElementById('start-game')
+      this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      this.attemptCountElement = this.shadowRoot.getElementById('attemptCount')
+
+      // Define the card images and create memory grid
       const cardImages = [
         'js/components/memory-game/img/cat1.png',
         'js/components/memory-game/img/cat2.png',
@@ -102,72 +132,136 @@ customElements.define('memory-game',
         'js/components/memory-game/img/monkeyface.png'
       ]
       this.cardsArray = [...cardImages, ...cardImages]
-      this.handleCardClick = this.handleCardClick.bind(this)
+      this.shuffle(this.cardsArray)
+      // this.handleCardClick = this.handleCardClick.bind(this)
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
-    async connectedCallback () {
+    connectedCallback () {
+      if (this.cardsArray) {
+        this.shuffle(this.cardsArray)
+      }
+      // Add eventlistener to the start game button
+      this.#startGame.addEventListener('click', (event) => {
+        const gridSize = this.#gridSizeSelector.value
+        this.startGame(gridSize)
+      })
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     *
+     * @param {event} event - The start the game event.
+     * @param {string} gridSize - The size of the grid.
+     */
+    async startGame (event, gridSize) {
+      console.log('startGame called with:', gridSize)
+      // Reset attempts
+      this.attemptCount = 0
+      this.attemptCountElement.innerText = this.attemptCount
+      // Reset the game board
+      // this.#gameBoard.innerHTML = ''
+      this.resetBoard()
       await this.createMemoryGrid()
     }
 
     /**
      * Shuffle the cards.
+     *
+     * @param {Array} array - The array to shuffle.
      */
-    shuffle () {
-      for (let i = this.cardsArray.length - 1; i > 0; i--) {
-        const randomIndex = Math.floor(Math.random() * (i + 1))
-      ;[this.cardsArray[i], this.cardsArray[randomIndex]] = [this.cardsArray[randomIndex], this.cardsArray[i]]
+    // shuffle () {
+    shuffle (array) {
+      if (!array) {
+        console.error('Array is undefined or null')
+        return
+      }
+
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]
       }
     }
+
+    /* for (let i = this.cardsArray.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1))
+          ;[this.cardsArray[i], this.cardsArray[randomIndex]] = [this.cardsArray[randomIndex], this.cardsArray[i]]
+      }
+    } */
 
     /**
      * Create the memory grid.
      */
     async createMemoryGrid () {
-      await this.shuffle()
+      // await this.shuffle()
+      this.#gameBoard.innerHTML = ''
+      await this.shuffle
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
-        card.dataset.image = image
+        // card.dataset.image = image
+
+        const cardInner = document.createElement('div')
+        cardInner.classList.add('card-inner')
+        cardInner.dataset.image = image
+
+        // Back of the card (visible initially)
+        const cardBack = document.createElement('img')
+        cardBack.src = 'js/components/memory-game/img/PlantsLitenLiten.jpg'
+        cardBack.classList.add('card-image', 'back')
 
         // Front of the card (hidden initially)
         const cardFront = document.createElement('img')
         cardFront.src = image
         cardFront.classList.add('card-image', 'front')
-        card.appendChild(cardFront)
 
-        // Back of the card (visible initially)
-        const cardBack = document.createElement('img')
-        cardBack.src = 'js/components/memory-game/img/PlantsLitenLiten.jpg' // Path to your back image
-        cardBack.classList.add('card-image', 'back')
-        card.appendChild(cardBack)
+        // Append front and back to card-inner
+        cardInner.appendChild(cardBack)
+        cardInner.appendChild(cardFront)
 
-        card.addEventListener('click', this.handleCardClick.bind(this))
-        this.#gameBoard.appendChild(card)
+        // Append card-inner to card
+        card.appendChild(cardInner)
+
+        card.addEventListener('click', () => {
+          this.handleCardClick(cardInner)
+          this.#gameBoard.appendChild(card)
+        })
       })
+      /* card.addEventListener('click', () => {
+          // cardInner.classList.toggle('flipped')
+          // this.handleCardClick.bind(this))
+        }) */
+      // this.#gameBoard.appendChild(card)
+      // })
     }
 
     /**
      * Handle card click.
      *
-     * @param {Event} event - The click event.
+     * @param {HTMLElement} cardInner - The card inner element.
      */
-    handleCardClick (event) {
+    handleCardClick (cardInner) {
+      /*
       const card = event.target.closest('.memory-card')
       if (this.lockBoard || card === this.firstCard) return
-
-      card.classList.toggle('flipped')
+      */
+      if (this.lockBoard || cardInner === this.firstCard) return
+      console.log('Card clicked:', cardInner)
+      cardInner.classList.toggle('flipped')
 
       if (!this.hasFlippedCard) {
         this.hasFlippedCard = true
-        this.firstCard = card
-        return
+        this.firstCard = cardInner
+      } else {
+        this.secondCard = cardInner
+        this.checkForMatch()
+        // return
       }
 
-      this.secondCard = card
-      this.checkForMatch()
+      // this.secondCard = cardInner
+      // this.checkForMatch()
     }
 
     /**
@@ -223,22 +317,6 @@ customElements.define('memory-game',
           const gridSize = gridSizeSelector.value
           startGame(gridSize)
         }) */
-
-    /**
-     * Start the game.
-     *
-     * @param {number} gridSize - The size of the grid.
-     */
-    startGame (gridSize) {
-      // Reset attempts
-      this.attemptCount = 0
-      this.attemptCountElement.innerText = this.attemptCount
-
-      // Create and display the memory grid based on selected size
-      // Implement logic for randomized tiles
-      // Implement click and keyboard event listeners for tiles
-      // Implement the rest of the game logic
-    }
 
     // Function to handle tile flip
     /**
