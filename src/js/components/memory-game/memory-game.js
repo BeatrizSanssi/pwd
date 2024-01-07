@@ -166,9 +166,54 @@ customElements.define('memory-game',
       console.log('Memory Game: startGame called with:', gridSize)
       // Reset attempts
       this.#attemptCount = 0
-      // this.attemptCountElement.innerText = this.#attemptCount
+      this.attemptCountElement.innerText = this.#attemptCount
+
+      // Set number of pairs based on grid size
+      const pairsNeeded = this.getPairsCount(gridSize)
+
+      // Set the cards array with the required number of pairs
+      this.setCardsArray(pairsNeeded)
+
       this.resetBoard()
       await this.createMemoryGrid()
+    }
+
+    /**
+     * Calculates the number of pairs needed based on the grid size.
+     *
+     * @param {string} gridSize - The size of the grid.
+     * @returns {number} The number of pairs needed for the grid.
+     */
+    getPairsCount (gridSize) {
+      const [rows, cols] = gridSize.split('x').map(Number)
+      return (rows * cols) / 2
+    }
+
+    /**
+     * Sets the cards array with the required number of pairs.
+     *
+     * @param {number} pairsNeeded - The number of pairs needed.
+     */
+    setCardsArray (pairsNeeded) {
+      // Get a random subset of card images
+      const selectedImages = this.getRandomSubset(this.cardImages, pairsNeeded)
+
+      // Double and shuffle the array for pairs
+      this.cardsArray = [...selectedImages, ...selectedImages]
+      this.shuffle(this.cardsArray)
+    }
+
+    /**
+     * Get a random subset of elements from an array.
+     *
+     * @param {Array} array - The original array.
+     * @param {number} size - The size of the subset.
+     * @returns {Array} The random subset of elements.
+     */
+    getRandomSubset (array, size) {
+      const shuffled = array.slice()
+      this.shuffle(shuffled)
+      return shuffled.slice(0, size)
     }
 
     /**
