@@ -127,24 +127,6 @@ customElements.define('memory-game',
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       // this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
-
-      /* // Define the card images and create memory grid
-      const cardImages = [
-        'js/components/memory-game/img/cat1.png',
-        'js/components/memory-game/img/cat2.png',
-        'js/components/memory-game/img/monkey.png',
-        'js/components/memory-game/img/sloth.png',
-        'js/components/memory-game/img/hedgehogInSocks.png',
-        'js/components/memory-game/img/freezingBunnyInHat.png',
-        'js/components/memory-game/img/smartMouseWithGlasses.png',
-        'js/components/memory-game/img/dog2.png',
-        'js/components/memory-game/img/dog3.png',
-        'js/components/memory-game/img/sleepingKoala.png',
-        'js/components/memory-game/img/monkeyface.png'
-      ] */
-      // this.cardsArray = [...cardImages, ...cardImages]
-      // this.shuffle(this.cardsArray)
-      // this.handleCardClick = this.handleCardClick.bind(this)
     }
 
     /**
@@ -152,8 +134,7 @@ customElements.define('memory-game',
      */
     connectedCallback () {
       console.log('Memory Game: connectedCallback called')
-      // this.#startGame = this.shadowRoot.getElementById('start-game')
-      // this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
       console.log('Attempt Count Element:', this.attemptCountElement)
       if (this.attemptCountElement) {
@@ -178,6 +159,7 @@ customElements.define('memory-game',
      */
     async startGame (gridSize) {
       console.log('Memory Game: startGame called with:', gridSize)
+
       // Reset attempts
       this.#attemptCount = 0
       this.attemptCountElement.innerText = this.#attemptCount
@@ -248,12 +230,6 @@ customElements.define('memory-game',
       }
     }
 
-    /* for (let i = this.cardsArray.length - 1; i > 0; i--) {
-        const randomIndex = Math.floor(Math.random() * (i + 1))
-          ;[this.cardsArray[i], this.cardsArray[randomIndex]] = [this.cardsArray[randomIndex], this.cardsArray[i]]
-      }
-    } */
-
     /**
      * Create the memory grid.
      */
@@ -262,11 +238,6 @@ customElements.define('memory-game',
       // await this.shuffle()
       this.#gameBoard.innerHTML = ''
 
-      // Duplicate the images to create pairs
-      // this.cardsArray = [...this.cardsArray, ...this.cardsArray]
-
-      // Shuffle the array of images
-      // this.shuffle(this.cardsArray)
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
@@ -298,12 +269,6 @@ customElements.define('memory-game',
         this.#gameBoard.appendChild(card)
       })
     }
-    /* card.addEventListener('click', () => {
-          // cardInner.classList.toggle('flipped')
-          // this.handleCardClick.bind(this))
-        }) */
-    // this.#gameBoard.appendChild(card)
-    // })
 
     /**
      * Handle card click.
@@ -311,10 +276,6 @@ customElements.define('memory-game',
      * @param {HTMLElement} cardInner - The card inner element.
      */
     handleCardClick (cardInner) {
-      /*
-      const card = event.target.closest('.memory-card')
-      if (this.lockBoard || card === this.firstCard) return
-      */
       if (this.lockBoard || cardInner === this.firstCard) return
       console.log('Card clicked:', cardInner)
       cardInner.classList.toggle('flipped')
@@ -325,11 +286,7 @@ customElements.define('memory-game',
       } else {
         this.secondCard = cardInner
         this.checkForMatch()
-        // return
       }
-
-      // this.secondCard = cardInner
-      // this.checkForMatch()
     }
 
     /**
@@ -369,15 +326,4 @@ customElements.define('memory-game',
     resetBoard () {
       [this.hasFlippedCard, this.lockBoard, this.firstCard, this.secondCard] = [false, false, null, null]
     }
-
-    /* document.addEventListener('DOMContentLoaded', function () {
-        const gridSizeSelector = document.getElementById('gridSizeSelector')
-        const startGameButton = document.getElementById('startGame')
-        const attemptCountElement = document.getElementById('attemptCount')
-        let attemptCount = 0
-
-        startGameButton.addEventListener('click', () => {
-          const gridSize = gridSizeSelector.value
-          startGame(gridSize)
-        }) */
   })
