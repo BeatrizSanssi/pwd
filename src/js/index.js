@@ -120,6 +120,7 @@ customElements.define('desktop-app',
 
       // Depending on the appName, append the correct app to the window
       let appElement
+      let title
       if (appName === 'memoryGame') {
         appElement = document.createElement('memory-game')
         console.log('Created app element:', appElement)
@@ -132,9 +133,11 @@ customElements.define('desktop-app',
         case 'memoryGame':
           console.log('Desktop App: Creating memory-game element')
           appElement = document.createElement('memory-game')
+          title = 'Memory Game'
           break
         case 'messengerApp':
           appElement = document.createElement('messenger-app')
+          title = 'Messenger App'
           break
         default:
           console.error(`Unknown app name: ${appName}`)
@@ -147,7 +150,7 @@ customElements.define('desktop-app',
       }
 
       if (appElement) {
-        appWindow.addContent(appElement)
+        appWindow.addContent(appElement, title)
 
         const desktop = this.shadowRoot.getElementById('desktop')
         desktop.appendChild(appWindow)

@@ -137,16 +137,25 @@ customElements.define('app-window',
      * Insert content into the window.
      *
      * @param {Element} element - The element to insert.
+     * @param {string} title - The title of the window.
      */
-    async addContent (element) {
+    async addContent (element, title) {
       const contentDiv = this.shadowRoot.querySelector('.content')
+      const titleBar = this.shadowRoot.querySelector('.title-bar')
+
       if (!contentDiv) {
         console.error('Content element not found')
         return
       }
+      if (!titleBar) {
+        console.error('Title bar element not found')
+        return
+      }
+
       if (element instanceof HTMLElement) {
         contentDiv.innerHTML = ''
         contentDiv.appendChild(element)
+        titleBar.textContent = title
       } else {
         console.error('Invalid element provided:', element)
       }

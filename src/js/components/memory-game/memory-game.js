@@ -211,7 +211,7 @@ customElements.define('memory-game',
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
-        // card.dataset.image = image
+        card.dataset.image = image
 
         const cardInner = document.createElement('div')
         cardInner.classList.add('card-inner')
@@ -297,8 +297,8 @@ customElements.define('memory-game',
     unflipCards () {
       this.lockBoard = true
       setTimeout(() => {
-        this.firstCard.firstChild.style.display = 'none'
-        this.secondCard.firstChild.style.display = 'none'
+        this.firstCard.classList.remove('flipped')
+        this.secondCard.classList.remove('flipped')
 
         this.resetBoard()
       }, 1500)
@@ -308,12 +308,7 @@ customElements.define('memory-game',
      * Reset board.
      */
     resetBoard () {
-      this.hasFlippedCard = false
-      this.lockBoard = false
-      this.firstCard = null
-      this.secondCard = null
-      this.firstCard = null
-      this.secondCard = null
+      [this.hasFlippedCard, this.lockBoard, this.firstCard, this.secondCard] = [false, false, null, null]
     }
 
     /* document.addEventListener('DOMContentLoaded', function () {
