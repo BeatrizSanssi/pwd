@@ -140,17 +140,17 @@ customElements.define('app-window',
      * @param {Element} element - The element to insert.
      */
     async addContent (element) {
-      const content = this.shadowRoot.querySelector('.content')
-      if (!content) {
+      const contentDiv = this.shadowRoot.querySelector('.content')
+      if (!contentDiv) {
         console.error('Content element not found')
         return
       }
-      content.innerHTML = ''
-      content.appendChild(element)
-      /* content.innerHTML = `
-      <memory-game></memory-game>
-      <messenger-app></messenger-app>
-      ` */
+      if (element instanceof HTMLElement) {
+        contentDiv.innerHTML = ''
+        contentDiv.appendChild(element)
+      } else {
+        console.error('Invalid element provided:', element)
+      }
     }
 
     /**

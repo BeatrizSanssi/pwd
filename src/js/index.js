@@ -120,6 +120,13 @@ customElements.define('desktop-app',
 
       // Depending on the appName, append the correct app to the window
       let appElement
+      if (appName === 'memoryGame') {
+        appElement = document.createElement('memory-game')
+      } else if (appName === 'messengerApp') {
+        appElement = document.createElement('messenger-app')
+      }
+
+      console.log('Created app element:', appElement)
       switch (appName) {
         case 'memoryGame':
           console.log('Desktop App: Creating memory-game element')
