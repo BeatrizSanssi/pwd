@@ -50,13 +50,13 @@ customElements.define('desktop-app',
    * Represents the desktop app.
    */
   class extends HTMLElement {
-    #desktop
+    /* #desktop
     #dockIcons
     #dockIcon
     #dock
     #memoryGame
     #messengerApp
-    #appWindow
+    #appWindow */
     /**
      * Creates an instance of the current type.
      */
@@ -67,7 +67,8 @@ customElements.define('desktop-app',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
-
+    }
+    /*
       // Initialize the components and elements.
       this.#desktop = this.shadowRoot.getElementById('desktop')
       this.#dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
@@ -76,17 +77,20 @@ customElements.define('desktop-app',
       this.#appWindow = this.shadowRoot.querySelector('app-window')
       this.#dock = this.shadowRoot.getElementById('dock')
     }
+    */
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      // Set up click event for each icon
-      this.#dockIcons.forEach(icon => {
-        icon.addEventListener('click', (event) => {
-          const appName = event.target.dataset.app
+      // Event delegation for dock icon clicks
+      const dock = this.shadowRoot.getElementById('dock')
+      dock.addEventListener('click', (event) => {
+        const target = event.target
+        if (target.classList.contains('dock-icon')) {
+          const appName = target.dataset.app
           this.openAppWindow(appName)
-        })
+        }
       })
     }
 
@@ -123,23 +127,15 @@ customElements.define('desktop-app',
         case 'messengerApp':
           appElement = document.createElement('messenger-app')
           break
-          // Handle other apps...
         default:
           console.error(`Unknown app name: ${appName}`)
           return
       }
 
       appWindow.appendChild(appElement)
-
-      // Append the new window to the desktop
-      const desktop = document.querySelector('#desktop')
-      if (desktop) {
-        this.#desktop.appendChild(appWindow)
-      } else {
-        console.error('Desktop element not found')
-      }
+      this.shadowRoot.getElementById('desktop').appendChild(appWindow)
     }
-
+  })
     // Append the new window with the app to the desktop
     // this.shadowRoot.getElementById('desktop').appendChild(newWindow)
     // }
@@ -214,5 +210,3 @@ customElements.define('desktop-app',
         .addEventListener('mousemove', onMove)
       this.#appWindow.removeEventListener('mousemove', onMove)
         .addEventListener('mouseup', onUp) */
-  }
-)
