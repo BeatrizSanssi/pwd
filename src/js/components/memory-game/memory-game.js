@@ -12,14 +12,14 @@ template.innerHTML = `
 .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
-    gap: 10px;
+    gap: 20px;
     margin: 20px;
 }
 
 .memory-card {
     position: relative;
-    max-width: 100px;
-    max-height: 100px;
+    width: 150px;
+    height: 150px;
     perspective: 1000px;
 }
 
@@ -57,23 +57,20 @@ template.innerHTML = `
   
 </style>
 <div class="memory-game">
-<div id="game-board" class="memory-grid">
-<div id="game-controls">
-    <select id="gridSizeSelector">
+  <div id="game-board" class="memory-grid">
+    <div id="game-controls">
+      <select id="gridSizeSelector">
         <option value="4x4">4x4</option>
         <option value="4x2">4x2</option>
         <option value="2x2">2x2</option>
-    </select>
-    <button id="start-game" type="button">Start Game</button>
-    <p>Attempts: <span id="attemptCount">0</span></p>
-</div>
-  <div class="memory-card">
-    <div class="card-inner"></div>
+      </select>
+      <button id="start-game" type="button">Start Game</button>
+      <p>Attempts: <span id="attemptCount">0</span></p>
+    </div>
+    <div class="memory-card">
+      <div class="card-inner"></div>
+    </div>
   </div>
-</div>
-</div>
-
-  <!-- Memory grid will be here -->
 </div>
 `
 

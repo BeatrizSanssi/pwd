@@ -113,7 +113,7 @@ customElements.define('desktop-app',
      * @param {string} appName - The name of the app to open.
      */
     openAppWindow (appName) {
-      console.log('Desktop App: openAppWindow called with:', appName)
+      console.log('openWindow called with:', appName)
 
       // Create a new window
       const appWindow = document.createElement('app-window')
@@ -122,6 +122,7 @@ customElements.define('desktop-app',
       let appElement
       if (appName === 'memoryGame') {
         appElement = document.createElement('memory-game')
+        console.log('Created app element:', appElement)
       } else if (appName === 'messengerApp') {
         appElement = document.createElement('messenger-app')
       }
@@ -145,13 +146,13 @@ customElements.define('desktop-app',
         return
       }
 
-      appWindow.addContent(appElement)
+      if (appElement) {
+        appWindow.addContent(appElement)
 
-      const desktop = this.shadowRoot.getElementById('desktop')
-      if (desktop) {
+        const desktop = this.shadowRoot.getElementById('desktop')
         desktop.appendChild(appWindow)
       } else {
-        console.error('Desktop element not found')
+        console.error(`Failed to create ${appName} element`)
       }
     }
     // Append the new window with the app to the desktop

@@ -10,8 +10,8 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
   .app-window {
-    width: 500px;
-    height: 500px;
+    max-width: 1000px;
+    max-height: 1000px;
     position: relative;
     border: 1px solid black;
     background-color: white;
@@ -27,18 +27,17 @@ template.innerHTML = `
     padding: 10px;
 }
   
-  .close-btn {
-float: right;
-cursor: pointer;
-  }
+.close-btn {
+  margin: 10px;
+  float: right;
+  cursor: pointer;
+}
 
 </style>
 <div class="app-window">
-  <div class="title-bar">Hello </div>
+  <div class="title-bar"></div>
     <button class="close-btn">Close</button>
-  <div class="content">
-    <slot name="content"></slot>
-</div>
+  <div class="content"></div>
 </div>
 `
 /*
