@@ -88,6 +88,20 @@ customElements.define('memory-game',
     #attemptCount
     #startGame
     #gridSizeSelector
+    cardImages = [
+      'js/components/memory-game/img/cat1.png',
+      'js/components/memory-game/img/cat2.png',
+      'js/components/memory-game/img/monkey.png',
+      'js/components/memory-game/img/sloth.png',
+      'js/components/memory-game/img/hedgehogInSocks.png',
+      'js/components/memory-game/img/freezingBunnyInHat.png',
+      'js/components/memory-game/img/smartMouseWithGlasses.png',
+      'js/components/memory-game/img/dog2.png',
+      'js/components/memory-game/img/dog3.png',
+      'js/components/memory-game/img/sleepingKoala.png',
+      'js/components/memory-game/img/monkeyface.png'
+    ]
+
     cardsArray = []
     lockBoard = false
     firstCard = null
@@ -114,7 +128,7 @@ customElements.define('memory-game',
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       // this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
 
-      // Define the card images and create memory grid
+      /* // Define the card images and create memory grid
       const cardImages = [
         'js/components/memory-game/img/cat1.png',
         'js/components/memory-game/img/cat2.png',
@@ -127,9 +141,9 @@ customElements.define('memory-game',
         'js/components/memory-game/img/dog3.png',
         'js/components/memory-game/img/sleepingKoala.png',
         'js/components/memory-game/img/monkeyface.png'
-      ]
-      this.cardsArray = [...cardImages, ...cardImages]
-      this.shuffle(this.cardsArray)
+      ] */
+      // this.cardsArray = [...cardImages, ...cardImages]
+      // this.shuffle(this.cardsArray)
       // this.handleCardClick = this.handleCardClick.bind(this)
     }
 
@@ -249,10 +263,10 @@ customElements.define('memory-game',
       this.#gameBoard.innerHTML = ''
 
       // Duplicate the images to create pairs
-      this.cardsArray = [...this.cardsArray, ...this.cardsArray]
+      // this.cardsArray = [...this.cardsArray, ...this.cardsArray]
 
       // Shuffle the array of images
-      this.shuffle(this.cardsArray)
+      // this.shuffle(this.cardsArray)
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
