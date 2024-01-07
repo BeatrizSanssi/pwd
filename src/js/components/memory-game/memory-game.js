@@ -66,10 +66,9 @@ template.innerHTML = `
     </select>
     <button id="start-game" type="button">Start Game</button>
     <p>Attempts: <span id="attemptCount">0</span></p>
-    </div>
+</div>
   <div class="memory-card">
-    <div class="card-inner">
-      </div>
+    <div class="card-inner"></div>
   </div>
 </div>
 </div>
@@ -89,7 +88,6 @@ customElements.define('memory-game',
     // Define class properties
     #memoryGame
     #memoryGrid
-    attemptCountElement
     #attemptCount
     #startGame
     #gridSizeSelector
@@ -115,8 +113,8 @@ customElements.define('memory-game',
       this.#memoryGame = this.shadowRoot.querySelector('.memory-game')
       this.#gameBoard = this.shadowRoot.getElementById('game-board')
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
-      // this.#startGame = this.shadowRoot.getElementById('start-game')
-      // this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      this.#startGame = this.shadowRoot.getElementById('start-game')
+      this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       // this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
 
       // Define the card images and create memory grid
@@ -142,13 +140,14 @@ customElements.define('memory-game',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.#startGame = this.shadowRoot.getElementById('start-game')
-      this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      // this.#startGame = this.shadowRoot.getElementById('start-game')
+      // this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
-
-      if (!this.attemptCountElement) {
+      console.log('Attempt Count Element:', this.attemptCountElement)
+      if (this.attemptCountElement) {
+        this.attemptCountElement.innerText = 'New Value'
+      } else {
         console.error('Attempt count element not found')
-        return
       }
       if (this.cardsArray) {
         this.shuffle(this.cardsArray)
@@ -165,12 +164,11 @@ customElements.define('memory-game',
      *
      * @param {string} gridSize - The size of the grid.
      */
-    async startGame (gridSize = '4x4') {
+    async startGame (gridSize) {
       console.log('startGame called with:', gridSize)
       // Reset attempts
       this.#attemptCount = 0
-      this.attemptCountElement.innerText = this.#attemptCount
-      // Reset the game board
+      // this.attemptCountElement.innerText = this.#attemptCount
       this.resetBoard()
       await this.createMemoryGrid()
     }
@@ -204,13 +202,13 @@ customElements.define('memory-game',
      */
     async createMemoryGrid () {
       // await this.shuffle()
-      // this.#gameBoard.innerHTML = ''
+      this.#gameBoard.innerHTML = ''
 
       // Duplicate the images to create pairs
       this.cardsArray = [...this.cardsArray, ...this.cardsArray]
 
       // Shuffle the array of images
-      await this.shuffle
+      this.shuffle(this.cardsArray)
       this.cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
@@ -237,18 +235,17 @@ customElements.define('memory-game',
         // Append card-inner to card
         card.appendChild(cardInner)
 
-        card.addEventListener('click', () => {
-          this.handleCardClick(cardInner)
-          this.#gameBoard.appendChild(card)
-        })
+        card.addEventListener('click', () =>
+          this.handleCardClick(cardInner))
+        this.#gameBoard.appendChild(card)
       })
-      /* card.addEventListener('click', () => {
+    }
+    /* card.addEventListener('click', () => {
           // cardInner.classList.toggle('flipped')
           // this.handleCardClick.bind(this))
         }) */
-      // this.#gameBoard.appendChild(card)
-      // })
-    }
+    // this.#gameBoard.appendChild(card)
+    // })
 
     /**
      * Handle card click.

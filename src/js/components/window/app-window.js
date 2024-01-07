@@ -139,10 +139,13 @@ customElements.define('app-window',
      */
     async addContent () {
       const content = this.shadowRoot.querySelector('.content')
-      content.innerHTML = `
+      if (!content) {
+        console.error('Content element not found')
+      }
+      /* content.innerHTML = `
       <memory-game></memory-game>
       <messenger-app></messenger-app>
-      `
+      ` */
     }
 
     /**
