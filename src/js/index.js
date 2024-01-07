@@ -136,10 +136,10 @@ customElements.define('desktop-app',
       this.shadowRoot.getElementById('desktop').appendChild(appWindow)
     }
   })
-    // Append the new window with the app to the desktop
-    // this.shadowRoot.getElementById('desktop').appendChild(newWindow)
-    // }
-    /* openWindow (appName) {
+// Append the new window with the app to the desktop
+// this.shadowRoot.getElementById('desktop').appendChild(newWindow)
+// }
+/* openWindow (appName) {
       console.log('openWindow called with:', appName)
       const newWindow = document.createElement('app-window')
       if (!newWindow) {
@@ -169,44 +169,7 @@ customElements.define('desktop-app',
       }
     } */
 
-    /**
-     * Starts dragging the window.
-     *
-     * @param {MouseEvent} e - The event object.
-     * @param {HTMLElement} windowElement - The window element.
-     */
-    startDrag (e, windowElement) {
-      const prevX = e.clientX
-      const prevY = e.clientY
-    }
-
-    /**
-     * Handles the mouse move event.
-     *
-     * @param {MouseEvent} e - The event object.
-     */
-    onMove = (e) => {
-      const newX = prevX - e.clientX
-      const newY = prevY - e.clientY
-      const rect = windowElement.getBoundingClientRect()
-
-      windowElement.style.left = rect.left - newX + 'px'
-      windowElement.style.top = rect.top - newY + 'px'
-
-      prevX = e.clientX
-      prevY = e.clientY
-    }
-
-    /**
-     * Handles the mouse up event.
-     */
-    onUp = () => {
-      this.#appWindow.removeEventListener('mousemove', this.onMove)
-      this.#appWindow.removeEventListener('mousemove', this.onMove)
-        .removeEventListener('mouseup', this.onUp)
-    }
-
-    /* this.#appWindow.removeEventListener('mousemove', onMove)
+/* this.#appWindow.removeEventListener('mousemove', onMove)
         .addEventListener('mousemove', onMove)
       this.#appWindow.removeEventListener('mousemove', onMove)
         .addEventListener('mouseup', onUp) */
