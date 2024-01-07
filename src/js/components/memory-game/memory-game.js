@@ -37,27 +37,41 @@ template.innerHTML = `
 }
   
 .front, .back {
-    position: absolute;
-    backface-visibility: hidden;
-    width: 100%;
-    height: 100%;
-  }
+  position: absolute;
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
 
-  .front {
-    transform: rotateY(180deg);
-  }
+.front {
+  transform: rotateY(180deg);
+}
   
-  .back {
-    transform: rotateY(0deg);
-  }
+.back {
+  transform: rotateY(0deg);
+}
   
-  .memory-card.flipped .card-inner {
-    transform: rotateY(180deg);
-  }
+.memory-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+p {
+  font-weight: bold;
+  font-size: 1 rem;
+  color: white;
+  margin: 10px;
+  padding: 10px;
+  float: right;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(rgb(73, 89, 55), #ddffc0);
+}
   
 </style>
 <div class="memory-game">
-  <div id="game-board" class="memory-grid">
+<div id="attempts"><p>Attempts: <span id="attemptCount"> 0</span></p>
+</div>  
+<div id="game-board" class="memory-grid">
     <div id="game-controls">
       <select id="gridSizeSelector">
         <option value="4x4">4x4</option>
@@ -65,7 +79,6 @@ template.innerHTML = `
         <option value="2x2">2x2</option>
       </select>
       <button id="start-game" type="button">Start Game</button>
-      <p>Attempts: <span id="attemptCount">0</span></p>
     </div>
     <div class="memory-card">
       <div class="card-inner"></div>
@@ -126,7 +139,9 @@ customElements.define('memory-game',
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
-      // this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
+      this.attemptsElement = this.shadowRoot.getElementById('attempts')
+      this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
+      this.attemptCountElement.textContent = this.attemptCount
     }
 
     /**
@@ -138,18 +153,20 @@ customElements.define('memory-game',
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
       console.log('Attempt Count Element:', this.attemptCountElement)
       if (this.attemptCountElement) {
-        this.attemptCountElement.innerText = 'New Value'
+        this.attemptCountElement.innerText = ''
       } else {
         console.error('Attempt count element not found')
       }
       if (this.cardsArray) {
         this.shuffle(this.cardsArray)
       }
+
       // Add eventlistener to the start game button
       this.#startGame.addEventListener('click', () => {
         const gridSize = this.#gridSizeSelector.value
         this.startGame(gridSize)
       })
+      this.attemptsElement.style.display = 'none'
     }
 
     /**
@@ -160,9 +177,11 @@ customElements.define('memory-game',
     async startGame (gridSize) {
       console.log('Memory Game: startGame called with:', gridSize)
 
-      // Reset attempts
-      this.#attemptCount = 0
-      this.attemptCountElement.innerText = this.#attemptCount
+      // Show the attempts div and initialize attempt count
+      this.attemptsElement.style.display = 'block'
+      this.attemptCount = 0
+      this.attemptCountElement.textContent = this.attemptCount
+      this.gameStarted = true
 
       // Set number of pairs based on grid size
       const pairsNeeded = this.getPairsCount(gridSize)
@@ -286,7 +305,18 @@ customElements.define('memory-game',
       } else {
         this.secondCard = cardInner
         this.checkForMatch()
+
+        // Increment and update the attempt count
+        this.incrementAttemptCount()
       }
+    }
+
+    /**
+     * Increment and update the attempt count.
+     */
+    incrementAttemptCount () {
+      this.attemptCount++
+      this.attemptCountElement.textContent = this.attemptCount
     }
 
     /**
