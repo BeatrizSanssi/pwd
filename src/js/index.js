@@ -40,8 +40,8 @@ template.innerHTML = `
 <div id="desktop">
   <!-- Icons in the dock to open windows -->
   <div id="dock">
-    <img src="/src/css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" alt="Memory Game Icon">
-    <img src="/src/css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" alt="Messenger App Icon">
+    <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" alt="Memory Game Icon">
+    <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" alt="Messenger App Icon">
   </div>
 </div>
 `
@@ -122,6 +122,7 @@ customElements.define('desktop-app',
       let appElement
       switch (appName) {
         case 'memoryGame':
+          console.log('Desktop App: Creating memory-game element')
           appElement = document.createElement('memory-game')
           break
         case 'messengerApp':
@@ -132,14 +133,24 @@ customElements.define('desktop-app',
           return
       }
 
-      appWindow.appendChild(appElement)
-      this.shadowRoot.getElementById('desktop').appendChild(appWindow)
+      if (!appElement) {
+        console.error('Desktop App: Failed to create app element for:', appName)
+        return
+      }
+
+      appWindow.addContent(appElement)
+
+      const desktop = this.shadowRoot.getElementById('desktop')
+      if (desktop) {
+        desktop.appendChild(appWindow)
+      } else {
+        console.error('Desktop element not found')
+      }
     }
-  })
-// Append the new window with the app to the desktop
-// this.shadowRoot.getElementById('desktop').appendChild(newWindow)
-// }
-/* openWindow (appName) {
+    // Append the new window with the app to the desktop
+    // this.shadowRoot.getElementById('desktop').appendChild(newWindow)
+    // }
+    /* openWindow (appName) {
       console.log('openWindow called with:', appName)
       const newWindow = document.createElement('app-window')
       if (!newWindow) {
@@ -169,7 +180,8 @@ customElements.define('desktop-app',
       }
     } */
 
-/* this.#appWindow.removeEventListener('mousemove', onMove)
+    /* this.#appWindow.removeEventListener('mousemove', onMove)
         .addEventListener('mousemove', onMove)
       this.#appWindow.removeEventListener('mousemove', onMove)
         .addEventListener('mouseup', onUp) */
+  })
