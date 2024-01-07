@@ -140,6 +140,7 @@ customElements.define('memory-game',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      console.log('Memory Game: connectedCallback called')
       // this.#startGame = this.shadowRoot.getElementById('start-game')
       // this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
@@ -165,7 +166,7 @@ customElements.define('memory-game',
      * @param {string} gridSize - The size of the grid.
      */
     async startGame (gridSize) {
-      console.log('startGame called with:', gridSize)
+      console.log('Memory Game: startGame called with:', gridSize)
       // Reset attempts
       this.#attemptCount = 0
       // this.attemptCountElement.innerText = this.#attemptCount
@@ -201,6 +202,7 @@ customElements.define('memory-game',
      * Create the memory grid.
      */
     async createMemoryGrid () {
+      console.log('Memory Game: createMemoryGrid called')
       // await this.shuffle()
       this.#gameBoard.innerHTML = ''
 

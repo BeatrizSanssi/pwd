@@ -113,7 +113,7 @@ customElements.define('desktop-app',
      * @param {string} appName - The name of the app to open.
      */
     openAppWindow (appName) {
-      console.log('openWindow called with:', appName)
+      console.log('Desktop App: openAppWindow called with:', appName)
 
       // Create a new window
       const appWindow = document.createElement('app-window')
