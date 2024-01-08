@@ -304,6 +304,16 @@ customElements.define('memory-game',
         // Append card-inner to card
         card.appendChild(cardInner)
 
+        // Make each card focusable
+        cardInner.setAttribute('tabindex', '0')
+
+        // Add keydown event listener to flip the card on Enter or Space key press
+        cardInner.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            this.handleCardClick(cardInner)
+          }
+        })
+        // Add click event listener to flip the card on click
         card.addEventListener('click', () =>
           this.handleCardClick(cardInner))
         this.#gameBoard.appendChild(card)
