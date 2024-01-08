@@ -89,22 +89,23 @@ template.innerHTML = `
 
 .modal {
     display: none;
-    position: fixed;
+    position: inherit;
     z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    width: fit-content;
+    height: fit-content;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
+    background-color: grey;
+    color: white;
+    padding-top: 20px;
+    border-radius: 5px;
+    border: 1px white solid;
   }
 
   .modal-content {
-    background-color: #fefefe;
+    font-size: 20px;
+    background-color: grey;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
     width: 80%;
   }
 
@@ -139,12 +140,12 @@ template.innerHTML = `
     <div class="memory-card">
       <div class="card-inner"></div>
   </div>
-  <div id="winningModal" class="modal">
+</div>
+<div id="winningModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <p id="winningMessage"></p>
   </div>
-</div>
 </div>
 `
 
@@ -230,6 +231,7 @@ customElements.define('memory-game',
       const closeButton = this.shadowRoot.querySelector('.close')
       closeButton.addEventListener('click', () => {
         modal.style.display = 'none'
+        this.offerNewGame()
       })
 
       // Add eventlistener to the start game button
@@ -462,6 +464,7 @@ customElements.define('memory-game',
       console.log('Checking for win: Remaining cards count', this.cardsArray.length) // Debugging log
       if (this.cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
+        console.log('Winning message element:', winningMessageElement)
         winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
 
         const modal = this.shadowRoot.getElementById('winningModal')
@@ -473,10 +476,10 @@ customElements.define('memory-game',
      * Offer the player a new game.
      */
     offerNewGame () {
+      this.resetBoard()
       this.gameControls.style.display = 'block'
       this.attemptsElement.style.display = 'none'
       this.#gridSizeSelector.value = '4x4'
-      this.#gameBoard.innerHTML = '' // Clear the game board
     }
 
     /**

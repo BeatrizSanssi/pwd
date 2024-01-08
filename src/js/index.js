@@ -31,6 +31,7 @@ template.innerHTML = `
 
   #dock {
     position: absolute;
+    gap: 20px;
     display: flex;
     flex-direction: row;
     top: 30px;

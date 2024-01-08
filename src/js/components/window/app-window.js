@@ -13,6 +13,7 @@ template.innerHTML = `
     max-width: fit-content;
     max-height: fit-content;
     position: relative;
+    margin: 30px;
     border: 1px solid black;
     background-color: white;
 }
