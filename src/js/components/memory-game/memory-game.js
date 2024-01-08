@@ -60,12 +60,14 @@ template.innerHTML = `
 #gridSizeSelector {
   position: absolute;
   left: 10px;
+  cursor: pointer;
 }
 
 #start-game {
   position: absolute;
   left: 10px;
   top: 130px;
+  cursor: pointer;
 }
 
 #attemptsText {
@@ -316,14 +318,24 @@ customElements.define('memory-game',
     handleCardClick (cardInner) {
       if (this.lockBoard || cardInner === this.firstCard) return
       console.log('Card clicked:', cardInner)
-      cardInner.classList.toggle('flipped')
+      // cardInner.classList.toggle('flipped')
+      if (cardInner === this.firstCard) return
+
+      cardInner.classList.add('flipped')
 
       if (!this.hasFlippedCard) {
+        // First card is flipped
         this.hasFlippedCard = true
         this.firstCard = cardInner
       } else {
+        // Second card is flipped
         this.secondCard = cardInner
-        this.checkForMatch()
+        this.lockBoard = true
+
+        // Check for a match after a short delay
+        setTimeout(() => {
+          this.checkForMatch()
+        }, 500) // Adjust this delay as needed
 
         // Increment and update the attempt count
         this.incrementAttemptCount()
@@ -360,6 +372,7 @@ customElements.define('memory-game',
         this.secondCard.remove()
         this.resetBoard()
       }, 1500)
+      this.gameWon()
     }
 
     /**
@@ -372,7 +385,20 @@ customElements.define('memory-game',
         this.secondCard.classList.remove('flipped')
 
         this.resetBoard()
-      }, 1500)
+      }, 1000)
+    }
+
+    /**
+     * Check if the game is won.
+     */
+    gameWon () {
+      // Check if there are no more cards on the board
+      const remainingCards = this.shadowRoot.querySelectorAll('.memory-card')
+      if (remainingCards.length === 0) {
+        // Player has won, display winning message
+        const winningMessage = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
+        alert(winningMessage) // or use a custom dialog box
+      }
     }
 
     /**
