@@ -11,9 +11,10 @@ template.innerHTML = `
 <style>
 .memory-grid {
     display: grid;
+    clear: both;
     grid-template-columns: repeat(4, 1fr); 
     gap: 20px;
-    margin: 20px;
+    margin: 30px;
 }
 
 .memory-card {
@@ -26,6 +27,7 @@ template.innerHTML = `
 .card-inner {
     width: 100%;
     height: 100%;
+    align-items: center;
     transform-style: preserve-3d;
     transition: transform 0.5s;
     transform: rotateY(0deg);
@@ -55,24 +57,40 @@ template.innerHTML = `
   transform: rotateY(180deg);
 }
 
-p {
+#gridSizeSelector {
+  position: absolute;
+  left: 10px;
+}
+
+#start-game {
+  position: absolute;
+  left: 10px;
+  top: 130px;
+}
+
+#attemptsText {
   font-weight: bold;
-  font-size: 1 rem;
   color: white;
   margin: 10px;
   padding: 10px;
   float: right;
   border-radius: 5px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-  background-image: linear-gradient(rgb(73, 89, 55), #ddffc0);
+  background-color: grey;
+}
+
+#attempts {
+  float: left;
+  margin: 10px;
+  padding: 10px;
 }
   
 </style>
 <div class="memory-game">
-<div id="attempts"><p>Attempts: <span id="attemptCount"> 0</span></p>
+<div id="attempts"><p id="attemptsText">Attempts: <span id="attemptCount"> 0</span></p>
 </div>  
-<div id="game-board" class="memory-grid">
     <div id="game-controls">
+    <p>Select grid size</p>
       <select id="gridSizeSelector">
         <option value="4x4">4x4</option>
         <option value="4x2">4x2</option>
@@ -80,9 +98,9 @@ p {
       </select>
       <button id="start-game" type="button">Start Game</button>
     </div>
+    <div id="game-board" class="memory-grid">
     <div class="memory-card">
       <div class="card-inner"></div>
-    </div>
   </div>
 </div>
 `
@@ -104,7 +122,7 @@ customElements.define('memory-game',
     cardImages = [
       'js/components/memory-game/img/cat1.png',
       'js/components/memory-game/img/cat2.png',
-      'js/components/memory-game/img/monkey.png',
+      'js/components/memory-game/img/monkey2.png',
       'js/components/memory-game/img/sloth.png',
       'js/components/memory-game/img/hedgehogInSocks.png',
       'js/components/memory-game/img/freezingBunnyInHat.png',
@@ -112,7 +130,7 @@ customElements.define('memory-game',
       'js/components/memory-game/img/dog2.png',
       'js/components/memory-game/img/dog3.png',
       'js/components/memory-game/img/sleepingKoala.png',
-      'js/components/memory-game/img/monkeyface.png'
+      'js/components/memory-game/img/monkeyface1.png'
     ]
 
     cardsArray = []
@@ -139,6 +157,7 @@ customElements.define('memory-game',
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
+      this.gameControls = this.shadowRoot.getElementById('game-controls')
       this.attemptsElement = this.shadowRoot.getElementById('attempts')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
       this.attemptCountElement.textContent = this.attemptCount
@@ -176,7 +195,7 @@ customElements.define('memory-game',
      */
     async startGame (gridSize) {
       console.log('Memory Game: startGame called with:', gridSize)
-
+      this.gameControls.style.display = 'none'
       // Show the attempts div and initialize attempt count
       this.attemptsElement.style.display = 'block'
       this.attemptCount = 0
@@ -334,7 +353,13 @@ customElements.define('memory-game',
     disableCards () {
       this.firstCard.removeEventListener('click', this.handleCardClick)
       this.secondCard.removeEventListener('click', this.handleCardClick)
-      this.resetBoard()
+
+      // Remove the cards from the DOM after a short delay
+      setTimeout(() => {
+        this.firstCard.remove()
+        this.secondCard.remove()
+        this.resetBoard()
+      }, 1500)
     }
 
     /**
