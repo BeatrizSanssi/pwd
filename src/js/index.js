@@ -54,7 +54,7 @@ template.innerHTML = `
 <div id="desktop">
   <!-- Icons in the dock to open windows -->
   <div id="dock">
-  <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
+    <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
     <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" data-title="Messenger App" alt="Messenger App Icon">
   </div>
 </div>
@@ -173,7 +173,6 @@ customElements.define('desktop-app',
       let title
       if (appName === 'memoryGame') {
         appElement = document.createElement('memory-game')
-        console.log('Created app element:', appElement)
       } else if (appName === 'messengerApp') {
         appElement = document.createElement('messenger-app')
       }
@@ -186,6 +185,7 @@ customElements.define('desktop-app',
           title = 'Memory Game'
           break
         case 'messengerApp':
+          console.log('Desktop App: Creating messenger-app element')
           appElement = document.createElement('messenger-app')
           title = 'Messenger App'
           break

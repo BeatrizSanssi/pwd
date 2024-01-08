@@ -20,6 +20,8 @@ template.innerHTML = `
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
+    width: 100%;
+    height: 100%;
 }
 
   .close {
@@ -102,6 +104,16 @@ customElements.define('messenger-app',
     }
 
     /**
+     * Start the messenger app.
+     */
+    startMessengerApp () {
+      this.#nicknameForm.style.display = 'none'
+      this.#messageInput.style.display = 'block'
+      this.#messages.style.display = 'block'
+      this.#sendButton.style.display = 'block'
+    }
+
+    /**
      * Initialize the WebSocket connection.
      */
     initializeWebSocket () {
@@ -118,6 +130,8 @@ customElements.define('messenger-app',
 
       this.socket.addEventListener('error', (error) => {
         console.error('WebSocket error:', error)
+        // Display error message to user
+        this.#messages.innerHTML = '<p>Error connecting to server. Please try again later.</p>'
       })
     }
 
@@ -130,8 +144,8 @@ customElements.define('messenger-app',
         const data = JSON.stringify({
           type: 'message',
           data: message,
-          username: this.username,
-          key: 'YOUR_API_KEY' // Replace with your API key
+          username: this.#nicknameForm.nickname,
+          key: 'bs222eh_keypair.pem' // Replace with your API key
         })
 
         this.socket.send(data)
@@ -145,6 +159,16 @@ customElements.define('messenger-app',
      * @param {object} message - The message object.
      */
     handleIncomingMessage (message) {
-      // Logic to handle incoming message and display in UI
+      if (message.type === 'heartbeat') {
+        // Ignore heartbeats
+        return
+      }
+
+      const messageDiv = document.createElement('div')
+      messageDiv.textContent = `${message.username}: ${message.data}`
+      this.#messages.appendChild(messageDiv)
+
+      // Scroll to the bottom of the message list
+      this.#messages.scrollTop = this.#messages.scrollHeight
     }
   })

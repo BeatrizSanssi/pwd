@@ -17,7 +17,7 @@ template.innerHTML = `
     justify-self: center;
     padding: 10px;
     margin: 10px;
-    max-width: 500px;
+    width: 500px;
   }
 
   #nickname-form p {
