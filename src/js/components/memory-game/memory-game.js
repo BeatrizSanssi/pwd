@@ -132,7 +132,10 @@ customElements.define('memory-game',
       'js/components/memory-game/img/dog2.png',
       'js/components/memory-game/img/dog3.png',
       'js/components/memory-game/img/sleepingKoala.png',
-      'js/components/memory-game/img/monkeyface1.png'
+      'js/components/memory-game/img/monkeyface1.png',
+      'js/components/memory-game/img/donkey.jpg',
+      'js/components/memory-game/img/happySlothWithFlower.png',
+      'js/components/memory-game/img/racoonPeace.png'
     ]
 
     cardsArray = []
@@ -365,23 +368,27 @@ customElements.define('memory-game',
      */
     checkForMatch () {
       const isMatch = this.firstCard.dataset.image === this.secondCard.dataset.image
-
-      isMatch ? this.disableCards() : this.unflipCards()
+      if (isMatch) {
+        this.disableCards()
+      } else {
+        this.unflipCards()
+      }
     }
 
     /**
      * Disable cards.
      */
     disableCards () {
-      this.firstCard.removeEventListener('click', this.handleCardClick)
-      this.secondCard.removeEventListener('click', this.handleCardClick)
-
       // Remove the cards from the DOM after a short delay
       setTimeout(() => {
         this.firstCard.remove()
         this.secondCard.remove()
         this.resetBoard()
-      }, 1500)
+      }, 1000)
+      // Remove matched images from cardsArray
+      this.cardsArray = this.cardsArray.filter(image => image !== this.firstCard.dataset.image)
+
+      // Call gameWon() to check if the game is over
       this.gameWon()
     }
 
@@ -389,12 +396,13 @@ customElements.define('memory-game',
      * Unflip cards.
      */
     unflipCards () {
-      this.lockBoard = true
+      // this.lockBoard = true
       setTimeout(() => {
         this.firstCard.classList.remove('flipped')
         this.secondCard.classList.remove('flipped')
 
         this.resetBoard()
+        this.gameWon()
       }, 1000)
     }
 
@@ -403,12 +411,24 @@ customElements.define('memory-game',
      */
     gameWon () {
       // Check if there are no more cards on the board
-      const remainingCards = this.shadowRoot.querySelectorAll('.memory-card')
-      if (remainingCards.length === 0) {
+      // const remainingCards = this.shadowRoot.querySelectorAll('.memory-card')
+      console.log('Checking for win: Remaining cards count', this.cardsArray.length) // Debugging log
+      if (this.cardsArray.length === 0) {
         // Player has won, display winning message
+        console.log('Player has won!') // Debugging log
         const winningMessage = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
         alert(winningMessage) // or use a custom dialog box
+        this.offerNewGame()
       }
+    }
+
+    /**
+     * Offer the player a new game.
+     */
+    offerNewGame () {
+      this.gameControls.style.display = 'block'
+      this.attemptsElement.style.display = 'none'
+      this.#gameBoard.innerHTML = '' // Clear the game board
     }
 
     /**
