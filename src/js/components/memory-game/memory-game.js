@@ -86,6 +86,41 @@ template.innerHTML = `
   margin: 10px;
   padding: 10px;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
   
 </style>
 <div class="memory-game">
@@ -104,6 +139,12 @@ template.innerHTML = `
     <div class="memory-card">
       <div class="card-inner"></div>
   </div>
+  <div id="winningModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p id="winningMessage"></p>
+  </div>
+</div>
 </div>
 `
 
@@ -184,6 +225,12 @@ customElements.define('memory-game',
       if (this.cardsArray) {
         this.shuffle(this.cardsArray)
       }
+
+      const modal = this.shadowRoot.getElementById('winningModal')
+      const closeButton = this.shadowRoot.querySelector('.close')
+      closeButton.addEventListener('click', () => {
+        modal.style.display = 'none'
+      })
 
       // Add eventlistener to the start game button
       this.#startGame.addEventListener('click', () => {
@@ -414,11 +461,11 @@ customElements.define('memory-game',
       // const remainingCards = this.shadowRoot.querySelectorAll('.memory-card')
       console.log('Checking for win: Remaining cards count', this.cardsArray.length) // Debugging log
       if (this.cardsArray.length === 0) {
-        // Player has won, display winning message
-        console.log('Player has won!') // Debugging log
-        const winningMessage = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
-        alert(winningMessage) // or use a custom dialog box
-        this.offerNewGame()
+        const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
+        winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
+
+        const modal = this.shadowRoot.getElementById('winningModal')
+        modal.style.display = 'block'
       }
     }
 
