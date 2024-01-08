@@ -428,6 +428,7 @@ customElements.define('memory-game',
     offerNewGame () {
       this.gameControls.style.display = 'block'
       this.attemptsElement.style.display = 'none'
+      this.#gridSizeSelector.value = '4x4'
       this.#gameBoard.innerHTML = '' // Clear the game board
     }
 
