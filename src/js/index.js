@@ -21,8 +21,8 @@ template.innerHTML = `
   border-radius: 4px;
   font-weight: bold;
   font-size: 15px;
-  visibility: hidden; /* Initially hidden */
-  z-index: 1000; /* Ensure it appears on top */
+  visibility: hidden; 
+  z-index: 1000; 
 }
 
 .dock-icon {

@@ -251,7 +251,6 @@ customElements.define('memory-game',
      * @param {string} gridSize - The size of the grid.
      */
     async startGame (gridSize) {
-      console.log('Memory Game: startGame called with:', gridSize)
       this.gameControls.style.display = 'none'
       // Show the attempts div and initialize attempt count
       this.attemptsElement.style.display = 'block'
@@ -318,7 +317,6 @@ customElements.define('memory-game',
         console.error('Array is undefined or null')
         return
       }
-
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]]
@@ -329,8 +327,6 @@ customElements.define('memory-game',
      * Create the memory grid.
      */
     async createMemoryGrid () {
-      console.log('Memory Game: createMemoryGrid called')
-      // await this.shuffle()
       this.#gameBoard.innerHTML = ''
 
       this.cardsArray.forEach(image => {
@@ -382,8 +378,7 @@ customElements.define('memory-game',
      */
     handleCardClick (cardInner) {
       if (this.lockBoard || cardInner === this.firstCard) return
-      console.log('Card clicked:', cardInner)
-      // cardInner.classList.toggle('flipped')
+
       if (cardInner === this.firstCard) return
 
       cardInner.classList.add('flipped')
@@ -400,7 +395,7 @@ customElements.define('memory-game',
         // Check for a match after a short delay
         setTimeout(() => {
           this.checkForMatch()
-        }, 500) // Adjust this delay as needed
+        }, 500)
 
         // Increment and update the attempt count
         this.incrementAttemptCount()
@@ -439,8 +434,7 @@ customElements.define('memory-game',
       }, 1000)
       // Remove matched images from cardsArray
       this.cardsArray = this.cardsArray.filter(image => image !== this.firstCard.dataset.image)
-
-      // Call gameWon() to check if the game is over
+      // Check if the game is won
       this.gameWon()
     }
 
@@ -448,7 +442,6 @@ customElements.define('memory-game',
      * Unflip cards.
      */
     unflipCards () {
-      // this.lockBoard = true
       setTimeout(() => {
         this.firstCard.classList.remove('flipped')
         this.secondCard.classList.remove('flipped')
@@ -463,8 +456,6 @@ customElements.define('memory-game',
      */
     gameWon () {
       // Check if there are no more cards on the board
-      // const remainingCards = this.shadowRoot.querySelectorAll('.memory-card')
-      console.log('Checking for win: Remaining cards count', this.cardsArray.length) // Debugging log
       if (this.cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
         console.log('Winning message element:', winningMessageElement)
