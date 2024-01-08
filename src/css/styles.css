@@ -2,7 +2,7 @@ body, html {
     margin: 0;
 	max-width: 100%;
     height: 100%;
-    overflow: hidden;
+   
 	background-color: rgb(76, 99, 76);
     background-image: linear-gradient(rgb(73, 89, 55), #ddffc0);
     background-repeat: no-repeat;
@@ -11,13 +11,5 @@ body, html {
 #desktop {
     height: 100%;
     position: relative;
-}
-
-#dock {
-    position: absolute;
-	display: flex;
-	flex-direction: row;
-    top: 30px;
-    left: 30px;
 }
 

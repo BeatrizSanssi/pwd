@@ -89,8 +89,11 @@ template.innerHTML = `
 
 .modal {
     display: none;
-    position: inherit;
-    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 1000;
+    transform: translate(-50%);
     width: fit-content;
     height: fit-content;
     overflow: auto;

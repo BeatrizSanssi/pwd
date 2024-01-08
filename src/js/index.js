@@ -12,37 +12,50 @@ import '../js/components/window/index.js'
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-  .dock-icon {
-    margin: 10px;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    border-radius: 5px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-  }
+.tooltip {
+  position: relative;
+  background-color: rgb(76, 99, 76);
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  visibility: hidden; /* Initially hidden */
+  z-index: 1000; /* Ensure it appears on top */
+}
 
-  .dock-icon:hover {
-    transform: scale(1.1);
-  }
+.dock-icon {
+  margin: 10px;
+  padding: 10px;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
 
-  #dock {
-    position: absolute;
-    gap: 20px;
-    display: flex;
-    flex-direction: row;
-    top: 30px;
-    left: 30px;
-  }
+.dock-icon:hover {
+  transform: scale(1.1);
+}
+
+#dock {
+  position: absolute;
+  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  top: 30px;
+  left: 30px;
+}
 </style>
 <div id="desktop">
   <!-- Icons in the dock to open windows -->
   <div id="dock">
-    <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" alt="Memory Game Icon">
-    <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" alt="Messenger App Icon">
+  <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
+    <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" data-title="Messenger App" alt="Messenger App Icon">
   </div>
 </div>
 `
@@ -72,7 +85,7 @@ customElements.define('desktop-app',
     /*
       // Initialize the components and elements.
       this.#desktop = this.shadowRoot.getElementById('desktop')
-      this.#dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
+      c
       this.#memoryGame = this.shadowRoot.querySelector('memory-game')
       this.#messengerApp = this.shadowRoot.querySelector('messenger-app')
       this.#appWindow = this.shadowRoot.querySelector('app-window')
@@ -84,9 +97,16 @@ customElements.define('desktop-app',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      // Set up event listeners for each dock icon
+      const dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
+      dockIcons.forEach(icon => {
+        icon.addEventListener('mouseover', this.showTooltip.bind(this))
+        icon.addEventListener('mouseout', this.hideTooltip.bind(this))
+      })
+
       // Event delegation for dock icon clicks
       const dock = this.shadowRoot.getElementById('dock')
-      dock.addEventListener('click', (event) => {
+      dock.addEventListener('click', event => {
         const target = event.target
         if (target.classList.contains('dock-icon')) {
           const appName = target.dataset.app
@@ -96,17 +116,46 @@ customElements.define('desktop-app',
     }
 
     /**
-     * Sets up event listeners.
+     * Show the tooltip for the icon.
      *
-    setUpEventListeners () {
-      // this.desktop = this.shadowRoot.getElementById('desktop')
-      this.#dockIcons = this.shadowRoot.querySelectorAll('dock-icon')
-      this.#dockIcons.forEach(icon => {
-        icon.addEventListener('click', () => {
-          this.openWindow(icon.dataset.app)
-        })
-      })
-    } */
+     * @param {Event} event - The event.
+     */
+    showTooltip (event) {
+      const icon = event.target
+      const tooltipText = icon.getAttribute('data-title')
+
+      // Create tooltip element
+      const tooltip = document.createElement('div')
+      tooltip.classList.add('tooltip')
+      tooltip.textContent = tooltipText
+
+      // Append tooltip to the shadow root
+      this.shadowRoot.appendChild(tooltip)
+      icon.tooltip = tooltip
+
+      // Get the position of the icon
+      const rect = icon.getBoundingClientRect()
+
+      // Position the tooltip below the icon
+      tooltip.style.position = 'absolute'
+      tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px` // Center horizontally
+      tooltip.style.top = `${rect.bottom + window.scrollY + 10}px` // Position below the icon, adjust with scrollY for scrolling
+
+      tooltip.style.visibility = 'visible'
+    }
+
+    /**
+     * Hide the tooltip for the icon.
+     *
+     * @param {Event} event - The event.
+     */
+    hideTooltip (event) {
+      const targetIcon = event.target
+      if (targetIcon.tooltip) {
+        this.shadowRoot.removeChild(targetIcon.tooltip)
+        targetIcon.tooltip = null
+      }
+    }
 
     /**
      * Opens a new window.
