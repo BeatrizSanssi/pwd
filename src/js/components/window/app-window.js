@@ -14,6 +14,7 @@ template.innerHTML = `
     max-height: fit-content;
     position: relative;
     margin: 30px;
+    padding: 10px;
     border: 1px solid black;
     background-color: white;
 }
@@ -26,6 +27,8 @@ template.innerHTML = `
 
 .content {
     padding: 10px;
+    margin: 10px;
+    width: 80%;
 }
   
 .close-btn {

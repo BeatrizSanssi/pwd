@@ -52,7 +52,7 @@ template.innerHTML = `
     <label for="nickname"><p>Enter your nickname:</p></label>
     <hr>
     <input type="text" id="nickname" name="nickname" placeholder="Your nickname..." required="true">
-    <button id="start-button" type="submit">Start Quiz</button>
+    <button id="start-button" type="submit">Start messenger app</button>
 </form>
 `
 
@@ -84,6 +84,7 @@ customElements.define('nickname-form',
       this.#form = this.shadowRoot.getElementById('nickname-form')
       this.#form.addEventListener('submit', (event) => this.#onSubmit(event))
       this.#nickname = this.shadowRoot.getElementById('nickname')
+      this.#nickname.value = localStorage.getItem('nickname') || ''
     }
 
     /**

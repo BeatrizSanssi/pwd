@@ -13,6 +13,7 @@ template.innerHTML = `
 #messenger-app {
     font-family: 'NT Adventure';
     background-color: rgb(76, 99, 76);
+    align-items: center;
     color: white;
     padding: 10px;
     margin: 10px;
@@ -22,6 +23,26 @@ template.innerHTML = `
     border: 1px solid black;
     width: 100%;
     height: 100%;
+}
+
+#messages {
+    font-family: 'NT Adventure';
+    background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    width: 90%;
+    height: 90%;
+}
+
+#message-input {
+    font-family: 'NT Adventure';
+    background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    width: 90%;
+    height: 90%;
 }
 
   .close {
@@ -46,7 +67,6 @@ template.innerHTML = `
     <button id="send-button">Send</button>
 </div>
 
-
 `
 
 /*
@@ -62,6 +82,7 @@ customElements.define('messenger-app',
     #sendButton
     #sendMessage
     #nicknameForm
+
     /**
      * Creates an instance of the current type.
      */
@@ -75,7 +96,6 @@ customElements.define('messenger-app',
 
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.socket = null
-      this.username = localStorage.getItem('username') || this.promptUsername()
     }
 
     /**
@@ -140,12 +160,14 @@ customElements.define('messenger-app',
      */
     sendMessage () {
       const message = this.#messageInput.value
+      const nickname = localStorage.getItem('nickname')
+
       if (message) {
         const data = JSON.stringify({
           type: 'message',
           data: message,
-          username: this.#nicknameForm.nickname,
-          key: 'bs222eh_keypair.pem' // Replace with your API key
+          username: nickname,
+          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd' // Replace with your API key
         })
 
         this.socket.send(data)
