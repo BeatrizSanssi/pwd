@@ -32,7 +32,8 @@ template.innerHTML = `
     padding: 10px;
     margin: 10px;
     max-width: 90%;
-    max-height: 90%;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 #message-input {
@@ -133,6 +134,7 @@ customElements.define('messenger-app',
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#messengerApp = this.shadowRoot.getElementById('messenger-app')
       this.socket = null
+      this.messageBuffer = []
     }
 
     /**
@@ -144,6 +146,7 @@ customElements.define('messenger-app',
         console.log(`Nickname submitted: ${nickname}`)
         this.#onSubmit()
       })
+      this.initializeWebSocket()
       this.hideMessengerComponents()
       this.#messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
@@ -155,7 +158,6 @@ customElements.define('messenger-app',
         this.#messengerApp.style.display = 'none'
         this.#nicknameForm.innerHTML = ''
       })
-      this.initializeWebSocket()
     }
 
     /**
@@ -239,29 +241,53 @@ customElements.define('messenger-app',
         // Ignore heartbeats
         return
       }
-      // Check if the message is from the current user or another user
-      const isSentByCurrentUser = message.username === this.username
 
-      // Format date and time
-      const dateTime = new Date().toLocaleString('sv-SE')
+      // Add new message to the buffer
+      this.messageBuffer.push(message)
 
-      const messageDiv = document.createElement('div')
-
-      // Apply different styles based on the sender
-      if (isSentByCurrentUser) {
-        messageDiv.classList.add('sent-message')
-      } else {
-        messageDiv.classList.add('received-message')
+      // Keep only the latest 20 messages
+      if (this.messageBuffer.length > 20) {
+        this.messageBuffer.shift()
       }
 
-      // Set the innerHTML of the message
-      messageDiv.innerHTML = `
+      // Update the message list
+      this.displayMessages()
+    }
+
+    /**
+     * Display messages.
+     */
+    displayMessages () {
+      this.#messages.innerHTML = ''
+
+      // Iterate over the message buffer and create elements for each message
+      this.messageBuffer.forEach(message => {
+        const messageDiv = document.createElement('div')
+
+        // Check if the message is from the current user or another user
+        const isSentByCurrentUser = message.username === this.username
+
+        // Format date and time
+        const dateTime = new Date().toLocaleString('sv-SE')
+
+        // const messageDiv = document.createElement('div')
+
+        // Apply different styles based on the sender
+        if (isSentByCurrentUser) {
+          messageDiv.classList.add('sent-message')
+        } else {
+          messageDiv.classList.add('received-message')
+        }
+
+        // Set the innerHTML of the message
+        messageDiv.innerHTML = `
       <span class="message-username"> ${message.username} : </span>
       <span class="message-content"> ${message.data}</span>
       <span class="message-time"> - ${dateTime}</span>
     `
-      // messageDiv.textContent = `${message.username}: ${message.data}`
-      this.#messages.appendChild(messageDiv)
+        // messageDiv.textContent = `${message.username}: ${message.data}`
+        this.#messages.appendChild(messageDiv)
+      })
 
       // Scroll to the bottom of the message list
       this.#messages.scrollTop = this.#messages.scrollHeight
