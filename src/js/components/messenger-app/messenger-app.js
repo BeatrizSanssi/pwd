@@ -348,7 +348,7 @@ customElements.define('messenger-app',
      * Handle input keydown.
      *
      * @param {Event} event - The event.
-     */
+     *
     handleInputKeydown (event) {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
@@ -357,5 +357,5 @@ customElements.define('messenger-app',
         event.preventDefault()
         this.#emojiPicker.focus()
       }
-    }
+    } */
   })

@@ -30,7 +30,7 @@ template.innerHTML = `
   
 </style>
 <button id="emoji-button">😀</button>
-<div id="emoji-picker" class="emoji-picker">
+<div id="emoji-picker" class="emoji-picker" tabindex="-1">
     <span class="emoji">😀</span>
     <span class="emoji">😃</span>
     <span class="emoji">😄</span>
@@ -275,21 +275,34 @@ customElements.define('emoji-picker',
       this.emojiButton = this.shadowRoot.getElementById('emoji-button')
 
       // Get the emoji-picker element in the shadow root.
-      this.emojiPicker = this.shadowRoot.querySelector('emoji-picker')
+      this.emojiPicker = this.shadowRoot.querySelector('.emoji-picker')
 
       // Get the emojis element in the shadow root.
       // this.emojis = this.shadowRoot.querySelectorAll('emoji')
 
       this.focusedIndex = 0
 
-      // Add event listener to emoji picker
-      this.emojiButton.addEventListener('click', () => this.toggleEmojiPicker())
-      this.shadowRoot.querySelectorAll('emoji').forEach(emoji => {
+      // Add event listener to emoji button
+      this.emojiButton.addEventListener('click', (event) => {
+        this.toggleEmojiPicker()
+        event.stopPropagation() // Prevent event from propagating to the document
+      }) // this.shadowRoot.querySelectorAll('emoji').forEach(emoji => {
+      // emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
+      // })
+
+      // Add event listener to each emoji span
+      this.emojiPicker.querySelectorAll('.emoji').forEach(emoji => {
         emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
       })
-
       // Add event listeners
       this.addEventListener('keydown', (event) => this.handleKeyDown())
+
+      // Close emoji picker when clicking outside
+      document.addEventListener('click', (event) => {
+        if (!this.contains(event.target) && this.emojiPicker.style.display === 'block') {
+          this.toggleEmojiPicker()
+        }
+      })
     }
 
     /**
@@ -321,7 +334,16 @@ customElements.define('emoji-picker',
      * @param {KeyboardEvent} event - The keydown event.
      */
     handleKeyDown (event) {
-      const rowCount = 18 // Assuming 5 emojis per row, adjust as needed
+      if (event.key === 'Enter' && this.emojiPicker.style.display === 'block') {
+        // Enter key is pressed while emoji picker is open, select the emoji
+        const selectedEmoji = this.emojiPicker.querySelectorAll('.emoji.focused')[0]
+        if (selectedEmoji) {
+          console.log('Selected emoji:', selectedEmoji.textContent)
+          this.toggleEmojiPicker()
+        }
+      }
+    }
+    /* const rowCount = 18 // Assuming 5 emojis per row, adjust as needed
       switch (event.key) {
         case 'ArrowRight':
           this.focusedIndex = (this.focusedIndex + 1) % this.emojis.length
@@ -342,7 +364,7 @@ customElements.define('emoji-picker',
           return // Ignore other keys
       }
       this.updateFocus()
-    }
+    } */
 
     /**
      * Update the focus.
