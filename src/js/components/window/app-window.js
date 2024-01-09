@@ -17,6 +17,7 @@ template.innerHTML = `
     padding: 10px;
     border: 1px solid black;
     background-color: white;
+    justify-content: space-around;
 }
 
 .title-bar {
@@ -27,7 +28,7 @@ template.innerHTML = `
 
 .content {
     padding: 10px;
-    margin: 10px;
+    margin: 20px;
     width: 80%;
 }
   
