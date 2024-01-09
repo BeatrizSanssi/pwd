@@ -123,7 +123,6 @@ customElements.define('messenger-app',
     #messengerApp
     #emojiPicker
     #emojis
-    #emojiButton
 
     /**
      * Creates an instance of the current type.
@@ -159,8 +158,6 @@ customElements.define('messenger-app',
       this.#messages = this.shadowRoot.getElementById('messages')
       this.sendButton = this.shadowRoot.getElementById('send-button')
       const closeButton = this.shadowRoot.querySelector('.close')
-      this.#emojiButton = this.shadowRoot.querySelector('emoji-button')
-      this.emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       // Add keydown event listener to message input
       this.messageInput.addEventListener('keydown', (event) => this.handleInputKeydown(event))
 
@@ -187,6 +184,7 @@ customElements.define('messenger-app',
     hideMessengerComponents () {
       this.#nicknameForm.style.display = 'block'
       this.#messengerApp.style.display = 'none'
+      this.#emojiPicker.style.display = 'none'
     }
 
     /**
@@ -203,7 +201,7 @@ customElements.define('messenger-app',
     startMessengerApp () {
       this.#nicknameForm.style.display = 'none'
       this.#messengerApp.style.display = 'block'
-      this.#emojiButton.style.display = 'block'
+      this.#emojiPicker.style.display = 'block'
     }
 
     /**
@@ -236,13 +234,13 @@ customElements.define('messenger-app',
 
     /**
      * Toggle the emoji picker.
-     */
+     *
     toggleEmojiPicker () {
       const emojiPicker = this.shadowRoot.querySelector('.emoji-picker')
       if (emojiPicker) {
         this.#emojiPicker.toggleVisibility() // Assuming you have a method like toggleVisibility in your emoji-picker component
       }
-    }
+    } */
 
     /**
      * Insert an emoji into the message input.
@@ -357,7 +355,7 @@ customElements.define('messenger-app',
         this.sendMessage()
       } else if (event.key === 'Tab') {
         event.preventDefault()
-        this.emojiButton.focus()
+        this.#emojiPicker.focus()
       }
     }
   })

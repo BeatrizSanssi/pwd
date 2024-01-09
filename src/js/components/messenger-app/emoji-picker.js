@@ -29,8 +29,8 @@ template.innerHTML = `
 }
   
 </style>
-<div id="emoji-picker" class="emoji-picker">
 <button id="emoji-button">😀</button>
+<div id="emoji-picker" class="emoji-picker">
     <span class="emoji">😀</span>
     <span class="emoji">😃</span>
     <span class="emoji">😄</span>
@@ -278,28 +278,40 @@ customElements.define('emoji-picker',
       this.emojiPicker = this.shadowRoot.querySelector('emoji-picker')
 
       // Get the emojis element in the shadow root.
-      this.emojis = this.shadowRoot.querySelectorAll('emoji')
+      // this.emojis = this.shadowRoot.querySelectorAll('emoji')
 
       this.focusedIndex = 0
 
       // Add event listener to emoji picker
       this.emojiButton.addEventListener('click', () => this.toggleEmojiPicker())
-      this.shadowRoot.querySelectorAll('.emoji').forEach(emoji => {
+      this.shadowRoot.querySelectorAll('emoji').forEach(emoji => {
         emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
       })
 
       // Add event listeners
-      this.addEventListener('keydown', this.handleKeyDown.bind(this))
+      this.addEventListener('keydown', (event) => this.handleKeyDown())
     }
 
     /**
      * Toggle the visibility of the emoji picker.
-     */
+     *
     toggleVisbility () {
       if (this.style.display === 'none' || this.style.display === '') {
         this.style.display = 'block'
       } else {
         this.style.display = 'none'
+      }
+    } */
+
+    /**
+     * Toggle the visibility of the emoji picker.
+     */
+    toggleEmojiPicker () {
+      if (this.emojiPicker.style.display === 'none' || this.emojiPicker.style.display === '') {
+        this.emojiPicker.style.display = 'block'
+        this.emojiPicker.focus()
+      } else {
+        this.emojiPicker.style.display = 'none'
       }
     }
 
