@@ -94,20 +94,13 @@ template.innerHTML = `
 #send-button {
    margin: 10px;
 }
-
-#emoji-button {
-    margin: 10px;
-    padding: 5px;
-    float: right;
-}
   
 </style>
 <nickname-form></nickname-form>
+<emoji-picker></emoji-picker>
 <div id="messenger-app">
 <span class="close">&times;</span>
     <div id="messages"></div>
-    <button id="emoji-button">😀<emoji-picker></emoji-picker></button>
-    
     <textarea id="message-input"></textarea>
     <button id="send-button">Send</button>
 </div>
@@ -128,9 +121,9 @@ customElements.define('messenger-app',
     #sendMessage
     #nicknameForm
     #messengerApp
-    emojiButton
     #emojiPicker
     #emojis
+    #emojiButton
 
     /**
      * Creates an instance of the current type.
@@ -165,20 +158,14 @@ customElements.define('messenger-app',
       this.messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.sendButton = this.shadowRoot.getElementById('send-button')
-      this.emojiButton = this.shadowRoot.getElementById('emoji-button')
       const closeButton = this.shadowRoot.querySelector('.close')
+      this.#emojiButton = this.shadowRoot.querySelector('emoji-button')
       this.emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       // Add keydown event listener to message input
       this.messageInput.addEventListener('keydown', (event) => this.handleInputKeydown(event))
 
       // Add event listener to send button
       this.sendButton.addEventListener('click', () => this.sendMessage())
-
-      // Add event listener to emoji picker
-      this.emojiButton.addEventListener('click', () => this.toggleEmojiPicker())
-      this.shadowRoot.querySelectorAll('.emoji').forEach(emoji => {
-        emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
-      })
 
       // Close emoji picker if clicked outside
       /* document.addEventListener('click', (e) => {
@@ -216,6 +203,7 @@ customElements.define('messenger-app',
     startMessengerApp () {
       this.#nicknameForm.style.display = 'none'
       this.#messengerApp.style.display = 'block'
+      this.#emojiButton.style.display = 'block'
     }
 
     /**
@@ -250,8 +238,10 @@ customElements.define('messenger-app',
      * Toggle the emoji picker.
      */
     toggleEmojiPicker () {
-      const emojiPicker = this.shadowRoot.querySelector('emoji-picker')
-      emojiPicker.toggleVisibility() // Assuming you have a method like toggleVisibility in your emoji-picker component
+      const emojiPicker = this.shadowRoot.querySelector('.emoji-picker')
+      if (emojiPicker) {
+        this.#emojiPicker.toggleVisibility() // Assuming you have a method like toggleVisibility in your emoji-picker component
+      }
     }
 
     /**
