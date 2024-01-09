@@ -93,12 +93,248 @@ template.innerHTML = `
 #send-button {
    margin: 10px;
 }
+
+.emoji-picker {
+    position: absolute;
+    display: none;
+    border: 1px solid black;
+    padding: 10px;
+    background-color: white;
+}
+
+.emoji {
+    cursor: pointer;
+    padding: 5px;
+}
+
+#emoji-button {
+    margin: 10px;
+    padding: 5px;
+    float: right;
+}
   
 </style>
 <nickname-form></nickname-form>
 <div id="messenger-app">
 <span class="close">&times;</span>
     <div id="messages"></div>
+    <button id="emoji-button">😀</button>
+    <div id="emoji-picker" class="emoji-picker">
+        <span class="emoji">😀</span>
+        <span class="emoji">😃</span>
+        <span class="emoji">😄</span>
+        <span class="emoji">😁</span>
+        <span class="emoji">😆</span>
+        <span class="emoji">😅</span>
+        <span class="emoji">😂</span>
+        <span class="emoji">🤣</span>
+        <span class="emoji">😊</span>
+        <span class="emoji">😇</span>
+        <span class="emoji">🙂</span>
+        <span class="emoji">🙃</span>
+        <span class="emoji">😉</span>
+        <span class="emoji">😌</span>
+        <span class="emoji">😍</span>
+        <span class="emoji">🥰</span>
+        <span class="emoji">😘</span>
+        <span class="emoji">😗</span>
+        <span class="emoji">😙</span>
+        <span class="emoji">😚</span>
+        <span class="emoji">😋</span>
+        <span class="emoji">😛</span>
+        <span class="emoji">😝</span>
+        <span class="emoji">😜</span>
+        <span class="emoji">🤪</span>
+        <span class="emoji">🤨</span>
+        <span class="emoji">🧐</span>
+        <span class="emoji">🤓</span>
+        <span class="emoji">😎</span>
+        <span class="emoji">🤩</span>
+        <span class="emoji">🥳</span>
+        <span class="emoji">😏</span>
+        <span class="emoji">😒</span>
+        <span class="emoji">😞</span>
+        <span class="emoji">😔</span>
+        <span class="emoji">😟</span>
+        <span class="emoji">😕</span>
+        <span class="emoji">🙁</span>
+        <span class="emoji">☹️</span>
+        <span class="emoji">😣</span>
+        <span class="emoji">😖</span>
+        <span class="emoji">😫</span>
+        <span class="emoji">😩</span>
+        <span class="emoji">🥺</span>
+        <span class="emoji">😢</span>
+        <span class="emoji">😭</span>
+        <span class="emoji">😤</span>
+        <span class="emoji">😠</span>
+        <span class="emoji">😡</span>
+        <span class="emoji">🤬</span>
+        <span class="emoji">🤯</span>
+        <span class="emoji">😳</span>
+        <span class="emoji">🥵</span>
+        <span class="emoji">🥶</span>
+        <span class="emoji">😱</span>
+        <span class="emoji">😨</span>
+        <span class="emoji">😰</span>
+        <span class="emoji">😥</span>
+        <span class="emoji">😓</span>
+        <span class="emoji">🤗</span>
+        <span class="emoji">🤔</span>
+        <span class="emoji">🤭</span>
+        <span class="emoji">🤫</span>
+        <span class="emoji">🤥</span>
+        <span class="emoji">😶</span>
+        <span class="emoji">😐</span>
+        <span class="emoji">😑</span>
+        <span class="emoji">😬</span>
+        <span class="emoji">🙄</span>
+        <span class="emoji">😯</span>
+        <span class="emoji">😦</span>
+        <span class="emoji">😧</span>
+        <span class="emoji">😮</span>
+        <span class="emoji">😲</span>
+        <span class="emoji">🥱</span>
+        <span class="emoji">😴</span>
+        <span class="emoji">🤤</span>
+        <span class="emoji">😪</span>
+        <span class="emoji">😵</span>
+        <span class="emoji">🤐</span>
+        <span class="emoji">🥴</span>
+        <span class="emoji">🤢</span>
+        <span class="emoji">🤮</span>
+        <span class="emoji">🤧</span>
+        <span class="emoji">😷</span>
+        <span class="emoji">🤒</span>
+        <span class="emoji">🤕</span>
+        <span class="emoji">🤑</span>
+        <span class="emoji">🤠</span>
+        <span class="emoji">😈</span>
+        <span class="emoji">👿</span>
+        <span class="emoji">👹</span>
+        <span class="emoji">👺</span>
+        <span class="emoji">🤡</span>
+        <span class="emoji">💩</span>
+        <span class="emoji">👻</span>
+        <span class="emoji">💀</span>
+        <span class="emoji">☠️</span>
+        <span class="emoji">👽</span>
+        <span class="emoji">👾</span>
+        <span class="emoji">🤖</span>
+        <span class="emoji">🎃</span>
+        <span class="emoji">😺</span>
+        <span class="emoji">😸</span>
+        <span class="emoji">😹</span>
+        <span class="emoji">😻</span>
+        <span class="emoji">😼</span>
+        <span class="emoji">😽</span>
+        <span class="emoji">🙀</span>
+        <span class="emoji">😿</span>
+        <span class="emoji">😾</span>
+        <span class="emoji">🙈</span>
+        <span class="emoji">🙉</span>
+        <span class="emoji">🙊</span>
+        <span class="emoji">💋</span>
+        <span class="emoji">💌</span>
+        <span class="emoji">💘</span>
+        <span class="emoji">💝</span>
+        <span class="emoji">💖</span>
+        <span class="emoji">💗</span>
+        <span class="emoji">💓</span>
+        <span class="emoji">💞</span>
+        <span class="emoji">💕</span>
+        <span class="emoji">💟</span>
+        <span class="emoji">❣️</span>
+        <span class="emoji">💔</span>
+        <span class="emoji">❤️</span>
+        <span class="emoji">🧡</span>
+        <span class="emoji">💛</span>
+        <span class="emoji">💚</span>
+        <span class="emoji">💙</span>
+        <span class="emoji">💜</span>
+        <span class="emoji">🤎</span>
+        <span class="emoji">🖤</span>
+        <span class="emoji">🤍</span>
+        <span class="emoji">💯</span>
+        <span class="emoji">💢</span>
+        <span class="emoji">💥</span>
+        <span class="emoji">💫</span>
+        <span class="emoji">💦</span>
+        <span class="emoji">💨</span>
+        <span class="emoji">🕳️</span>
+        <span class="emoji">💣</span>
+        <span class="emoji">💬</span>
+        <span class="emoji">👁️‍🗨️</span>
+        <span class="emoji">🗨️</span>
+        <span class="emoji">🗯️</span>
+        <span class="emoji">💭</span>
+        <span class="emoji">💤</span>
+        <span class="emoji">👋</span>
+        <span class="emoji">🤚</span>
+        <span class="emoji">🖐️</span>
+        <span class="emoji">✋</span>
+        <span class="emoji">🖖</span>
+        <span class="emoji">👌</span>
+        <span class="emoji">🤏</span>
+        <span class="emoji">✌️</span>
+        <span class="emoji">🤞</span>
+        <span class="emoji">🤟</span>
+        <span class="emoji">🤘</span>
+        <span class="emoji">🤙</span>
+        <span class="emoji">👈</span>
+        <span class="emoji">👉</span>
+        <span class="emoji">👆</span>
+        <span class="emoji">🖕</span>
+        <span class="emoji">👇</span>
+        <span class="emoji">☝️</span>
+        <span class="emoji">👍</span>
+        <span class="emoji">👎</span>
+        <span class="emoji">✊</span>
+        <span class="emoji">👊</span>
+        <span class="emoji">🤛</span>
+        <span class="emoji">🤜</span>
+        <span class="emoji">👏</span>
+        <span class="emoji">🙌</span>
+        <span class="emoji">👐</span>
+        <span class="emoji">🤲</span>
+        <span class="emoji">🤝</span>
+        <span class="emoji">🙏</span>
+        <span class="emoji">✍️</span>
+        <span class="emoji">💅</span>
+        <span class="emoji">🤳</span>
+        <span class="emoji">💪</span>
+        <span class="emoji">🦾</span>
+        <span class="emoji">🦿</span>
+        <span class="emoji">🦵</span>
+        <span class="emoji">🦶</span>
+        <span class="emoji">👂</span>
+        <span class="emoji">🦻</span>
+        <span class="emoji">👃</span>
+        <span class="emoji">🧠</span>
+        <span class="emoji">🦷</span>
+        <span class="emoji">🦴</span>
+        <span class="emoji">👀</span>
+        <span class="emoji">👁️</span>
+        <span class="emoji">👅</span>
+        <span class="emoji">👄</span>
+        <span class="emoji">👶</span>
+        <span class="emoji">🧒</span>
+        <span class="emoji">👦</span>
+        <span class="emoji">👧</span>
+        <span class="emoji">🧑</span>
+        <span class="emoji">👱</span>
+        <span class="emoji">👨</span>
+        <span class="emoji">🧔</span>
+        <span class="emoji">👨‍🦰</span>
+        <span class="emoji">👨‍🦱</span>
+        <span class="emoji">👨‍🦳</span>
+        <span class="emoji">👨‍🦲</span>
+        <span class="emoji">👩</span>
+        <span class="emoji">👩‍🦰</span>
+        <span class="emoji">🧑‍🦰</span>
+        <span class="emoji">👩‍🦱</span>
+        <span class="emoji">🧑‍🦱</span>
+        </div>
     <textarea id="message-input"></textarea>
     <button id="send-button">Send</button>
 </div>
@@ -119,6 +355,8 @@ customElements.define('messenger-app',
     #sendMessage
     #nicknameForm
     #messengerApp
+    #emojiButton
+    #emojiPicker
 
     /**
      * Creates an instance of the current type.
@@ -141,6 +379,7 @@ customElements.define('messenger-app',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      // Add event listener to nickname form
       this.#nicknameForm.addEventListener('nicknameSubmitted', (event) => {
         const nickname = event.detail.nickname
         console.log(`Nickname submitted: ${nickname}`)
@@ -151,9 +390,27 @@ customElements.define('messenger-app',
       this.#messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.#sendButton = this.shadowRoot.getElementById('send-button')
+      this.#emojiButton = this.shadowRoot.getElementById('emoji-button')
+      this.#emojiPicker = this.shadowRoot.getElementById('emoji-picker')
+      const closeButton = this.shadowRoot.querySelector('.close')
+
+      // Add event listener to send button
       this.#sendButton.addEventListener('click', () => this.sendMessage())
 
-      const closeButton = this.shadowRoot.querySelector('.close')
+      // Add event listener to emoji picker
+      this.#emojiButton.addEventListener('click', () => this.toggleEmojiPicker())
+      this.shadowRoot.querySelectorAll('.emoji').forEach(emoji => {
+        emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
+      })
+
+      // Close emoji picker if clicked outside
+      document.addEventListener('click', (e) => {
+        if (!this.#emojiPicker.contains(e.target) && !this.#emojiButton.contains(e.target)) {
+          this.#emojiPicker.style.display = 'none'
+        }
+      }, true)
+
+      // Add event listener to the close button
       closeButton.addEventListener('click', () => {
         this.#messengerApp.style.display = 'none'
         this.#nicknameForm.innerHTML = ''
@@ -210,6 +467,23 @@ customElements.define('messenger-app',
         // Display error message to user
         // this.#messages.innerHTML = '<p>Error connecting to server. Please try again later.</p>'
       })
+    }
+
+    /**
+     * Toggle the emoji picker.
+     */
+    toggleEmojiPicker () {
+      this.#emojiPicker.style.display = this.#emojiPicker.style.display === 'none' ? 'block' : 'none'
+    }
+
+    /**
+     * Insert an emoji into the message input.
+     *
+     * @param {string} emoji - The emoji to insert.
+     */
+    insertEmoji (emoji) {
+      this.#messageInput.value += emoji
+      this.#messageInput.focus()
     }
 
     /**
