@@ -199,8 +199,13 @@ customElements.define('messenger-app',
 
       this.socket.addEventListener('error', (error) => {
         console.error('WebSocket error:', error)
+        const errorMessage = document.createElement('p')
+        errorMessage.textContent = 'Error connecting to server. Please try again later.'
+        errorMessage.style.color = 'red'
+        // Append error message instead of replacing innerHTML
+        this.#messages.appendChild(errorMessage)
         // Display error message to user
-        this.#messages.innerHTML = '<p>Error connecting to server. Please try again later.</p>'
+        // this.#messages.innerHTML = '<p>Error connecting to server. Please try again later.</p>'
       })
     }
 
