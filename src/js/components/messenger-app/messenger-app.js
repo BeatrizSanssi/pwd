@@ -40,16 +40,17 @@ template.innerHTML = `
     background-color: white;
     color: rgb(76, 99, 76);
     padding: 9px;
-    margin: 9px;
+    margin: 8px;
     width: 90%;
     height: 90%;
 }
 
 .close {
-    color: white;
+    color: gray;
     float: right;
     font-size: 40px;
     font-weight: bold;
+    margin: 10px;
   }
 
 .close:hover,
@@ -62,6 +63,9 @@ template.innerHTML = `
 .message {
   padding: 5px;
   margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sent-message {
@@ -78,6 +82,7 @@ template.innerHTML = `
   display: block;
   font-size: 0.8em;
   color: gray;
+  margin-left: auto;
 }
 
 .message-username {
@@ -112,6 +117,7 @@ customElements.define('messenger-app',
     #sendButton
     #sendMessage
     #nicknameForm
+    #messengerApp
 
     /**
      * Creates an instance of the current type.
@@ -125,6 +131,7 @@ customElements.define('messenger-app',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
+      this.#messengerApp = this.shadowRoot.getElementById('messenger-app')
       this.socket = null
     }
 
@@ -137,12 +144,26 @@ customElements.define('messenger-app',
         console.log(`Nickname submitted: ${nickname}`)
         this.#onSubmit()
       })
+      this.hideMessengerComponents()
       this.#messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.#sendButton = this.shadowRoot.getElementById('send-button')
       this.#sendButton.addEventListener('click', () => this.sendMessage())
 
+      const closeButton = this.shadowRoot.querySelector('.close')
+      closeButton.addEventListener('click', () => {
+        this.#messengerApp.style.display = 'none'
+        this.#nicknameForm.innerHTML = ''
+      })
       this.initializeWebSocket()
+    }
+
+    /**
+     * Hide the messenger components.
+     */
+    hideMessengerComponents () {
+      this.#nicknameForm.style.display = 'block'
+      this.#messengerApp.style.display = 'none'
     }
 
     /**
@@ -158,9 +179,7 @@ customElements.define('messenger-app',
      */
     startMessengerApp () {
       this.#nicknameForm.style.display = 'none'
-      this.#messageInput.style.display = 'block'
-      this.#messages.style.display = 'block'
-      this.#sendButton.style.display = 'block'
+      this.#messengerApp.style.display = 'block'
     }
 
     /**
@@ -232,7 +251,7 @@ customElements.define('messenger-app',
 
       // Set the innerHTML of the message
       messageDiv.innerHTML = `
-      <span class="message-username"> ${message.username}: </span>
+      <span class="message-username"> ${message.username} : </span>
       <span class="message-content"> ${message.data}</span>
       <span class="message-time"> - ${dateTime}</span>
     `

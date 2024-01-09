@@ -11,13 +11,13 @@ template.innerHTML = `
 <style>
   #nickname-form {
     font-family: 'NT Adventure';
-    font-size: 40px;
+    font-size: 20px;
     font-weight: bold;
     text-align: center;
     justify-self: center;
     padding: 10px;
     margin: 10px;
-    width: 500px;
+    max-width: 500px;
   }
 
   #nickname-form p {
@@ -25,7 +25,7 @@ template.innerHTML = `
     max-width: 800px;
     justify-self: center;
     color: rgb(76, 99, 76);
-    font-size: 50px;
+    font-size: 20px;
   }
 
   button {
@@ -43,14 +43,14 @@ template.innerHTML = `
     font-weight: bold;
     text-align: center;
     justify-self: center;
-    padding: 10px;
-    max-width: 200px;
+    margin: 10px;
+    padding: 0px;
+    max-width: 100px;
   }
 
 </style>
 <form id="nickname-form">
     <label for="nickname"><p>Enter your nickname:</p></label>
-    <hr>
     <input type="text" id="nickname" name="nickname" placeholder="Your nickname..." required="true">
     <button id="start-button" type="submit">Start messenger app</button>
 </form>
