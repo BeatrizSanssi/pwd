@@ -21,8 +21,8 @@ template.innerHTML = `
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
-    width: 100%;
-    height: 100%;
+    width: 500px;
+    max-height: 100%;
 }
 
 #messages {
@@ -31,37 +31,67 @@ template.innerHTML = `
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;
-    width: 90%;
-    height: 90%;
+    max-width: 90%;
+    max-height: 90%;
 }
 
 #message-input {
     font-family: 'NT Adventure';
     background-color: white;
     color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
+    padding: 9px;
+    margin: 9px;
     width: 90%;
     height: 90%;
 }
 
-  .close {
-    color: #aaa;
+.close {
+    color: white;
     float: right;
-    font-size: 28px;
+    font-size: 40px;
     font-weight: bold;
   }
 
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
   }
+
+.message {
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.sent-message {
+  text-align: right;
+  font-style: normal;
+}
+
+.received-message {
+  text-align: left;
+  font-style: italic;
+}
+
+.message-time {
+  display: block;
+  font-size: 0.8em;
+  color: gray;
+}
+
+.message-username {
+  font-weight: bold;
+}
+
+#send-button {
+   margin: 10px;
+}
   
 </style>
 <nickname-form></nickname-form>
 <div id="messenger-app">
+<span class="close">&times;</span>
     <div id="messages"></div>
     <textarea id="message-input"></textarea>
     <button id="send-button">Send</button>
@@ -185,9 +215,28 @@ customElements.define('messenger-app',
         // Ignore heartbeats
         return
       }
+      // Check if the message is from the current user or another user
+      const isSentByCurrentUser = message.username === this.username
+
+      // Format date and time
+      const dateTime = new Date().toLocaleString('sv-SE')
 
       const messageDiv = document.createElement('div')
-      messageDiv.textContent = `${message.username}: ${message.data}`
+
+      // Apply different styles based on the sender
+      if (isSentByCurrentUser) {
+        messageDiv.classList.add('sent-message')
+      } else {
+        messageDiv.classList.add('received-message')
+      }
+
+      // Set the innerHTML of the message
+      messageDiv.innerHTML = `
+      <span class="message-username"> ${message.username}: </span>
+      <span class="message-content"> ${message.data}</span>
+      <span class="message-time"> - ${dateTime}</span>
+    `
+      // messageDiv.textContent = `${message.username}: ${message.data}`
       this.#messages.appendChild(messageDiv)
 
       // Scroll to the bottom of the message list
