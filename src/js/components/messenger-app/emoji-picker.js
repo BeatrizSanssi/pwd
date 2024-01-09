@@ -25,7 +25,6 @@ template.innerHTML = `
 #emoji-button {
     margin: 10px;
     padding: 5px;
-    float: right;
 }
   
 </style>
@@ -279,7 +278,7 @@ customElements.define('emoji-picker',
 
       // Get the emojis element in the shadow root.
       // this.emojis = this.shadowRoot.querySelectorAll('emoji')
-
+      // this.insertEmoji = this.insertEmoji.bind(this)
       this.focusedIndex = 0
 
       // Add event listener to emoji button
@@ -290,12 +289,15 @@ customElements.define('emoji-picker',
       // emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
       // })
 
-      // Add event listener to each emoji span
+      // Add event listeners to emojis
       this.emojiPicker.querySelectorAll('.emoji').forEach(emoji => {
-        emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
+        emoji.addEventListener('click', () => {
+          const selectedEmoji = emoji.textContent
+          this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
+        })
       })
       // Add event listeners
-      this.addEventListener('keydown', (event) => this.handleKeyDown())
+      this.addEventListener('keydown', (event) => this.handleKeyDown(event))
 
       // Close emoji picker when clicking outside
       document.addEventListener('click', (event) => {
@@ -320,12 +322,8 @@ customElements.define('emoji-picker',
      * Toggle the visibility of the emoji picker.
      */
     toggleEmojiPicker () {
-      if (this.emojiPicker.style.display === 'none' || this.emojiPicker.style.display === '') {
-        this.emojiPicker.style.display = 'block'
-        this.emojiPicker.focus()
-      } else {
-        this.emojiPicker.style.display = 'none'
-      }
+      this.emojiPicker.style.display = this.emojiPicker.style.display === 'block' ? 'none' : 'block'
+      this.emojiPicker.focus()
     }
 
     /**
@@ -385,6 +383,7 @@ customElements.define('emoji-picker',
     selectEmoji (index) {
       // Logic to handle emoji selection
       const selectedEmoji = this.emojis[index].textContent
+      this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
       console.log('Selected emoji:', selectedEmoji)
     }
   })

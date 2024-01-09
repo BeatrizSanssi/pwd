@@ -94,6 +94,12 @@ template.innerHTML = `
 #send-button {
    margin: 10px;
 }
+
+#emoji-picker {
+    bottom: 0;
+    right: 20px;
+    margin: 10px;
+}
   
 </style>
 <nickname-form></nickname-form>
@@ -140,6 +146,12 @@ customElements.define('messenger-app',
       this.#emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       this.socket = null
       this.messageBuffer = []
+
+      // Add event listener
+      this.#emojiPicker.addEventListener('emojiSelected', (event) => {
+        const emoji = event.detail.emoji
+        this.insertEmoji(emoji)
+      })
     }
 
     /**
@@ -163,13 +175,6 @@ customElements.define('messenger-app',
 
       // Add event listener to send button
       this.sendButton.addEventListener('click', () => this.sendMessage())
-
-      // Close emoji picker if clicked outside
-      /* document.addEventListener('click', (e) => {
-        if (!this.#emojiPicker.contains(e.target) && !this.#emojiButton.contains(e.target)) {
-          this.#emojiPicker.style.display = 'none'
-        }
-      }, true) */
 
       // Add event listener to the close button
       closeButton.addEventListener('click', () => {
@@ -225,22 +230,10 @@ customElements.define('messenger-app',
         const errorMessage = document.createElement('p')
         errorMessage.textContent = 'Error connecting to server. Please try again later.'
         errorMessage.style.color = 'red'
-        // Append error message instead of replacing innerHTML
+        // Append error message to the message list
         this.#messages.appendChild(errorMessage)
-        // Display error message to user
-        // this.#messages.innerHTML = '<p>Error connecting to server. Please try again later.</p>'
       })
     }
-
-    /**
-     * Toggle the emoji picker.
-     *
-    toggleEmojiPicker () {
-      const emojiPicker = this.shadowRoot.querySelector('.emoji-picker')
-      if (emojiPicker) {
-        this.#emojiPicker.toggleVisibility() // Assuming you have a method like toggleVisibility in your emoji-picker component
-      }
-    } */
 
     /**
      * Insert an emoji into the message input.
@@ -264,7 +257,7 @@ customElements.define('messenger-app',
           type: 'message',
           data: message,
           username: nickname,
-          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd' // Replace with your API key
+          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
         })
 
         this.socket.send(data)
@@ -348,7 +341,7 @@ customElements.define('messenger-app',
      * Handle input keydown.
      *
      * @param {Event} event - The event.
-     *
+     */
     handleInputKeydown (event) {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
@@ -357,5 +350,5 @@ customElements.define('messenger-app',
         event.preventDefault()
         this.#emojiPicker.focus()
       }
-    } */
+    }
   })
