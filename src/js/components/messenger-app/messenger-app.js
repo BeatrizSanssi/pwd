@@ -31,7 +31,7 @@ template.innerHTML = `
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;
-    max-width: 90%;
+    width: 80%;
     max-height: 300px;
     overflow-y: auto;
 }
@@ -42,7 +42,7 @@ template.innerHTML = `
     color: rgb(76, 99, 76);
     padding: 9px;
     margin: 8px;
-    width: 90%;
+    width: 80%;
     height: 90%;
 }
 
@@ -197,6 +197,7 @@ customElements.define('messenger-app',
       this.socket.addEventListener('message', (event) => {
         const message = JSON.parse(event.data)
         this.handleIncomingMessage(message)
+        this.scrollMessagesToBottom()
       })
 
       this.socket.addEventListener('error', (error) => {
@@ -263,6 +264,7 @@ customElements.define('messenger-app',
       // Iterate over the message buffer and create elements for each message
       this.messageBuffer.forEach(message => {
         const messageDiv = document.createElement('div')
+        messageDiv.classList.add('message')
 
         // Check if the message is from the current user or another user
         const isSentByCurrentUser = message.username === this.username
@@ -291,5 +293,14 @@ customElements.define('messenger-app',
 
       // Scroll to the bottom of the message list
       this.#messages.scrollTop = this.#messages.scrollHeight
+    }
+
+    /**
+     * Scroll messages to bottom.
+     */
+    scrollMessagesToBottom () {
+      setTimeout(() => {
+        this.#messages.scrollTop = this.#messages.scrollHeight
+      }, 100)
     }
   })
