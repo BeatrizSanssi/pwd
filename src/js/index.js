@@ -57,6 +57,7 @@ template.innerHTML = `
   <div id="dock">
     <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
     <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" data-title="Messenger App" alt="Messenger App Icon">
+    <img src="css/img/draw.svg" class="dock-icon" data-app="paintApp" data-title="Paint App" alt="Paint App Icon">
   </div>
 </div>
 `
@@ -176,6 +177,8 @@ customElements.define('desktop-app',
         appElement = document.createElement('memory-game')
       } else if (appName === 'messengerApp') {
         appElement = document.createElement('messenger-app')
+      } else if (appName === 'paintApp') {
+        appElement = document.createElement('paint-app')
       }
 
       console.log('Created app element:', appElement)
@@ -189,6 +192,11 @@ customElements.define('desktop-app',
           console.log('Desktop App: Creating messenger-app element')
           appElement = document.createElement('messenger-app')
           title = 'Messenger App'
+          break
+        case 'paintApp':
+          console.log('Desktop App: Creating paint-app element')
+          appElement = document.createElement('paint-app')
+          title = 'Paint App'
           break
         default:
           console.error(`Unknown app name: ${appName}`)
