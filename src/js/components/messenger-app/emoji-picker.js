@@ -300,6 +300,7 @@ customElements.define('emoji-picker',
         emoji.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             this.selectEmoji(emoji)
+            this.closeEmojiPicker()
           }
         })
       })
@@ -317,6 +318,13 @@ customElements.define('emoji-picker',
           this.toggleEmojiPicker()
         }
       })
+    }
+
+    /**
+     * Close the emoji picker.
+     */
+    closeEmojiPicker () {
+      this.emojiPicker.style.display = 'none'
     }
 
     /**
