@@ -14,9 +14,10 @@ template.innerHTML = `
 </style>
 <div id="paint-app">
 <canvas id="paint-canvas"></canvas>
-    <div>
-      <input type="color" id="color-picker">
+    <div id="paint-tools">
+      <input type="color" id="color-picker" min="0" max"10" value="3">
       <input type="range" id="pen-size" min="1" max="10" value="5">
+      <button id="eraser-button"></button>
     </div>
 </div>
 `
@@ -46,6 +47,7 @@ customElements.define('paint-app',
       this.penSize = this.shadowRoot.getElementById('pen-size')
 
       this.isDrawing = false
+      this.defaultColor = '#cccccc'
     }
 
     /**
@@ -61,8 +63,19 @@ customElements.define('paint-app',
       this.colorPicker.addEventListener('change', () => {
         this.changeColor()
       })
+      // Initialize the color picker to the default color
+      this.colorPicker = this.shadowRoot.getElementById('color-picker')
+      this.colorPicker.value = this.defaultColor
+
+      // Initialize the drawing context with the default color
+      this.context.strokeStyle = this.defaultColor
       this.penSize.addEventListener('change', () => {
         this.changePenSize()
+      })
+      this.eraserButton = this.shadowRoot.getElementById('eraser-button')
+      this.eraserButton.addEventListener('click', () => {
+        this.toggleEraser()
+        this.isErasing = false
       })
     }
 
@@ -94,5 +107,20 @@ customElements.define('paint-app',
      */
     changePenSize (event) {
       this.context.lineWidth = event.target.value
+    }
+
+    /**
+     * Toggle eraser mode.
+     */
+    toggleEraser () {
+      this.isErasing = !this.isErasing
+      if (this.isErasing) {
+        this.previousColor = this.context.strokeStyle // Save the current pen color
+        this.context.globalCompositeOperation = 'destination-out' // Set to erase mode
+        this.context.strokeStyle = 'rgba(0,0,0,1)' // Set color to fully opaque black
+      } else {
+        this.context.globalCompositeOperation = 'source-over' // Set back to draw mode
+        this.context.strokeStyle = this.previousColor // Restore the pen color
+      }
     }
   })
