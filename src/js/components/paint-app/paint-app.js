@@ -20,8 +20,8 @@ template.innerHTML = `
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
-    width: 500px;
-    height: 500px;
+    width: 800px;
+    height: 800px;
 }
 
 #paint-canvas {
@@ -32,6 +32,16 @@ template.innerHTML = `
     width: 80%;
     height: 80%;
     justify-self: center;
+}
+
+#paint-tools {
+    background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    gap: 10px;
+    width: 80%;
+    border-radius: 4px;
 }
 
 .tool-button {
@@ -52,22 +62,33 @@ template.innerHTML = `
         <button class="tool-button" id="eraser-button">
             <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
         </button>
+        <!-- Pen -->
+        <div id="pen-size-selector" style="display: none;">
+            <input type="range" id="pen-size" min="1" max="10" value="5">
+         </div>   
+        <!-- Pen Button -->
         <button class="tool-button" id="pen-button">
             <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
         </button>
-        <button class="tool-button" id="color-picker-button">
-            <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
-        </button>
+
+        <!-- Colorize Button -->
         <button class="tool-button" id="colorize-button">
             <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
         </button>
+
+        <!-- Restart Button -->
         <button class="tool-button" id="restart-button">
             <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
         </button>
-      <input type="color" id="color-picker">
-      <div id="pen-size-selector" style="display: none;">
-        <input type="range" id="pen-size" min="1" max="10" value="5">
-      </div>   
+
+        <!-- Color Picker -->
+        <div id="color-picker-container" style="display: none;">
+            <input type="color" id="color-picker">
+        </div>
+        <!-- Color Picker Button -->
+        <button class="tool-button" id="color-button">
+            <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
+        </button>
     </div>
 </div>
 `
@@ -119,6 +140,8 @@ customElements.define('paint-app',
       this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
 
       // Initialize the color picker to the default color
+      this.colorButton = this.shadowRoot.getElementById('color-button')
+      this.colorPickerContainer = this.shadowRoot.getElementById('color-picker-container')
       this.colorPicker = this.shadowRoot.getElementById('color-picker')
       this.colorPicker.value = this.defaultColor
 
@@ -130,6 +153,10 @@ customElements.define('paint-app',
       // Add event listener to pen
       this.penButton.addEventListener('click', () => {
         this.changePenSize()
+      })
+      // Add event listener to color picker
+      this.colorButton.addEventListener('click', () => {
+        this.toggleColorPicker()
       })
 
       // Initialize the drawing context with the default color
@@ -157,12 +184,22 @@ customElements.define('paint-app',
     }
 
     /**
+     * Toggle the color picker.
+     */
+    toggleColorPicker () {
+      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
+      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
+    }
+
+    /**
      * Change the color of the pen.
      *
      * @param {event} event - The event.
      */
     changeColor (event) {
-      this.context.strokeStyle = event.target.value
+      // this.context.strokeStyle = event.target.value
+      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
+      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
