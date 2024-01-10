@@ -9,15 +9,63 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
+#paint-app {
+    background-color: rgb(76, 99, 76);
+    align-items: center;
+    color: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 15px;
+    border: 1px solid black;
+    width: 500px;
+    height: 500px;
+}
 
+#paint-canvas {
+    background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    width: 80%;
+    height: 80%;
+    align-self: center;
+}
+
+.tool-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .tool-icon {
+    width: 24px;
+    height: 24px;
+  }
   
 </style>
 <div id="paint-app">
 <canvas id="paint-canvas"></canvas>
     <div id="paint-tools">
+        <button class="tool-button" id="eraser-button">
+            <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
+        </button>
+        <button class="tool-button" id="pen-button">
+            <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
+        </button>
+        <button class="tool-button" id="color-picker-button">
+            <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
+        </button>
+        <button class="tool-button" id="colorize-button">
+            <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
+        </button>
+        <button class="tool-button" id="restart-button">
+            <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
+        </button>
       <input type="color" id="color-picker" min="0" max"10" value="3">
       <input type="range" id="pen-size" min="1" max="10" value="5">
-      <button id="eraser-button"></button>
+      
     </div>
 </div>
 `
