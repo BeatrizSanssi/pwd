@@ -6,6 +6,7 @@
  */
 import '../js/components/memory-game/index.js'
 import '../js/components/messenger-app/index.js'
+import '../js/components/paint-app/index.js'
 import '../js/components/window/index.js'
 
 // Define template.

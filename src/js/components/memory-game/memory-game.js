@@ -178,9 +178,9 @@ customElements.define('memory-game',
       'js/components/memory-game/img/dog3.png',
       'js/components/memory-game/img/sleepingKoala.png',
       'js/components/memory-game/img/monkeyface1.png',
-      'js/components/memory-game/img/donkey.jpg',
+      'js/components/memory-game/img/donkey1.png',
       'js/components/memory-game/img/happySlothWithFlower.png',
-      'js/components/memory-game/img/racoonPeace.png'
+      'js/components/memory-game/img/racoonPeace1.png'
     ]
 
     cardsArray = []

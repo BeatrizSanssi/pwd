@@ -12,7 +12,13 @@ template.innerHTML = `
 
   
 </style>
-<div id="paint-app"></div>
+<div id="paint-app">
+<canvas id="paint-canvas"></canvas>
+    <div>
+      <input type="color" id="color-picker">
+      <input type="range" id="pen-size" min="1" max="10" value="5">
+    </div>
+</div>
 
 `
 
