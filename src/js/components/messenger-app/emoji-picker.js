@@ -280,18 +280,14 @@ customElements.define('emoji-picker',
       // Get the emoji-picker element in the shadow root.
       this.emojiPicker = this.shadowRoot.querySelector('.emoji-picker')
 
-      // Get the emojis element in the shadow root.
-      // this.emojis = this.shadowRoot.querySelectorAll('emoji')
-      // this.insertEmoji = this.insertEmoji.bind(this)
+      // Set the initial focused index
       this.focusedIndex = 0
 
       // Add event listener to emoji button
       this.emojiButton.addEventListener('click', (event) => {
         this.toggleEmojiPicker()
-        event.stopPropagation() // Prevent event from propagating to the document
-      }) // this.shadowRoot.querySelectorAll('emoji').forEach(emoji => {
-      // emoji.addEventListener('click', () => this.insertEmoji(emoji.textContent))
-      // })
+        event.stopPropagation()
+      })
 
       // Add event listeners to emojis
       this.emojiPicker.querySelectorAll('.emoji').forEach(emoji => {
@@ -305,13 +301,6 @@ customElements.define('emoji-picker',
         })
       })
 
-      /* // Add event listeners
-      emoji.addEventListener('keydown', (event) ) => {
-        if (event.key === 'Enter') {
-            this.selectEmoji(emoji)
-        const selectedEmoji = emoji.textContent
-        this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
-      }) */
       // Close emoji picker when clicking outside
       document.addEventListener('click', (event) => {
         if (!this.contains(event.target) && this.emojiPicker.style.display === 'block') {
@@ -326,17 +315,6 @@ customElements.define('emoji-picker',
     closeEmojiPicker () {
       this.emojiPicker.style.display = 'none'
     }
-
-    /**
-     * Toggle the visibility of the emoji picker.
-     *
-    toggleVisbility () {
-      if (this.style.display === 'none' || this.style.display === '') {
-        this.style.display = 'block'
-      } else {
-        this.style.display = 'none'
-      }
-    } */
 
     /**
      * Toggle the visibility of the emoji picker.
@@ -361,28 +339,6 @@ customElements.define('emoji-picker',
         }
       }
     }
-    /* const rowCount = 18 // Assuming 5 emojis per row, adjust as needed
-      switch (event.key) {
-        case 'ArrowRight':
-          this.focusedIndex = (this.focusedIndex + 1) % this.emojis.length
-          break
-        case 'ArrowLeft':
-          this.focusedIndex = (this.focusedIndex - 1 + this.emojis.length) % this.emojis.length
-          break
-        case 'ArrowDown':
-          this.focusedIndex = (this.focusedIndex + rowCount) % this.emojis.length
-          break
-        case 'ArrowUp':
-          this.focusedIndex = (this.focusedIndex - rowCount + this.emojis.length) % this.emojis.length
-          break
-        case 'Enter':
-          this.selectEmoji(this.focusedIndex)
-          break
-        default:
-          return // Ignore other keys
-      }
-      this.updateFocus()
-    } */
 
     /**
      * Update the focus.
