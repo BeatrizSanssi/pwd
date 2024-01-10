@@ -26,6 +26,10 @@ template.innerHTML = `
     margin: 10px;
     padding: 5px;
 }
+
+.emoji:focus {
+    outline: 2px solid blue; 
+}
   
 </style>
 <button id="emoji-button">😀</button>
@@ -291,14 +295,22 @@ customElements.define('emoji-picker',
 
       // Add event listeners to emojis
       this.emojiPicker.querySelectorAll('.emoji').forEach(emoji => {
-        emoji.addEventListener('click', () => {
-          const selectedEmoji = emoji.textContent
-          this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
+        emoji.setAttribute('tabindex', '0')
+        emoji.addEventListener('click', () => this.selectEmoji(emoji))
+        emoji.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            this.selectEmoji(emoji)
+          }
         })
       })
-      // Add event listeners
-      this.addEventListener('keydown', (event) => this.handleKeyDown(event))
 
+      /* // Add event listeners
+      emoji.addEventListener('keydown', (event) ) => {
+        if (event.key === 'Enter') {
+            this.selectEmoji(emoji)
+        const selectedEmoji = emoji.textContent
+        this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
+      }) */
       // Close emoji picker when clicking outside
       document.addEventListener('click', (event) => {
         if (!this.contains(event.target) && this.emojiPicker.style.display === 'block') {
@@ -378,11 +390,11 @@ customElements.define('emoji-picker',
     /**
      * Select the emoji.
      *
-     * @param {number} index - The index of the emoji.
+     * @param {HTMLElement} emojiElement - The emoji element.
      */
-    selectEmoji (index) {
+    selectEmoji (emojiElement) {
       // Logic to handle emoji selection
-      const selectedEmoji = this.emojis[index].textContent
+      const selectedEmoji = emojiElement.textContent
       this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
       console.log('Selected emoji:', selectedEmoji)
     }

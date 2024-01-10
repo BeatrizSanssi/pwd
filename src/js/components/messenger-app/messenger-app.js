@@ -94,20 +94,14 @@ template.innerHTML = `
 #send-button {
    margin: 10px;
 }
-
-#emoji-picker {
-    bottom: 0;
-    right: 20px;
-    margin: 10px;
-}
   
 </style>
 <nickname-form></nickname-form>
-<emoji-picker></emoji-picker>
 <div id="messenger-app">
 <span class="close">&times;</span>
     <div id="messages"></div>
     <textarea id="message-input"></textarea>
+    <emoji-picker></emoji-picker>
     <button id="send-button">Send</button>
 </div>
 
@@ -167,11 +161,19 @@ customElements.define('messenger-app',
       this.initializeWebSocket()
       this.hideMessengerComponents()
       this.messageInput = this.shadowRoot.getElementById('message-input')
+      this.messageInput.setAttribute('tabindex', '0')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.sendButton = this.shadowRoot.getElementById('send-button')
+      this.sendButton.setAttribute('tabindex', '0')
       const closeButton = this.shadowRoot.querySelector('.close')
+      closeButton.setAttribute('tabindex', '0')
+
       // Add keydown event listener to message input
-      this.messageInput.addEventListener('keydown', (event) => this.handleInputKeydown(event))
+      this.messageInput.addEventListener('keydown', (event) => {
+        // if (event.key === 'Tab' && !event.shiftKey) {
+        // event.preventDefault()
+        this.handleInputKeydown(event)
+      })
 
       // Add event listener to send button
       this.sendButton.addEventListener('click', () => this.sendMessage())
@@ -317,7 +319,7 @@ customElements.define('messenger-app',
         // Set the innerHTML of the message
         messageDiv.innerHTML = `
       <span class="message-username"> ${message.username} : </span>
-      <span class="message-content"> ${message.data}</span>
+      <span class="message-content"> ${message.data} </span>
       <span class="message-time"> - ${dateTime}</span>
     `
         // messageDiv.textContent = `${message.username}: ${message.data}`
@@ -346,9 +348,9 @@ customElements.define('messenger-app',
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
         this.sendMessage()
-      } else if (event.key === 'Tab') {
+      } /* else if (event.key === 'Tab') {
         event.preventDefault()
         this.#emojiPicker.focus()
-      }
+      } */
     }
   })
