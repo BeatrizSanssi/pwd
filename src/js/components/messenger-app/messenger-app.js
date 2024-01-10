@@ -156,22 +156,17 @@ customElements.define('messenger-app',
       this.#nicknameForm.addEventListener('nicknameSubmitted', (event) => {
         const nickname = event.detail.nickname
         console.log(`Nickname submitted: ${nickname}`)
-        this.#onSubmit()
+        this.onSubmit()
       })
       this.initializeWebSocket()
       this.hideMessengerComponents()
       this.messageInput = this.shadowRoot.getElementById('message-input')
-      this.messageInput.setAttribute('tabindex', '0')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.sendButton = this.shadowRoot.getElementById('send-button')
-      this.sendButton.setAttribute('tabindex', '0')
       const closeButton = this.shadowRoot.querySelector('.close')
-      closeButton.setAttribute('tabindex', '0')
 
       // Add keydown event listener to message input
       this.messageInput.addEventListener('keydown', (event) => {
-        // if (event.key === 'Tab' && !event.shiftKey) {
-        // event.preventDefault()
         this.handleInputKeydown(event)
       })
 
@@ -183,6 +178,11 @@ customElements.define('messenger-app',
         this.#messengerApp.style.display = 'none'
         this.#nicknameForm.innerHTML = ''
       })
+
+      // Set attribute to make the elements focusable
+      this.messageInput.setAttribute('tabindex', '0')
+      this.sendButton.setAttribute('tabindex', '0')
+      closeButton.setAttribute('tabindex', '0')
     }
 
     /**
@@ -198,7 +198,7 @@ customElements.define('messenger-app',
      * Handles the click event when the Start Quiz button is clicked.
      * Starts the quiz, displays the next question, and starts the timer.
      */
-    #onSubmit () {
+    onSubmit () {
       this.startMessengerApp()
     }
 
@@ -307,8 +307,6 @@ customElements.define('messenger-app',
         // Format date and time
         const dateTime = new Date().toLocaleString('sv-SE')
 
-        // const messageDiv = document.createElement('div')
-
         // Apply different styles based on the sender
         if (isSentByCurrentUser) {
           messageDiv.classList.add('sent-message')
@@ -322,7 +320,6 @@ customElements.define('messenger-app',
       <span class="message-content"> ${message.data} </span>
       <span class="message-time"> - ${dateTime}</span>
     `
-        // messageDiv.textContent = `${message.username}: ${message.data}`
         this.#messages.appendChild(messageDiv)
       })
 
@@ -348,9 +345,6 @@ customElements.define('messenger-app',
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
         this.sendMessage()
-      } /* else if (event.key === 'Tab') {
-        event.preventDefault()
-        this.#emojiPicker.focus()
-      } */
+      }
     }
   })
