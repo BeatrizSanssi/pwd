@@ -12,7 +12,7 @@ template.innerHTML = `
 #paint-app {
     background-color: rgb(76, 99, 76);
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     color: white;
     padding: 10px;
     margin: 10px;
@@ -57,39 +57,39 @@ template.innerHTML = `
   
 </style>
 <div id="paint-app">
-<canvas id="paint-canvas"></canvas>
-    <div id="paint-tools">
-        <button class="tool-button" id="eraser-button">
-            <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
-        </button>
-        <!-- Pen -->
-        <div id="pen-size-selector" style="display: none;">
-            <input type="range" id="pen-size" min="1" max="10" value="5">
-         </div>   
-        <!-- Pen Button -->
-        <button class="tool-button" id="pen-button">
-            <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
-        </button>
+    <canvas id="paint-canvas"></canvas>
+        <div id="paint-tools">
+            <button class="tool-button" id="eraser-button">
+                <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
+            </button>
+            <!-- Pen -->
+            <div id="pen-size-selector" style="display: none;">
+                <input type="range" id="pen-size" min="1" max="10" value="5">
+            </div>   
+            <!-- Pen Button -->
+            <button class="tool-button" id="pen-button">
+                <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
+            </button>
 
-        <!-- Colorize Button -->
-        <button class="tool-button" id="colorize-button">
-            <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
-        </button>
+            <!-- Colorize Button -->
+            <button class="tool-button" id="colorize-button">
+                <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
+            </button>
 
-        <!-- Restart Button -->
-        <button class="tool-button" id="restart-button">
-            <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
-        </button>
+            <!-- Restart Button -->
+            <button class="tool-button" id="restart-button">
+                <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
+            </button>
 
-        <!-- Color Picker -->
-        <div id="color-picker-container" style="display: none;">
-            <input type="color" id="color-picker">
+            <!-- Color Picker -->
+            <div id="color-picker-container" style="display: none;">
+                <input type="color" id="color-picker">
+            </div>
+            <!-- Color Picker Button -->
+            <button class="tool-button" id="color-button">
+                <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
+            </button>
         </div>
-        <!-- Color Picker Button -->
-        <button class="tool-button" id="color-button">
-            <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
-        </button>
-    </div>
 </div>
 `
 

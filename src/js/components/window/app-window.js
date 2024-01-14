@@ -27,13 +27,12 @@ template.innerHTML = `
 }
 
 .content {
-    padding: 10px;
-    margin: 20px;
+    margin: 30px;
     width: 80%;
 }
   
 .close-btn {
-  margin: 10px;
+  margin: 5px;
   float: right;
   cursor: pointer;
 }
