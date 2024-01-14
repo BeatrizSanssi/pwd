@@ -131,9 +131,13 @@ customElements.define('paint-app',
       this.canvas.addEventListener('mousemove', () => {
         this.draw()
       })
-      this.colorPicker.addEventListener('change', () => {
-        this.changeColor()
+      this.colorPicker.addEventListener('change', (event) => {
+        this.context.strokeStyle = event.target.value
       })
+      this.penSize.addEventListener('input', (event) => {
+        this.context.lineWidth = event.target.value
+      })
+
       // Initialize the tools
       this.eraserButton = this.shadowRoot.getElementById('eraser-button')
       this.penButton = this.shadowRoot.getElementById('pen-button')
@@ -178,9 +182,24 @@ customElements.define('paint-app',
      */
     draw (event) {
       if (!this.isDrawing) return
+
       this.context.strokeStyle = this.colorPicker.value
       this.context.lineWidth = this.penSize.value
-    // Drawing logic here
+      // Get mouse position relative to the canvas
+      const rect = this.canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+      // Drawing logic
+      if (this.isErasing) {
+        this.context.globalCompositeOperation = 'destination-out' // Erase mode
+      } else {
+        this.context.globalCompositeOperation = 'source-over' // Normal drawing mode
+      }
+
+      this.context.lineTo(x, y)
+      this.context.stroke()
+      this.context.beginPath()
+      this.context.moveTo(x, y)
     }
 
     /**
