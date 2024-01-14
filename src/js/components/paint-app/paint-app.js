@@ -54,6 +54,10 @@ template.innerHTML = `
     width: 24px;
     height: 24px;
   }
+
+  .custom-cursor {
+  cursor: url('data:image/png;base64,[PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTMgMTcuMjVWMjFoMy43NUwxNy44MSA5Ljk0bC0zLjc1LTMuNzVMMyAxNy4yNXpNMjAuNzEgNy4wNGMuMzktLjM5LjM5LTEuMDIgMC0xLjQxbC0yLjM0LTIuMzRjLS4zOS0uMzktMS4wMi0uMzktMS40MSAwbC0xLjgzIDEuODMgMy43NSAzLjc1IDEuODMtMS44M3oiLz48L3N2Zz4=]'), auto;
+}
   
 </style>
 <div id="paint-app">
@@ -174,7 +178,15 @@ customElements.define('paint-app',
         this.isErasing = false
       })
       // Add event listener to pen
+      // this.penButton.addEventListener('click', () => {
+      // this.changePenSize()
+      // })
       this.penButton.addEventListener('click', () => {
+        if (this.canvas.classList.contains('custom-cursor')) {
+          this.canvas.classList.remove('custom-cursor')
+        } else {
+          this.canvas.classList.add('custom-cursor')
+        }
         this.changePenSize()
       })
       // Add event listener to color picker
