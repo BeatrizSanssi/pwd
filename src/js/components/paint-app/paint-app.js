@@ -31,7 +31,7 @@ template.innerHTML = `
     margin: 10px;
     width: 80%;
     height: 80%;
-    justify-self: center;
+    align-self: center;
 }
 
 #paint-tools {
@@ -119,6 +119,13 @@ customElements.define('paint-app',
 
       this.isDrawing = false
       this.defaultColor = '#cccccc'
+
+      this.context.strokeStyle = this.defaultColor
+      this.context.lineWidth = 5
+
+      // Set canvas size
+      this.canvas.width = 800
+      this.canvas.height = 800
     }
 
     /**
@@ -126,10 +133,22 @@ customElements.define('paint-app',
      */
     connectedCallback () {
       // Add event listeners to the canvas
-      this.canvas.addEventListener('mousedown', () => { this.isDrawing = true })
-      this.canvas.addEventListener('mouseup', () => { this.isDrawing = false })
-      this.canvas.addEventListener('mousemove', () => {
-        this.draw()
+      this.canvas.addEventListener('mousedown', (event) => {
+        this.isDrawing = true
+        const rect = this.canvas.getBoundingClientRect()
+        const x = event.clientX - rect.left
+        const y = event.clientY - rect.top
+        this.context.beginPath()
+        this.context.moveTo(x, y)
+      })
+      this.canvas.addEventListener('mouseup', () => {
+        this.isDrawing = false
+        this.context.closePath() // Close the path
+      })
+      this.canvas.addEventListener('mousemove', (event) => {
+        if (this.isDrawing) {
+          this.draw(event)
+        }
       })
       this.colorPicker.addEventListener('change', (event) => {
         this.context.strokeStyle = event.target.value
@@ -182,20 +201,25 @@ customElements.define('paint-app',
      */
     draw (event) {
       if (!this.isDrawing) return
+      console.log('Drawing...')
 
-      this.context.strokeStyle = this.colorPicker.value
-      this.context.lineWidth = this.penSize.value
+      // this.context.strokeStyle = this.colorPicker.value
+      // this.context.lineWidth = this.penSize.value
       // Get mouse position relative to the canvas
       const rect = this.canvas.getBoundingClientRect()
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
-      // Drawing logic
+
+      console.log(`Mouse position: ${x}, ${y}`)
+
+      // Check eraser state and adjust context accordingly
       if (this.isErasing) {
-        this.context.globalCompositeOperation = 'destination-out' // Erase mode
+        this.context.globalCompositeOperation = 'destination-out'
       } else {
-        this.context.globalCompositeOperation = 'source-over' // Normal drawing mode
+        this.context.globalCompositeOperation = 'source-over'
       }
 
+      // Drawing logic
       this.context.lineTo(x, y)
       this.context.stroke()
       this.context.beginPath()
