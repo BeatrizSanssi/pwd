@@ -218,17 +218,20 @@ customElements.define('paint-app',
       console.log('Drawing...')
 
       // Cursor offset
-      const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
-      const cursorOffsetY = 28
+      // const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
+      // const cursorOffsetY = 28
       // this.context.strokeStyle = this.colorPicker.value
       // this.context.lineWidth = this.penSize.value
       // Get mouse position relative to the canvas
       const rect = this.canvas.getBoundingClientRect()
-      const x = event.clientX - rect.left - cursorOffsetX
-      const y = event.clientY - rect.top - cursorOffsetY
+      // const x = event.clientX - rect.left - cursorOffsetX
+      // const y = event.clientY - rect.top - cursorOffsetY
 
-      const scaleX = this.canvas.width / canvasRect.width // Scaling factor for width
-      const scaleY = this.canvas.height / canvasRect.height // Scaling factor for height
+      const scaleX = this.canvas.width / rect.width // Scaling factor for width
+      const scaleY = this.canvas.height / rect.height // Scaling factor for height
+      // Adjust the mouse coordinates
+      const x = (event.clientX - rect.left) * scaleX
+      const y = (event.clientY - rect.top) * scaleY
 
       console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
       console.log(`Mouse position: ${x}, ${y}`)
