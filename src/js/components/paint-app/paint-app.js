@@ -66,9 +66,7 @@ template.innerHTML = `
         <div id="paint-tools">
           <paint-pen></paint-pen>
           <color-picker></color-picker>
-            <button class="tool-button" id="eraser-button">
-                <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
-            </button>
+            
             <!-- Pen -->
             <div id="pen-size-selector" style="display: none;">
                 <input type="range" id="pen-size" min="1" max="10" value="5">
