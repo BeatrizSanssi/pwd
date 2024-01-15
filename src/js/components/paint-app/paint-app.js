@@ -209,17 +209,6 @@ customElements.define('paint-app',
     }
 
     /**
-     * Change the size of the pen.
-     *
-     * @param {event} event - The event.
-     */
-    changePenSize (event) {
-      // this.context.lineWidth = event.target.value
-      const isDisplayed = this.penSizeSelector.style.display !== 'none'
-      this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
-    }
-
-    /**
      * Toggle eraser mode.
      */
     toggleEraser () {

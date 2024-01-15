@@ -63,6 +63,17 @@ customElements.define('paint-pen',
     }
 
     /**
+     * Change the size of the pen.
+     *
+     * @param {event} event - The event.
+     */
+    changePenSize (event) {
+      // this.context.lineWidth = event.target.value
+      const isDisplayed = this.penSizeSelector.style.display !== 'none'
+      this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
+    }
+
+    /**
      * Start drawing on the canvas.
      *
      * @param {event} event - The event.
