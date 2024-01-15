@@ -8,7 +8,22 @@
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
-<style></style>
+<style>
+#pen {
+  background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    gap: 10px;
+    width: 80%;
+    border-radius: 4px;
+}
+.tool-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+</style>
 <div id="pen" class="tool">
     <!-- Pen -->
     <div id="pen-size-selector" style="display: none;">
@@ -39,8 +54,10 @@ customElements.define('paint-pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
+      this.pen = this.shadowRoot.querySelector('#pen')
+      this.penSize = this.shadowRoot.querySelector('#pen-size')
       this.color = '#cccccc'
-      this.size = 5
+      // this.size = 5
       /* this.canvas = canvas
       this.context = canvas.getContext('2d')
       this.color = initialSettings.color

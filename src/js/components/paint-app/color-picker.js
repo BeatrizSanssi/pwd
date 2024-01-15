@@ -8,8 +8,23 @@
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
-<style></style>
-<div id="color-picker-container" style="display: none;">
+<style>
+#color-picker {
+    background-color: white;
+    color: rgb(76, 99, 76);
+    padding: 10px;
+    margin: 10px;
+    gap: 10px;
+    width: 80%;
+    border-radius: 4px;
+}
+.tool-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+</style>
+<div id="color-picker">
     <!-- Color Picker -->
     <div id="color-picker-container" style="display: none;">
         <input type="color" id="color-picker">

@@ -22,8 +22,8 @@ template.innerHTML = `
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
-    width: 800px;
-    height: 800px;
+    max-width: 100%;
+    height: auto;
 }
 
 #paint-canvas {
@@ -64,6 +64,8 @@ template.innerHTML = `
 <div id="paint-app">
     <canvas id="paint-canvas"></canvas>
         <div id="paint-tools">
+          <paint-pen></paint-pen>
+          <color-picker></color-picker>
             <button class="tool-button" id="eraser-button">
                 <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
             </button>
@@ -121,7 +123,7 @@ customElements.define('paint-app',
       this.context = this.canvas.getContext('2d')
       this.colorPicker = this.shadowRoot.getElementById('color-picker')
       // this.penSize = this.shadowRoot.getElementById('pen-size')
-      this.pen = this.shadowRoot.getElementById('pen')
+      this.pen = this.shadowRoot.getElementById('paint-pen')
 
       // this.isDrawing = false
       // this.defaultColor = '#cccccc'
@@ -138,6 +140,8 @@ customElements.define('paint-app',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      // Adjust the canvas size when the window is resized
+      this.adjustCanvasSize()
       // Add event listeners to the canvas
       this.canvas.addEventListener('mousedown', (event) => {
         this.isDrawing = true
@@ -155,9 +159,13 @@ customElements.define('paint-app',
       this.colorPicker.addEventListener('change', (event) => {
         this.context.strokeStyle = event.target.value
       })
-      this.penSize.addEventListener('input', (event) => {
+      /* this.penSize.addEventListener('input', (event) => {
         this.context.lineWidth = event.target.value
-      })
+      }) */
+      // Initialize the pen
+      this.context.strokeStyle = this.pen.getCurrentColor()
+      this.context.lineWidth = this.pen.getCurrentSize()
+      this.context.beginPath()
 
       // Initialize the tools
       this.eraserButton = this.shadowRoot.getElementById('eraser-button')
@@ -191,13 +199,8 @@ customElements.define('paint-app',
       // this.changePenSize()
       // })
 
-      // Add event listener to color picker
-      this.colorButton.addEventListener('click', () => {
-        this.toggleColorPicker()
-      })
-
       // Initialize the drawing context with the default color
-      this.context.strokeStyle = this.defaultColor
+      // this.context.strokeStyle = this.defaultColor
       // this.penSize.addEventListener('change', () => {
       //  this.changePenSize()
       // })
@@ -206,6 +209,15 @@ customElements.define('paint-app',
         this.toggleEraser()
         this.isErasing = false
       }) */
+    }
+
+    /**
+     * Adjust the canvas size.
+     */
+    adjustCanvasSize () {
+      const rect = this.getBoundingClientRect()
+      this.canvas.width = rect.width
+      this.canvas.height = rect.height
     }
 
     /**
