@@ -124,7 +124,7 @@ customElements.define('paint-app',
       this.pen = this.shadowRoot.getElementById('pen')
 
       // this.isDrawing = false
-      this.defaultColor = '#cccccc'
+      // this.defaultColor = '#cccccc'
 
       this.context.strokeStyle = this.defaultColor
       this.context.lineWidth = 5

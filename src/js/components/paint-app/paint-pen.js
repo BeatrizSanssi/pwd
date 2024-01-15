@@ -39,6 +39,8 @@ customElements.define('paint-pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
+      this.color = '#cccccc'
+      this.size = 5
       /* this.canvas = canvas
       this.context = canvas.getContext('2d')
       this.color = initialSettings.color
@@ -51,15 +53,36 @@ customElements.define('paint-pen',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.shadowRoot.querySelector('#pen-size').addEventListener('input', (event) => {
-        this.dispatchEvent(new CustomEvent('pen-size-change', { detail: event.target.value }))
+      this.shadowRoot.getElementById('pen-size').addEventListener('input', (event) => {
+        this.size = event.target.value
+        // Optionally, notify the parent (paint app) about the change
       })
-      this.shadowRoot.querySelector('#pen-button').addEventListener('click', () => {
-        this.dispatchEvent(new CustomEvent('pen-button-click'))
+
+      this.shadowRoot.getElementById('color-picker').addEventListener('change', (event) => {
+        this.color = event.target.value
+        // Optionally, notify the parent (paint app) about the change
       })
       this.penSize.addEventListener('input', (event) => {
         this.context.lineWidth = event.target.value
       })
+    }
+
+    /**
+     * Get the current color of the pen.
+     *
+     * @returns {string} The current color of the pen.
+     */
+    getCurrentColor () {
+      return this.color
+    }
+
+    /**
+     * Get the current size of the pen.
+     *
+     * @returns {number} The current size of the pen.
+     */
+    getCurrentSize () {
+      return this.size
     }
 
     /**
