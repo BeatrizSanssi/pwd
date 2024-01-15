@@ -18,21 +18,12 @@ template.innerHTML = `
     width: 80%;
     border-radius: 4px;
 }
-.tool-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-}
 </style>
-<div id="pen" class="tool">
+<div id="pen">
     <!-- Pen -->
     <div id="pen-size-selector" style="display: none;">
         <input type="range" id="pen-size" min="1" max="10" value="5">
     </div>   
-    <!-- Pen Button -->
-    <button class="tool-button" id="pen-button">
-        <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
-    </button>
 </div>        
 `
 /*
@@ -54,25 +45,25 @@ customElements.define('paint-pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      // Get the pen button and pen size selector in the shadow DOM
-      this.penButton = this.shadowRoot.getElementById('pen-button')
+      // Get the pen and pen size selector in the shadow DOM
+      this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
       this.penSize = this.shadowRoot.getElementById('pen-size')
-
       // this.color = '#cccccc'
       this.size = 5
-      this.isDrawing = false
+      // this.isDrawing = false
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.penButton.addEventListener('click', () => {
-        this.changePenSize()
-      })
       this.penSize.addEventListener('input', (event) => {
         console.log('Pen size changed:', event.target.value)
-        this.dispatchEvent(new CustomEvent('pen-size-change', { detail: event.target.value }))
+        this.size = event.target.value
+        this.dispatchEvent(new CustomEvent('pen-size-change', {
+          detail: this.size,
+          bubbles: true
+        }))
       })
     }
 

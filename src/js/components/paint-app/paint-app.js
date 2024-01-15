@@ -64,16 +64,18 @@ template.innerHTML = `
 <div id="paint-app">
     <canvas id="paint-canvas"></canvas>
         <div id="paint-tools">  
-           <!-- Pen Button -->
-          <div id="pen">
+          <!-- Pen Button -->
+          <button class="tool-button" id="pen-button">
+            <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
             <paint-pen></paint-pen>
-          </div>
-          <!-- Eraser Button -->
-          
-          <!-- Color Picker -->
-          <div id="color-pick">
+          </button>
+            <!-- Eraser Button -->
+            
+            <!-- Color Picker -->
+          <button class="tool-button" id="color-button">
+            <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
             <color-picker></color-picker>
-          </div>
+          </button>
             
             <!-- Colorize Button -->
             <button class="tool-button" id="colorize-button">
@@ -96,8 +98,11 @@ customElements.define('paint-app',
    * Represents a painting app element.
    */
   class extends HTMLElement {
-    #pen
-    #colorPick
+    #penButton
+    #colorButton
+    #penSizeSelector
+    #paintPen
+    #colorPicker
     /**
      * Creates an instance of the current type.
      */
@@ -108,38 +113,116 @@ customElements.define('paint-app',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
-
-      this.#pen = this.shadowRoot.querySelector('paint-pen')
-      this.#colorPick = this.shadowRoot.querySelector('color-pick')
-      this.canvas = this.shadowRoot.getElementById('paint-canvas')
-      this.context = this.canvas.getContext('2d')
-
-      // this.penSize = this.shadowRoot.getElementById('pen-size')
-
-      // this.isDrawing = false
-      this.defaultColor = '#cccccc'
-
-      this.context.strokeStyle = this.defaultColor
-      this.context.lineWidth = 5
-
-      // Set canvas size
-      this.canvas.width = 800
-      this.canvas.height = 800
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      this.#initializeElements()
+      this.#addEventListeners()
+      this.#initializeCanvas()
+    }
+
+    /**
+     * Initialize elements.
+     */
+    #initializeElements () {
+      this.canvas = this.shadowRoot.getElementById('paint-canvas')
+      this.context = this.canvas.getContext('2d')
+
+      // Initialize other elements
+      this.penButton = this.shadowRoot.getElementById('pen-button')
+      this.colorButton = this.shadowRoot.getElementById('color-button')
+      this.paintPen = this.shadowRoot.querySelector('paint-pen')
+      this.colorPicker = this.shadowRoot.querySelector('color-picker')
+
+      // Set default values
+      this.isDrawing = false
+      this.defaultColor = '#cccccc'
+      this.context.strokeStyle = this.defaultColor
+      this.context.lineWidth = 5
+    }
+
+    /**
+     * Add event listeners.
+     */
+    #addEventListeners () {
+    // Adjust the canvas size when the window is resized
+      window.addEventListener('resize', () => this.#adjustCanvasSize())
+
+      // Pen size change event listener
+      this.penButton.addEventListener('pen-size-change', (event) => {
+        this.context.lineWidth = event.detail
+      })
+
+      // Color change event listener
+      this.colorButton.addEventListener('color-change', (event) => {
+        this.context.strokeStyle = event.detail
+      })
+
+      // Canvas event listeners
+      this.#setupCanvasEventListeners()
+    }
+
+    /**
+     * Setup canvas event listeners.
+     */
+    #setupCanvasEventListeners () {
+      this.canvas.addEventListener('mousedown', (event) => {
+        this.isDrawing = true
+        this.startDrawing(event)
+      })
+
+      this.canvas.addEventListener('mouseup', () => {
+        this.isDrawing = false
+        this.context.closePath()
+      })
+
+      this.canvas.addEventListener('mousemove', (event) => {
+        if (this.isDrawing) {
+          this.draw(event)
+        }
+      })
+    }
+
+    /**
+     * Initialize the canvas.
+     */
+    #initializeCanvas () {
+      this.canvas.width = 800
+      this.canvas.height = 800
+      this.#adjustCanvasSize()
+    }
+
+    /**
+     * Adjust the canvas size.
+     */
+    #adjustCanvasSize () {
+      const rect = this.getBoundingClientRect()
+      this.canvas.width = rect.width
+      this.canvas.height = rect.height
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     *
+    connectedCallback () {
       // Adjust the canvas size when the window is resized
       this.adjustCanvasSize()
       // Add eventlisteners to the pen
-      this.#pen.addEventListener('pen-size-change', (event) => {
+      this.#penButton.addEventListener('pen-size-change', (event) => {
         this.context.lineWidth = event.detail
       })
-      this.shadowRoot.getElementById('pen').addEventListener('click', () => {
-        const penSizeSelector = this.#pen.shadowRoot.getElementById('pen-size-selector')
-        penSizeSelector.style.display = penSizeSelector.style.display === 'none' ? 'block' : 'none'
+      this.shadowRoot.querySelector('#pen-button').addEventListener('click', () => {
+        this.#paintPen.changePenSize()
+      })
+      // Add event listeners to the color picker
+      this.#colorButton.addEventListener('color-change', (event) => {
+        this.context.strokeStyle = event.detail
+      })
+      this.shadowRoot.querySelector('#color-button').addEventListener('click', () => {
+        this.#colorPicker.changeColor()
       })
       // Add event listeners to the canvas
       this.canvas.addEventListener('mousedown', (event) => {
@@ -155,7 +238,7 @@ customElements.define('paint-app',
           this.draw(event)
         }
       })
-    }
+    } */
 
     /**
      * Adjust the canvas size.
@@ -172,6 +255,7 @@ customElements.define('paint-app',
      * @param {event} event - The event.
      */
     startDrawing (event) {
+      this.isDrawing = true
       const rect = this.canvas.getBoundingClientRect()
       const scaleX = this.canvas.width / rect.width
       const scaleY = this.canvas.height / rect.height

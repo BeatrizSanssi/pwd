@@ -18,21 +18,12 @@ template.innerHTML = `
     width: 80%;
     border-radius: 4px;
 }
-.tool-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-}
 </style>
 <div id="color-picker">
     <!-- Color Picker -->
     <div id="color-picker-container" style="display: none;">
         <input type="color" id="color-picker">
     </div>
-    <!-- Color Picker Button -->
-    <button class="tool-button" id="color-button">
-        <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
-    </button>
 </div>
 `
 /*
@@ -53,26 +44,19 @@ customElements.define('color-picker',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
+
+      this.colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.shadowRoot.querySelector('#color-picker').addEventListener('input', (event) => {
-        this.dispatchEvent(new CustomEvent('color-picker-change', { detail: event.target.value }))
+      this.colorPicker = this.shadowRoot.querySelector('#color-picker')
+      this.colorPicker.addEventListener('change', (event) => {
+        this.dispatchEvent(new CustomEvent('color-change', { detail: event.target.value }))
+        this.changeColor(event)
       })
-      this.shadowRoot.querySelector('#color-button').addEventListener('click', () => {
-        this.dispatchEvent(new CustomEvent('color-button-click'))
-      })
-    }
-
-    /**
-     * Toggle the color picker.
-     */
-    toggleColorPicker () {
-      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
-      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
