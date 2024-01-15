@@ -39,4 +39,35 @@ customElements.define('color-picker',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
     }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.shadowRoot.querySelector('#color-picker').addEventListener('input', (event) => {
+        this.dispatchEvent(new CustomEvent('color-picker-change', { detail: event.target.value }))
+      })
+      this.shadowRoot.querySelector('#color-button').addEventListener('click', () => {
+        this.dispatchEvent(new CustomEvent('color-button-click'))
+      })
+    }
+
+    /**
+     * Toggle the color picker.
+     */
+    toggleColorPicker () {
+      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
+      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
+    }
+
+    /**
+     * Change the color of the pen.
+     *
+     * @param {event} event - The event.
+     */
+    changeColor (event) {
+      // this.context.strokeStyle = event.target.value
+      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
+      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
+    }
   })

@@ -6,6 +6,7 @@
  */
 
 import './paint-pen.js'
+import './color-picker.js'
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
@@ -205,25 +206,6 @@ customElements.define('paint-app',
         this.toggleEraser()
         this.isErasing = false
       }) */
-    }
-
-    /**
-     * Toggle the color picker.
-     */
-    toggleColorPicker () {
-      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
-      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
-    }
-
-    /**
-     * Change the color of the pen.
-     *
-     * @param {event} event - The event.
-     */
-    changeColor (event) {
-      // this.context.strokeStyle = event.target.value
-      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
-      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
