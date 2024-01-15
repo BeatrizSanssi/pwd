@@ -9,14 +9,16 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style></style>
-<!-- Pen -->
-<div id="pen-size-selector" style="display: none;">
-    <input type="range" id="pen-size" min="1" max="10" value="5">
-</div>   
-<!-- Pen Button -->
-<button class="tool-button" id="pen-button">
-    <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
-</button>        
+<div id="pen" class="tool">
+    <!-- Pen -->
+    <div id="pen-size-selector" style="display: none;">
+        <input type="range" id="pen-size" min="1" max="10" value="5">
+    </div>   
+    <!-- Pen Button -->
+    <button class="tool-button" id="pen-button">
+        <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
+    </button>
+</div>        
 `
 /*
  * Define custom element.
@@ -37,7 +39,10 @@ customElements.define('pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.penSize = this.shadowRoot.getElementById('pen-size')
+      this.canvas = canvas
+      this.context = canvas.getContext('2d')
+      this.color = initialSettings.color
+      this.size = initialSettings.size
 
       this.isDrawing = false
     }
@@ -46,20 +51,17 @@ customElements.define('pen',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      this.canvas.addEventListener('mousedown', () => {
+        this.startDrawing()
+      })
+      this.canvas.addEventListener('mousemove', () => {
+        this.draw()
+      })
+      this.canvas.addEventListener('mouseup', () => {
+        this.stopDrawing()
+      })
       this.penSize.addEventListener('input', (event) => {
         this.context.lineWidth = event.target.value
-      })
-
-      this.penButton.addEventListener('click', () => {
-        console.log('Pen button clicked')
-        if (this.canvas.classList.contains('custom-cursor')) {
-          this.canvas.classList.remove('custom-cursor')
-          console.log('Cursor class removed')
-        } else {
-          this.canvas.classList.add('custom-cursor')
-          console.log('Cursor class added')
-        }
-        this.changePenSize()
       })
     }
 

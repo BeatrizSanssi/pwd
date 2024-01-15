@@ -167,6 +167,17 @@ customElements.define('paint-app',
       this.colorPicker = this.shadowRoot.getElementById('color-picker')
       this.colorPicker.value = this.defaultColor
 
+      this.penButton.addEventListener('click', () => {
+        console.log('Pen button clicked')
+        if (this.canvas.classList.contains('custom-cursor')) {
+          this.canvas.classList.remove('custom-cursor')
+          console.log('Cursor class removed')
+        } else {
+          this.canvas.classList.add('custom-cursor')
+          console.log('Cursor class added')
+        }
+        this.changePenSize()
+      })
       // Add event listener to eraser
       this.eraserButton.addEventListener('click', () => {
         this.toggleEraser()
