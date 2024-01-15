@@ -54,15 +54,12 @@ customElements.define('paint-pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.pen = this.shadowRoot.querySelector('#pen')
-      this.penSize = this.shadowRoot.querySelector('#pen-size')
-      this.color = '#cccccc'
-      // this.size = 5
-      /* this.canvas = canvas
-      this.context = canvas.getContext('2d')
-      this.color = initialSettings.color
-      this.size = initialSettings.size */
+      // Get the pen button and pen size selector in the shadow DOM
+      this.penButton = this.shadowRoot.getElementById('pen-button')
+      this.penSize = this.shadowRoot.getElementById('pen-size')
 
+      // this.color = '#cccccc'
+      this.size = 5
       this.isDrawing = false
     }
 
@@ -70,17 +67,12 @@ customElements.define('paint-pen',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.shadowRoot.getElementById('pen-size').addEventListener('input', (event) => {
-        this.size = event.target.value
-        // Optionally, notify the parent (paint app) about the change
-      })
-
-      this.shadowRoot.getElementById('color-picker').addEventListener('change', (event) => {
-        this.color = event.target.value
-        // Optionally, notify the parent (paint app) about the change
+      this.penButton.addEventListener('click', () => {
+        this.changePenSize()
       })
       this.penSize.addEventListener('input', (event) => {
-        this.context.lineWidth = event.target.value
+        console.log('Pen size changed:', event.target.value)
+        this.dispatchEvent(new CustomEvent('pen-size-change', { detail: event.target.value }))
       })
     }
 
@@ -88,10 +80,10 @@ customElements.define('paint-pen',
      * Get the current color of the pen.
      *
      * @returns {string} The current color of the pen.
-     */
+     *
     getCurrentColor () {
       return this.color
-    }
+    } */
 
     /**
      * Get the current size of the pen.
@@ -111,65 +103,5 @@ customElements.define('paint-pen',
       // this.context.lineWidth = event.target.value
       const isDisplayed = this.penSizeSelector.style.display !== 'none'
       this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
-    }
-
-    /**
-     * Start drawing on the canvas.
-     *
-     * @param {event} event - The event.
-     */
-    startDrawing (event) {
-      const rect = this.canvas.getBoundingClientRect()
-      const scaleX = this.canvas.width / rect.width
-      const scaleY = this.canvas.height / rect.height
-      const devicePixelRatio = window.devicePixelRatio || 1
-      const x = ((event.clientX - rect.left) * scaleX) * devicePixelRatio
-      const y = ((event.clientY - rect.top) * scaleY) * devicePixelRatio
-
-      this.context.beginPath()
-      this.context.moveTo(x, y)
-    }
-
-    /**
-     * Draw on the canvas.
-     *
-     * @param {event} event - The event.
-     */
-    draw (event) {
-      if (!this.isDrawing) return
-      console.log('Drawing...')
-
-      // Cursor offset
-      const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
-      const cursorOffsetY = 28
-      // this.context.strokeStyle = this.colorPicker.value
-      // this.context.lineWidth = this.penSize.value
-      // Get mouse position relative to the canvas
-      const rect = this.canvas.getBoundingClientRect()
-      // const x = event.clientX - rect.left - cursorOffsetX
-      // const y = event.clientY - rect.top - cursorOffsetY
-
-      const scaleX = this.canvas.width / rect.width // Scaling factor for width
-      const scaleY = this.canvas.height / rect.height // Scaling factor for height
-      const devicePixelRatio = window.devicePixelRatio || 1
-      // Adjust the mouse coordinates
-      const x = ((event.clientX - rect.left) * scaleX - cursorOffsetX) * devicePixelRatio
-      const y = ((event.clientY - rect.top) * scaleY - cursorOffsetY) * devicePixelRatio
-
-      console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
-      console.log(`Mouse position: ${x}, ${y}`)
-
-      // Check eraser state and adjust context accordingly
-      if (this.isErasing) {
-        this.context.globalCompositeOperation = 'destination-out'
-      } else {
-        this.context.globalCompositeOperation = 'source-over'
-      }
-
-      // Drawing logic
-      this.context.lineTo(x, y)
-      this.context.stroke()
-      this.context.beginPath()
-      this.context.moveTo(x, y)
     }
   })

@@ -53,14 +53,20 @@ customElements.define('eraser',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
+
+      this.eraser = this.shadowRoot.querySelector('#eraser')
+      this.eraserSize = this.shadowRoot.querySelector('#eraser-size')
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.eraser = this.shadowRoot.querySelector('#eraser')
-      this.eraserSize = this.shadowRoot.querySelector('#eraser-size')
+      // Add event listener to eraser
+      this.eraserButton.addEventListener('click', () => {
+        this.toggleEraser()
+        this.isErasing = false
+      })
 
       // Add event listeners
       this.eraser.addEventListener('click', this.toggleEraser.bind(this))

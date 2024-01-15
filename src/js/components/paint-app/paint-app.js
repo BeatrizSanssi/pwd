@@ -63,19 +63,18 @@ template.innerHTML = `
 </style>
 <div id="paint-app">
     <canvas id="paint-canvas"></canvas>
-        <div id="paint-tools">
-          <paint-pen></paint-pen>
-          <color-picker></color-picker>
+        <div id="paint-tools">  
+           <!-- Pen Button -->
+          <div id="pen">
+            <paint-pen></paint-pen>
+          </div>
+          <!-- Eraser Button -->
+          
+          <!-- Color Picker -->
+          <div id="color-pick">
+            <color-picker></color-picker>
+          </div>
             
-            <!-- Pen -->
-            <div id="pen-size-selector" style="display: none;">
-                <input type="range" id="pen-size" min="1" max="10" value="5">
-            </div>   
-            <!-- Pen Button -->
-            <button class="tool-button" id="pen-button">
-                <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
-            </button>
-
             <!-- Colorize Button -->
             <button class="tool-button" id="colorize-button">
                 <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
@@ -84,15 +83,6 @@ template.innerHTML = `
             <!-- Restart Button -->
             <button class="tool-button" id="restart-button">
                 <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
-            </button>
-
-            <!-- Color Picker -->
-            <div id="color-picker-container" style="display: none;">
-                <input type="color" id="color-picker">
-            </div>
-            <!-- Color Picker Button -->
-            <button class="tool-button" id="color-button">
-                <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
             </button>
         </div>
 </div>
@@ -106,6 +96,8 @@ customElements.define('paint-app',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #pen
+    #colorPick
     /**
      * Creates an instance of the current type.
      */
@@ -117,14 +109,15 @@ customElements.define('paint-app',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
+      this.#pen = this.shadowRoot.querySelector('paint-pen')
+      this.#colorPick = this.shadowRoot.querySelector('color-pick')
       this.canvas = this.shadowRoot.getElementById('paint-canvas')
       this.context = this.canvas.getContext('2d')
-      this.colorPicker = this.shadowRoot.getElementById('color-picker')
+
       // this.penSize = this.shadowRoot.getElementById('pen-size')
-      this.pen = this.shadowRoot.getElementById('paint-pen')
 
       // this.isDrawing = false
-      // this.defaultColor = '#cccccc'
+      this.defaultColor = '#cccccc'
 
       this.context.strokeStyle = this.defaultColor
       this.context.lineWidth = 5
@@ -140,6 +133,14 @@ customElements.define('paint-app',
     connectedCallback () {
       // Adjust the canvas size when the window is resized
       this.adjustCanvasSize()
+      // Add eventlisteners to the pen
+      this.#pen.addEventListener('pen-size-change', (event) => {
+        this.context.lineWidth = event.detail
+      })
+      this.shadowRoot.getElementById('pen').addEventListener('click', () => {
+        const penSizeSelector = this.#pen.shadowRoot.getElementById('pen-size-selector')
+        penSizeSelector.style.display = penSizeSelector.style.display === 'none' ? 'block' : 'none'
+      })
       // Add event listeners to the canvas
       this.canvas.addEventListener('mousedown', (event) => {
         this.isDrawing = true
@@ -147,66 +148,13 @@ customElements.define('paint-app',
       })
       this.canvas.addEventListener('mouseup', () => {
         this.isDrawing = false
-        this.context.closePath() // Close the path
+        this.context.closePath()
       })
       this.canvas.addEventListener('mousemove', (event) => {
         if (this.isDrawing) {
           this.draw(event)
         }
       })
-      this.colorPicker.addEventListener('change', (event) => {
-        this.context.strokeStyle = event.target.value
-      })
-      /* this.penSize.addEventListener('input', (event) => {
-        this.context.lineWidth = event.target.value
-      }) */
-      // Initialize the pen
-      this.context.strokeStyle = this.pen.getCurrentColor()
-      this.context.lineWidth = this.pen.getCurrentSize()
-      this.context.beginPath()
-
-      // Initialize the tools
-      this.eraserButton = this.shadowRoot.getElementById('eraser-button')
-      this.penButton = this.shadowRoot.getElementById('pen-button')
-      this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
-
-      // Initialize the color picker to the default color
-      this.colorButton = this.shadowRoot.getElementById('color-button')
-      this.colorPickerContainer = this.shadowRoot.getElementById('color-picker-container')
-      this.colorPicker = this.shadowRoot.getElementById('color-picker')
-      this.colorPicker.value = this.defaultColor
-
-      this.penButton.addEventListener('click', () => {
-        console.log('Pen button clicked')
-        if (this.canvas.classList.contains('custom-cursor')) {
-          this.canvas.classList.remove('custom-cursor')
-          console.log('Cursor class removed')
-        } else {
-          this.canvas.classList.add('custom-cursor')
-          console.log('Cursor class added')
-        }
-        this.changePenSize()
-      })
-      // Add event listener to eraser
-      this.eraserButton.addEventListener('click', () => {
-        this.toggleEraser()
-        this.isErasing = false
-      })
-      // Add event listener to pen
-      // this.penButton.addEventListener('click', () => {
-      // this.changePenSize()
-      // })
-
-      // Initialize the drawing context with the default color
-      // this.context.strokeStyle = this.defaultColor
-      // this.penSize.addEventListener('change', () => {
-      //  this.changePenSize()
-      // })
-      /* this.eraserButton = this.shadowRoot.getElementById('eraser-button')
-      this.eraserButton.addEventListener('click', () => {
-        this.toggleEraser()
-        this.isErasing = false
-      }) */
     }
 
     /**
@@ -219,17 +167,62 @@ customElements.define('paint-app',
     }
 
     /**
-     * Toggle eraser mode.
+     * Start drawing on the canvas.
+     *
+     * @param {event} event - The event.
      */
-    toggleEraser () {
-      this.isErasing = !this.isErasing
+    startDrawing (event) {
+      const rect = this.canvas.getBoundingClientRect()
+      const scaleX = this.canvas.width / rect.width
+      const scaleY = this.canvas.height / rect.height
+      const devicePixelRatio = window.devicePixelRatio || 1
+      const x = ((event.clientX - rect.left) * scaleX) * devicePixelRatio
+      const y = ((event.clientY - rect.top) * scaleY) * devicePixelRatio
+
+      this.context.beginPath()
+      this.context.moveTo(x, y)
+    }
+
+    /**
+     * Draw on the canvas.
+     *
+     * @param {event} event - The event.
+     */
+    draw (event) {
+      if (!this.isDrawing) return
+      console.log('Drawing...')
+
+      // Cursor offset
+      const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
+      const cursorOffsetY = 28
+      // this.context.strokeStyle = this.colorPicker.value
+      // this.context.lineWidth = this.penSize.value
+      // Get mouse position relative to the canvas
+      const rect = this.canvas.getBoundingClientRect()
+      // const x = event.clientX - rect.left - cursorOffsetX
+      // const y = event.clientY - rect.top - cursorOffsetY
+
+      const scaleX = this.canvas.width / rect.width // Scaling factor for width
+      const scaleY = this.canvas.height / rect.height // Scaling factor for height
+      const devicePixelRatio = window.devicePixelRatio || 1
+      // Adjust the mouse coordinates
+      const x = ((event.clientX - rect.left) * scaleX - cursorOffsetX) * devicePixelRatio
+      const y = ((event.clientY - rect.top) * scaleY - cursorOffsetY) * devicePixelRatio
+
+      console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
+      console.log(`Mouse position: ${x}, ${y}`)
+
+      /* // Check eraser state and adjust context accordingly
       if (this.isErasing) {
-        this.previousColor = this.context.strokeStyle // Save the current pen color
-        this.context.globalCompositeOperation = 'destination-out' // Set to erase mode
-        this.context.strokeStyle = 'rgba(0,0,0,1)' // Set color to fully opaque black
+        this.context.globalCompositeOperation = 'destination-out'
       } else {
-        this.context.globalCompositeOperation = 'source-over' // Set back to draw mode
-        this.context.strokeStyle = this.previousColor // Restore the pen color
-      }
+        this.context.globalCompositeOperation = 'source-over'
+      } */
+
+      // Drawing logic
+      this.context.lineTo(x, y)
+      this.context.stroke()
+      this.context.beginPath()
+      this.context.moveTo(x, y)
     }
   })
