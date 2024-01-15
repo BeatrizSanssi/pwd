@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 
+import './paint-pen.js'
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
@@ -119,6 +120,7 @@ customElements.define('paint-app',
       this.context = this.canvas.getContext('2d')
       this.colorPicker = this.shadowRoot.getElementById('color-picker')
       // this.penSize = this.shadowRoot.getElementById('pen-size')
+      this.pen = this.shadowRoot.getElementById('pen')
 
       // this.isDrawing = false
       this.defaultColor = '#cccccc'

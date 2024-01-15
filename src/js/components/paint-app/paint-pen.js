@@ -1,5 +1,5 @@
 /**
- * The pen web component module.
+ * The paint-pen component module.
  *
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
@@ -23,7 +23,7 @@ template.innerHTML = `
 /*
  * Define custom element.
  */
-customElements.define('pen',
+customElements.define('paint-pen',
   /**
    * Represents a pen element.
    */
@@ -39,10 +39,10 @@ customElements.define('pen',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.canvas = canvas
+      /* this.canvas = canvas
       this.context = canvas.getContext('2d')
       this.color = initialSettings.color
-      this.size = initialSettings.size
+      this.size = initialSettings.size */
 
       this.isDrawing = false
     }
@@ -51,14 +51,11 @@ customElements.define('pen',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.canvas.addEventListener('mousedown', () => {
-        this.startDrawing()
+      this.shadowRoot.querySelector('#pen-size').addEventListener('input', (event) => {
+        this.dispatchEvent(new CustomEvent('pen-size-change', { detail: event.target.value }))
       })
-      this.canvas.addEventListener('mousemove', () => {
-        this.draw()
-      })
-      this.canvas.addEventListener('mouseup', () => {
-        this.stopDrawing()
+      this.shadowRoot.querySelector('#pen-button').addEventListener('click', () => {
+        this.dispatchEvent(new CustomEvent('pen-button-click'))
       })
       this.penSize.addEventListener('input', (event) => {
         this.context.lineWidth = event.target.value
