@@ -56,7 +56,7 @@ customElements.define('paint-pen',
     /**
      * Called after the element is inserted into the DOM.
      */
-    connectedCallback () {
+    async connectedCallback () {
       this.penSize.addEventListener('input', (event) => {
         console.log('Pen size changed:', event.target.value)
         this.size = event.target.value

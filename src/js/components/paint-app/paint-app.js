@@ -98,11 +98,6 @@ customElements.define('paint-app',
    * Represents a painting app element.
    */
   class extends HTMLElement {
-    #penButton
-    #colorButton
-    #penSizeSelector
-    #paintPen
-    #colorPicker
     /**
      * Creates an instance of the current type.
      */
@@ -118,8 +113,8 @@ customElements.define('paint-app',
     /**
      * Called after the element is inserted into the DOM.
      */
-    connectedCallback () {
-      this.#initializeElements()
+    async connectedCallback () {
+      await this.#initializeElements()
       this.#addEventListeners()
       this.#initializeCanvas()
     }
@@ -152,13 +147,23 @@ customElements.define('paint-app',
       window.addEventListener('resize', () => this.#adjustCanvasSize())
 
       // Pen size change event listener
-      this.penButton.addEventListener('pen-size-change', (event) => {
+      this.paintPen.addEventListener('pen-size-change', (event) => {
         this.context.lineWidth = event.detail
       })
 
+      // Click event for pen button
+      this.penButton.addEventListener('click', () => {
+        this.paintPen.changePenSize()
+      })
+
       // Color change event listener
-      this.colorButton.addEventListener('color-change', (event) => {
+      this.colorPicker.addEventListener('color-change', (event) => {
         this.context.strokeStyle = event.detail
+      })
+
+      // Click event for color button
+      this.colorButton.addEventListener('click', () => {
+        this.colorPicker.changeColor()
       })
 
       // Canvas event listeners
