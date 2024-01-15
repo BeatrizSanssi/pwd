@@ -118,9 +118,9 @@ customElements.define('paint-app',
       this.canvas = this.shadowRoot.getElementById('paint-canvas')
       this.context = this.canvas.getContext('2d')
       this.colorPicker = this.shadowRoot.getElementById('color-picker')
-      this.penSize = this.shadowRoot.getElementById('pen-size')
+      // this.penSize = this.shadowRoot.getElementById('pen-size')
 
-      this.isDrawing = false
+      // this.isDrawing = false
       this.defaultColor = '#cccccc'
 
       this.context.strokeStyle = this.defaultColor
@@ -138,11 +138,7 @@ customElements.define('paint-app',
       // Add event listeners to the canvas
       this.canvas.addEventListener('mousedown', (event) => {
         this.isDrawing = true
-        const rect = this.canvas.getBoundingClientRect()
-        const x = event.clientX - rect.left
-        const y = event.clientY - rect.top
-        this.context.beginPath()
-        this.context.moveTo(x, y)
+        this.startDrawing(event)
       })
       this.canvas.addEventListener('mouseup', () => {
         this.isDrawing = false
@@ -180,17 +176,7 @@ customElements.define('paint-app',
       // this.penButton.addEventListener('click', () => {
       // this.changePenSize()
       // })
-      this.penButton.addEventListener('click', () => {
-        console.log('Pen button clicked')
-        if (this.canvas.classList.contains('custom-cursor')) {
-          this.canvas.classList.remove('custom-cursor')
-          console.log('Cursor class removed')
-        } else {
-          this.canvas.classList.add('custom-cursor')
-          console.log('Cursor class added')
-        }
-        this.changePenSize()
-      })
+
       // Add event listener to color picker
       this.colorButton.addEventListener('click', () => {
         this.toggleColorPicker()
@@ -206,48 +192,6 @@ customElements.define('paint-app',
         this.toggleEraser()
         this.isErasing = false
       }) */
-    }
-
-    /**
-     * Draw on the canvas.
-     *
-     * @param {event} event - The event.
-     */
-    draw (event) {
-      if (!this.isDrawing) return
-      console.log('Drawing...')
-
-      // Cursor offset
-      // const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
-      // const cursorOffsetY = 28
-      // this.context.strokeStyle = this.colorPicker.value
-      // this.context.lineWidth = this.penSize.value
-      // Get mouse position relative to the canvas
-      const rect = this.canvas.getBoundingClientRect()
-      // const x = event.clientX - rect.left - cursorOffsetX
-      // const y = event.clientY - rect.top - cursorOffsetY
-
-      const scaleX = this.canvas.width / rect.width // Scaling factor for width
-      const scaleY = this.canvas.height / rect.height // Scaling factor for height
-      // Adjust the mouse coordinates
-      const x = (event.clientX - rect.left) * scaleX
-      const y = (event.clientY - rect.top) * scaleY
-
-      console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
-      console.log(`Mouse position: ${x}, ${y}`)
-
-      // Check eraser state and adjust context accordingly
-      if (this.isErasing) {
-        this.context.globalCompositeOperation = 'destination-out'
-      } else {
-        this.context.globalCompositeOperation = 'source-over'
-      }
-
-      // Drawing logic
-      this.context.lineTo(x, y)
-      this.context.stroke()
-      this.context.beginPath()
-      this.context.moveTo(x, y)
     }
 
     /**
