@@ -31,7 +31,6 @@ template.innerHTML = `
     margin: 10px;
     width: 80%;
     height: 80%;
-    align-self: center;
 }
 
 #paint-tools {
@@ -218,13 +217,20 @@ customElements.define('paint-app',
       if (!this.isDrawing) return
       console.log('Drawing...')
 
+      // Cursor offset
+      const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
+      const cursorOffsetY = 28
       // this.context.strokeStyle = this.colorPicker.value
       // this.context.lineWidth = this.penSize.value
       // Get mouse position relative to the canvas
       const rect = this.canvas.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
+      const x = event.clientX - rect.left - cursorOffsetX
+      const y = event.clientY - rect.top - cursorOffsetY
 
+      const scaleX = this.canvas.width / canvasRect.width // Scaling factor for width
+      const scaleY = this.canvas.height / canvasRect.height // Scaling factor for height
+
+      console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
       console.log(`Mouse position: ${x}, ${y}`)
 
       // Check eraser state and adjust context accordingly
