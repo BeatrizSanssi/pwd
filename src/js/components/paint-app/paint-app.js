@@ -116,15 +116,15 @@ customElements.define('paint-app',
      * Called after the element is inserted into the DOM.
      */
     async connectedCallback () {
-      await this.#initializeElements()
-      this.#addEventListeners()
-      this.#initializeCanvas()
+      await this.initializeElements()
+      this.addEventListeners()
+      this.initializeCanvas()
     }
 
     /**
      * Initialize elements.
      */
-    #initializeElements () {
+    initializeElements () {
       this.canvas = this.shadowRoot.getElementById('paint-canvas')
       this.context = this.canvas.getContext('2d')
 
@@ -144,7 +144,7 @@ customElements.define('paint-app',
     /**
      * Add event listeners.
      */
-    #addEventListeners () {
+    addEventListeners () {
     // Adjust the canvas size when the window is resized
       window.addEventListener('resize', () => this.adjustCanvasSize())
 
@@ -156,7 +156,13 @@ customElements.define('paint-app',
       // Click event for pen button
       this.penButton.addEventListener('click', () => {
         this.paintPen.changePenSize()
+        this.paintPen.classList.add('custom-cursor')
       })
+
+      /* // Click event for pen cursor
+      this.canvas.addEventListener('mouseover', () => {
+        this.canvas.classList.add('custom-cursor')
+      }) */
 
       // Color change event listener
       this.colorPicker.addEventListener('color-change', (event) => {
@@ -169,16 +175,36 @@ customElements.define('paint-app',
       })
 
       // Canvas event listeners
-      this.#setupCanvasEventListeners()
+      this.setupCanvasEventListeners()
+    }
+
+    /**
+     * Get the mouse position relative to the canvas.
+     *
+     * @param {event} event - The event.
+     * @returns {object} The mouse position relative to the canvas.
+     */
+    getMousePosition (event) {
+      const rect = this.canvas.getBoundingClientRect()
+      const scaleX = this.canvas.width / rect.width // the scale factor for width
+      const scaleY = this.canvas.height / rect.height // the scale factor for height
+      const x = (event.clientX - rect.left) * scaleX // scale mouse coordinates after they have
+      const y = (event.clientY - rect.top) * scaleY // been adjusted to be relative to canvas
+      return { x, y }
     }
 
     /**
      * Setup canvas event listeners.
      */
-    #setupCanvasEventListeners () {
+    setupCanvasEventListeners () {
       this.canvas.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
         this.isDrawing = true
-        this.startDrawing(event)
+        const { x, y } = this.getMousePosition(event)
+        this.startDrawing(x, y)
+        /* event.stopPropagation()
+        this.isDrawing = true
+        this.startDrawing(event) */
       })
 
       this.canvas.addEventListener('mouseup', () => {
@@ -188,7 +214,11 @@ customElements.define('paint-app',
 
       this.canvas.addEventListener('mousemove', (event) => {
         if (this.isDrawing) {
+          const { x, y } = this.getMousePosition(event)
+          this.draw(x, y)
+        /* if (this.isDrawing) {
           this.draw(event)
+        } */
         }
       })
     }
@@ -196,7 +226,7 @@ customElements.define('paint-app',
     /**
      * Initialize the canvas.
      */
-    #initializeCanvas () {
+    initializeCanvas () {
       this.context = this.canvas.getContext('2d')
       if (!this.context) {
         console.error('Unable to get canvas context!')
@@ -260,31 +290,60 @@ customElements.define('paint-app',
     /**
      * Start drawing on the canvas.
      *
-     * @param {event} event - The event.
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
      */
-    startDrawing (event) {
-      this.isDrawing = true
+    startDrawing (x, y) {
+      this.context.beginPath()
+      this.context.moveTo(x, y)
+      /* this.isDrawing = true
       const rect = this.canvas.getBoundingClientRect()
-      const scaleX = this.canvas.width / rect.width
+      this.lastX = event.clientX - rect.left
+      this.lastY = event.clientY - rect.top
+      /* const scaleX = this.canvas.width / rect.width
       const scaleY = this.canvas.height / rect.height
       const devicePixelRatio = window.devicePixelRatio || 1
       const x = ((event.clientX - rect.left) * scaleX) * devicePixelRatio
       const y = ((event.clientY - rect.top) * scaleY) * devicePixelRatio
 
       this.context.beginPath()
-      this.context.moveTo(x, y)
+      this.context.moveTo(x, y) */
     }
 
     /**
      * Draw on the canvas.
      *
-     * @param {event} event - The event.
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
      */
-    draw (event) {
+    draw (x, y) {
       if (!this.isDrawing) return
       console.log('Drawing...')
 
-      // Cursor offset
+      this.context.lineTo(x, y)
+      this.context.stroke()
+      this.context.beginPath()
+      this.context.moveTo(x, y)
+      /* // Cursor offset
+      const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
+      const cursorOffsetY = 28
+      // Get mouse position relative to the canvas
+      const rect = this.canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left - cursorOffsetX
+      const y = event.clientY - rect.top - cursorOffsetY
+      // const x = event.clientX - rect.left
+      // const y = event.clientY - rect.top
+      console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
+      console.log(`Mouse position: ${x}, ${y}`)
+      this.context.beginPath()
+      this.context.moveTo(this.lastX, this.lastY)
+      this.context.lineTo(x, y)
+      this.context.stroke()
+
+      this.lastX = x
+      this.lastY = y
+    }
+    /* // Cursor offset
       const cursorOffsetX = 4// Horizontal offset of the pen tip from the cursor's top-left corner
       const cursorOffsetY = 28
       // this.context.strokeStyle = this.colorPicker.value
@@ -312,10 +371,11 @@ customElements.define('paint-app',
         this.context.globalCompositeOperation = 'source-over'
       } */
 
-      // Drawing logic
+    /* // Drawing logic
       this.context.lineTo(x, y)
       this.context.stroke()
       this.context.beginPath()
       this.context.moveTo(x, y)
+    } */
     }
   })
