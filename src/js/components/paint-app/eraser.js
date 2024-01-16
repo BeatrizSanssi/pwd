@@ -18,21 +18,12 @@ template.innerHTML = `
     width: 80%;
     border-radius: 4px;
 }
-.tool-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-}
 </style>
 <div id="eraser">
     <!-- Eraser -->
     <div id="eraser-size-selector" style="display: none;">
         <input type="range" id="erazor-size" min="1" max="10" value="5">
     </div>
-    <!-- Eraser Button -->
-    <button class="tool-button" id="eraser-button">
-        <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
-    </button>
 </div>   
 `
 /*
@@ -63,14 +54,19 @@ customElements.define('eraser',
      */
     connectedCallback () {
       // Add event listener to eraser
-      this.eraserButton.addEventListener('click', () => {
+      this.eraser = this.shadowRoot.querySelector('#eraser')
+      this.eraser.addEventListener('click', (event) => {
+        this.dipatchEvent(new CustomEvent('eraser-change', { detail: event.target.value }))
+        this.toggleEraser()
+      })
+      /* this.eraserButton.addEventListener('click', () => {
         this.toggleEraser()
         this.isErasing = false
-      })
+      }) */
 
-      // Add event listeners
+      /* // Add event listeners
       this.eraser.addEventListener('click', this.toggleEraser.bind(this))
-      this.eraserSize.addEventListener('input', this.setEraserSize.bind(this))
+      this.eraserSize.addEventListener('input', this.setEraserSize.bind(this)) */
     }
 
     /**

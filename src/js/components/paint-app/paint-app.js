@@ -58,8 +58,8 @@ template.innerHTML = `
     height: 24px;
   }
 
-  .custom-cursor {
-  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAABJklEQVRYR+3WoQ7CMBAG4A2D4Y1QPARBEYJBoEAhECRIFA4DeN4Az0sQnoBnQAD/CE1I0/buul2Z2JLLlnXbfbneuuVZjba8RpaswfhmQ7MyQyRdIU6IJacdtDBjJN8jWl/EFvs5BdLAjJD0+AMxBhKkgeki+xnRcVRig3OLFD3TR5IL4o4IgdoYf7hAVVXG9MgNSXoB0A5jU83K2M169YAOOD9BPLUwNsTksUEDDMxCkOLGMtPkg7hA1Fv9GY/FUBCTfI2DYuFjbTEYLoTsEVsoxahBpNOkCpFg1CFcTBIIB5MMQmGSQkKY5BAf5i8QH+bFWC7FCxrjmc7PAYVRgcRURg0ixahCJBh1CLXOcHqu0mukX+1Kk5f9hWgwqhXwPbzpGV9l3pVeSyTrnRavAAAAAElFTkSuQmCC'), auto;
+  .pen-cursor {
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAABJklEQVRYR+3WoQ7CMBAG4A2D4Y1QPARBEYJBoEAhECRIFA4DeN4Az0sQnoBnQAD/CE1I0/buul2Z2JLLlnXbfbneuuVZjba8RpaswfhmQ7MyQyRdIU6IJacdtDBjJN8jWl/EFvs5BdLAjJD0+AMxBhKkgeki+xnRcVRig3OLFD3TR5IL4o4IgdoYf7hAVVXG9MgNSXoB0A5jU83K2M169YAOOD9BPLUwNsTksUEDDMxCkOLGMtPkg7hA1Fv9GY/FUBCTfI2DYuFjbTEYLoTsEVsoxahBpNOkCpFg1CFcTBIIB5MMQmGSQkKY5BAf5i8QH+bFWC7FCxrjmc7PAYVRgcRURg0ixahCJBh1CLXOcHqu0mukX+1Kk5f9hWgwqhXwPbzpGV9l3pVeSyTrnRavAAAAAElFTkSuQmCC') 4 28, auto;
 }
   
 </style>
@@ -71,23 +71,27 @@ template.innerHTML = `
             <img src="js/components/paint-app/img/edit.svg" class="tool-icon" alt="Pen"/>
             <paint-pen></paint-pen>
           </button>
-            <!-- Eraser Button -->
+
+          <!-- Eraser Button -->
+          <button class="tool-button" id="eraser-button">
+              <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
+          </button>
             
-            <!-- Color Picker -->
+          <!-- Color Picker -->
           <button class="tool-button" id="color-button">
             <img src="js/components/paint-app/img/color lens.svg" class="tool-icon" alt="Color Palett"/>
             <color-picker></color-picker>
           </button>
             
-            <!-- Colorize Button -->
-            <button class="tool-button" id="colorize-button">
-                <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
-            </button>
+          <!-- Colorize Button -->
+          <button class="tool-button" id="colorize-button">
+              <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
+          </button>
 
-            <!-- Restart Button -->
-            <button class="tool-button" id="restart-button">
-                <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
-            </button>
+          <!-- Restart Button -->
+          <button class="tool-button" id="restart-button">
+              <img src="js/components/paint-app/img/restart alt.svg" class="tool-icon" alt="Restart"/>
+          </button>
         </div>
 </div>
 `
@@ -156,7 +160,7 @@ customElements.define('paint-app',
       // Click event for pen button
       this.penButton.addEventListener('click', () => {
         this.paintPen.changePenSize()
-        this.paintPen.classList.add('custom-cursor')
+        this.canvas.classList.add('pen-cursor')
       })
 
       // Color change event listener
@@ -167,6 +171,16 @@ customElements.define('paint-app',
       // Click event for color button
       this.colorButton.addEventListener('click', () => {
         this.colorPicker.changeColor()
+      })
+
+      this.eraserButton.addEventListener('click', () => {
+        this.canvas.classList.remove('pen-cursor')
+        // additional eraser functionality...
+      })
+
+      this.colorButton.addEventListener('click', () => {
+        this.canvas.classList.remove('pen-cursor')
+        // additional color picker functionality...
       })
 
       // Canvas event listeners
