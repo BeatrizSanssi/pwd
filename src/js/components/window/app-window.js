@@ -10,15 +10,15 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 .app-window {
-  max-width: fit-content;
+  max-width: 800px;
   max-height: fit-content;
   position: relative;
-  margin: 30px;
+  margin: 10px;
   padding: 10px;
   border: 1px solid black;
   background-color: white;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-evenly;
+  align-content: center;
 }
 
 .title-bar {
@@ -31,6 +31,9 @@ template.innerHTML = `
   max-width: 800px;
   max-height: 800px;
   margin: 30px;
+  padding: 10px;
+  align-content: center;
+  justify-content: center;
 }
   
 .close-btn {

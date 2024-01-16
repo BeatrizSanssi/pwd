@@ -10,7 +10,7 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #color-picker {
-    background-color: white;
+    
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;

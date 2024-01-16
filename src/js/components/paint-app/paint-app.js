@@ -13,35 +13,37 @@ template.innerHTML = `
 <style>
 #paint-app {
     background-color: rgb(76, 99, 76);
-    align-items: center;
-    justify-content: space-around;
+    align-content: center;
+    
     color: white;
+    
     padding: 10px;
-    margin: 10px;
     border-radius: 4px;
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
-    width: 700px;
-    height: 700px;
+    width: fit-content;
+    height: fit-content;
 }
 
 #paint-canvas {
     background-color: white;
     color: rgb(76, 99, 76);
+    height: 600px;
+    width: 600px;
     padding: 10px;
-    margin: 10px;
-    max-width: 80%;
-    max-height: 80%;
+    margin: 20px;
 }
 
 #paint-tools {
     background-color: white;
+    display: block;
     color: rgb(76, 99, 76);
     padding: 10px;
-    margin: 10px;
+    margin: 20px;
     gap: 10px;
-    max-width: 80%;
+    width: 600px;
+    height: 30px;
     border-radius: 4px;
 }
 

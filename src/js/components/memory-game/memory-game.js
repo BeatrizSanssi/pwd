@@ -66,7 +66,7 @@ template.innerHTML = `
 #start-game {
   position: absolute;
   left: 10px;
-  top: 130px;
+  top: 160px;
   cursor: pointer;
 }
 
