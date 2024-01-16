@@ -14,7 +14,7 @@ template.innerHTML = `
 #paint-app {
     background-color: rgb(76, 99, 76);
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     color: white;
     padding: 10px;
     margin: 10px;
@@ -22,8 +22,8 @@ template.innerHTML = `
     font-weight: bold;
     font-size: 15px;
     border: 1px solid black;
-    max-width: 100%;
-    height: auto;
+    width: 700px;
+    height: 700px;
 }
 
 #paint-canvas {
@@ -31,8 +31,8 @@ template.innerHTML = `
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;
-    width: 80%;
-    height: 80%;
+    max-width: 80%;
+    max-height: 80%;
 }
 
 #paint-tools {
@@ -41,7 +41,7 @@ template.innerHTML = `
     padding: 10px;
     margin: 10px;
     gap: 10px;
-    width: 80%;
+    max-width: 80%;
     border-radius: 4px;
 }
 
@@ -144,7 +144,7 @@ customElements.define('paint-app',
      */
     #addEventListeners () {
     // Adjust the canvas size when the window is resized
-      window.addEventListener('resize', () => this.#adjustCanvasSize())
+      window.addEventListener('resize', () => this.adjustCanvasSize())
 
       // Pen size change event listener
       this.paintPen.addEventListener('pen-size-change', (event) => {
@@ -195,12 +195,6 @@ customElements.define('paint-app',
      * Initialize the canvas.
      */
     #initializeCanvas () {
-      this.canvas = this.shadowRoot.getElementById('paint-canvas')
-      if (!this.canvas) {
-        console.error('Canvas element not found!')
-        return
-      }
-
       this.context = this.canvas.getContext('2d')
       if (!this.context) {
         console.error('Unable to get canvas context!')
@@ -208,21 +202,12 @@ customElements.define('paint-app',
       }
 
       // Set up default drawing styles
-      this.context.strokeStyle = this.defaultColor // Default color set in constructor
-      this.context.lineWidth = 5 // Default line width
+      // this.context.strokeStyle = this.defaultColor // Default color set in constructor
+      // this.context.lineWidth = 5 // Default line width
 
-      this.canvas.width = 800
-      this.canvas.height = 800
-      this.#adjustCanvasSize()
-    }
-
-    /**
-     * Adjust the canvas size.
-     */
-    #adjustCanvasSize () {
-      const rect = this.getBoundingClientRect()
-      this.canvas.width = rect.width
-      this.canvas.height = rect.height
+      // this.canvas.width = 600
+      // this.canvas.height = 600
+      this.adjustCanvasSize()
     }
 
     /**

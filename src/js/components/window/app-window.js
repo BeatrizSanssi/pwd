@@ -9,26 +9,28 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-  .app-window {
-    max-width: fit-content;
-    max-height: fit-content;
-    position: relative;
-    margin: 30px;
-    padding: 10px;
-    border: 1px solid black;
-    background-color: white;
-    justify-content: space-around;
+.app-window {
+  max-width: fit-content;
+  max-height: fit-content;
+  position: relative;
+  margin: 30px;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: white;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .title-bar {
-    background-color: #ddd;
-    cursor: move;
-    padding: 5px;
+  background-color: #ddd;
+  cursor: move;
+  padding: 5px;
 }
 
 .content {
-    margin: 30px;
-    width: 80%;
+  max-width: 800px;
+  max-height: 800px;
+  margin: 30px;
 }
   
 .close-btn {
@@ -93,7 +95,7 @@ customElements.define('app-window',
       this.#closeBtn.addEventListener('click', () => {
         this.closeWindow()
       })
-      this.#titleBar.addEventListener('mousedown', (event) => {
+      this.#appWindow.addEventListener('mousedown', (event) => {
         this.#isDragging = true
         this.#startX = event.clientX - this.#appWindow.offsetLeft
         this.#startY = event.clientY - this.#appWindow.offsetTop
