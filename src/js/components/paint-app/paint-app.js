@@ -195,6 +195,22 @@ customElements.define('paint-app',
      * Initialize the canvas.
      */
     #initializeCanvas () {
+      this.canvas = this.shadowRoot.getElementById('paint-canvas')
+      if (!this.canvas) {
+        console.error('Canvas element not found!')
+        return
+      }
+
+      this.context = this.canvas.getContext('2d')
+      if (!this.context) {
+        console.error('Unable to get canvas context!')
+        return
+      }
+
+      // Set up default drawing styles
+      this.context.strokeStyle = this.defaultColor // Default color set in constructor
+      this.context.lineWidth = 5 // Default line width
+
       this.canvas.width = 800
       this.canvas.height = 800
       this.#adjustCanvasSize()
@@ -297,7 +313,8 @@ customElements.define('paint-app',
       // Adjust the mouse coordinates
       const x = ((event.clientX - rect.left) * scaleX - cursorOffsetX) * devicePixelRatio
       const y = ((event.clientY - rect.top) * scaleY - cursorOffsetY) * devicePixelRatio
-
+      // const x = ((event.clientX - rect.left) * scaleX) * devicePixelRatio
+      // const y = ((event.clientY - rect.top) * scaleY) * devicePixelRatio
       console.log(`Cursor position: ${event.clientX - rect.left}, ${event.clientY - rect.top}`)
       console.log(`Mouse position: ${x}, ${y}`)
 
