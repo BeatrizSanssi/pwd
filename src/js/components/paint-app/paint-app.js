@@ -7,61 +7,63 @@
 
 import './paint-pen.js'
 import './color-picker.js'
+import './paint-eraser.js'
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #paint-app {
-    background-color: rgb(76, 99, 76);
-    align-content: center;
-    
-    color: white;
-    
-    padding: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 15px;
-    border: 1px solid black;
-    width: fit-content;
-    height: fit-content;
+  background-color: rgb(76, 99, 76);
+  align-content: center;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  border: 1px solid black;
+  width: fit-content;
+  height: fit-content;
 }
 
 #paint-canvas {
-    background-color: white;
-    color: rgb(76, 99, 76);
-    height: 600px;
-    width: 600px;
-    padding: 10px;
-    margin: 20px;
+  background-color: white;
+  color: rgb(76, 99, 76);
+  height: 600px;
+  width: 600px;
+  padding: 10px;
+  margin: 20px;
 }
 
 #paint-tools {
-    background-color: white;
-    display: block;
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 20px;
-    gap: 10px;
-    width: 600px;
-    height: 30px;
-    border-radius: 4px;
+  background-color: white;
+  display: block;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 20px;
+  gap: 10px;
+  width: 600px;
+  height: 30px;
+  border-radius: 4px;
 }
 
 .tool-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
+  border: none;
+  background: none;
+  cursor: pointer;
+}
 
-  .tool-icon {
-    width: 24px;
-    height: 24px;
-  }
+.tool-icon {
+  width: 24px;
+  height: 24px;
+}
 
-  .pen-cursor {
+.pen-cursor {
   cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAABJklEQVRYR+3WoQ7CMBAG4A2D4Y1QPARBEYJBoEAhECRIFA4DeN4Az0sQnoBnQAD/CE1I0/buul2Z2JLLlnXbfbneuuVZjba8RpaswfhmQ7MyQyRdIU6IJacdtDBjJN8jWl/EFvs5BdLAjJD0+AMxBhKkgeki+xnRcVRig3OLFD3TR5IL4o4IgdoYf7hAVVXG9MgNSXoB0A5jU83K2M169YAOOD9BPLUwNsTksUEDDMxCkOLGMtPkg7hA1Fv9GY/FUBCTfI2DYuFjbTEYLoTsEVsoxahBpNOkCpFg1CFcTBIIB5MMQmGSQkKY5BAf5i8QH+bFWC7FCxrjmc7PAYVRgcRURg0ixahCJBh1CLXOcHqu0mukX+1Kk5f9hWgwqhXwPbzpGV9l3pVeSyTrnRavAAAAAElFTkSuQmCC') 4 28, auto;
 }
-  
+
+.eraser-cursor {
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAADaklEQVRYR+2XWchPQRiHvw/ZJZQt8SnZS2TJkr7kRrhCWRJS9iX77kJ2kbVwgSQSF4oQ4kJJtpTsiZCdRPb1+WWGcb6zzfn/1Xfhracz58y87/zmPXNm5hQWlDIrLGV6Cv6FoPYM8iB8hWOwGq6lHXi+BfWm40PwDE5AMdSHH3AERsPDOHH5FDSQjvbAKpjpdFqGsoSuhyJ4C2Ngd5iwfAkaQfBtMAD2x2SgPHXTYQGoPBk2uu3zIWgUAbdAJzgX9zoCdc24Pwo1Qa/1nepzFTTejLA515seYmzTshQ0+e9Do1wFTSDABmgCdzKIkcslaAtLYV4ugibirEmqtN/KIEZv5jYUgbJUCT5mFTQOx02gL+dwBjEV8HkKW42Ynlzb2Di+c0jryGbjrBQr1T5Wm8aPYBZowfwMTeFeFkHDcdoe6F0TconhS4Ky1tRfgUmgudcd9kI91y9thvrjtC+hQ82JsXAStDK7ptdy3BGjuheg55d9BdlgCXr+qtbXMxfOwHzQyj0N1phW+rK0BtUJBk3KkE2zj5iwtnN4uNypeEW5G5TYdOME1TJpzSpGq7c+ghUw2wnSj/JiaBEWOEqQNkStCwraBdp5qNL80TaiOXMVujq+ekWPoSq89xGkDVIjkd0AbZo1YKXpLGogL6lvCNpGGsDvBY9yZXgDneF81ADDAku9jghB+8QDrT1roTEsNEIrmob6CgfDE9DrVqcdTV05E3MQ1wNRYvQ8TNApnhfHOVF3FoaBtg2tvOpQW8Bz0LFC1go0adWHMjcVdiTELSGoGg5Ka1rTPFNGlSX5ae7JvhuBKuuEuAi0VSRaMEOaiFp3fEyD0Emxj+N0kXIHuAvLQB9HKnMFaZQfUnn9aWQzoasbS3F0rxNhqszYkG6QXTwc4inoNO2nwIUQv5E807HWy6wgvftvXp6/GmuNWQf69XFtKDcaoLdZQfoCdBzwNX1ZwYEkHfRj+7CCXtOquqcarcLaFnY6fn0p678ss1lBWoV1LtY1rfWiof6trE8PylrDcrLgZ6/tQu/err5xwetSqVVZ5vsLFBk3ak9SB1pbtEWEmRY7nf6UpZZwPae0OM5J5yFlSkeHGaDN0ZqOD9rX9C/1IF9iFCdJkNtXFW60eeqYqp1c/2M+20wq3T6CUgXMtdF/QUkZ/AnZ7JYliRnM9gAAAABJRU5ErkJggg==') 4 28, auto;
+}
 </style>
 <div id="paint-app">
     <canvas id="paint-canvas"></canvas>
@@ -75,6 +77,7 @@ template.innerHTML = `
           <!-- Eraser Button -->
           <button class="tool-button" id="eraser-button">
               <img src="js/components/paint-app/img/eraser.png" class="tool-icon" alt="Eraser"/>
+              <paint-eraser></paint-eraser>
           </button>
             
           <!-- Color Picker -->
@@ -121,6 +124,7 @@ customElements.define('paint-app',
      */
     async connectedCallback () {
       await this.initializeElements()
+      console.log(this.paintEraser)
       this.addEventListeners()
       this.initializeCanvas()
     }
@@ -135,8 +139,10 @@ customElements.define('paint-app',
       // Initialize other elements
       this.penButton = this.shadowRoot.getElementById('pen-button')
       this.colorButton = this.shadowRoot.getElementById('color-button')
+      this.eraserButton = this.shadowRoot.getElementById('eraser-button')
       this.paintPen = this.shadowRoot.querySelector('paint-pen')
       this.colorPicker = this.shadowRoot.querySelector('color-picker')
+      this.paintEraser = this.shadowRoot.querySelector('paint-eraser')
 
       // Set default values
       this.isDrawing = false
@@ -158,7 +164,10 @@ customElements.define('paint-app',
       })
 
       // Click event for pen button
-      this.penButton.addEventListener('click', () => {
+      this.penButton.addEventListener('click', (event) => {
+        // event.preventDefault()
+        // event.stopPropagation()
+
         this.paintPen.changePenSize()
         this.canvas.classList.add('pen-cursor')
       })
@@ -175,12 +184,23 @@ customElements.define('paint-app',
 
       this.eraserButton.addEventListener('click', () => {
         this.canvas.classList.remove('pen-cursor')
-        // additional eraser functionality...
       })
 
       this.colorButton.addEventListener('click', () => {
         this.canvas.classList.remove('pen-cursor')
-        // additional color picker functionality...
+      })
+
+      // Eraser button event listener
+      this.eraserButton.addEventListener('click', () => {
+        this.toggleEraserMode()
+        this.paintEraser.toggleEraser()
+        this.canvas.classList.add('eraser-cursor')
+      })
+
+      // Handle eraser size change
+      this.paintEraser.addEventListener('eraser-size-change', (event) => {
+        this.context.lineWidth = event.detail
+        this.context.globalCompositeOperation = 'destination-out'
       })
 
       // Canvas event listeners
@@ -272,5 +292,18 @@ customElements.define('paint-app',
       this.context.stroke()
       this.context.beginPath()
       this.context.moveTo(x, y)
+    }
+
+    /**
+     * Erase drawing from canvas.
+     */
+    toggleEraserMode () {
+      if (this.isErasing) {
+        this.context.globalCompositeOperation = 'source-over'
+        this.isErasing = false
+      } else {
+        this.context.globalCompositeOperation = 'destination-out'
+        this.isErasing = true
+      }
     }
   })

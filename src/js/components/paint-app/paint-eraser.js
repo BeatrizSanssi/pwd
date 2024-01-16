@@ -1,5 +1,5 @@
 /**
- * The erasercomponent module.
+ * The paint eraser component module.
  *
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
@@ -9,8 +9,7 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-#color-picker {
-    background-color: white;
+#paint-eraser {
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;
@@ -19,7 +18,7 @@ template.innerHTML = `
     border-radius: 4px;
 }
 </style>
-<div id="eraser">
+<div id="paint-eraser">
     <!-- Eraser -->
     <div id="eraser-size-selector" style="display: none;">
         <input type="range" id="erazor-size" min="1" max="10" value="5">
@@ -29,7 +28,7 @@ template.innerHTML = `
 /*
  * Define custom element.
  */
-customElements.define('eraser',
+customElements.define('paint-eraser',
   /**
    * Represents a painting app element.
    */
@@ -45,8 +44,8 @@ customElements.define('eraser',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.eraser = this.shadowRoot.querySelector('#eraser')
-      this.eraserSize = this.shadowRoot.querySelector('#eraser-size')
+      // this.eraser = this.shadowRoot.querySelector('#eraser')
+      this.eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
     }
 
     /**
@@ -54,10 +53,14 @@ customElements.define('eraser',
      */
     connectedCallback () {
       // Add event listener to eraser
-      this.eraser = this.shadowRoot.querySelector('#eraser')
+      /* this.eraser = this.shadowRoot.querySelector('#eraser')
       this.eraser.addEventListener('click', (event) => {
         this.dipatchEvent(new CustomEvent('eraser-change', { detail: event.target.value }))
         this.toggleEraser()
+      }) */
+      this.eraserSizeSelector.addEventListener('input', (event) => {
+        this.dipatchEvent(new CustomEvent('eraser-size-change', { detail: event.target.value }))
+        this.setEraserSize(event)
       })
       /* this.eraserButton.addEventListener('click', () => {
         this.toggleEraser()
@@ -73,6 +76,7 @@ customElements.define('eraser',
      * Toggle eraser mode.
      */
     toggleEraser () {
+      this.eraserSizeSelector.style.display = this.eraserSizeSelector.style.display === 'none' ? 'block' : 'none'
       this.isErasing = !this.isErasing
       if (this.isErasing) {
         this.previousColor = this.context.strokeStyle // Save the current pen color
