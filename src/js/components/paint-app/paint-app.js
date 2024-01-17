@@ -147,6 +147,7 @@ customElements.define('paint-app',
       this.colorButton = this.shadowRoot.getElementById('color-button')
       this.eraserButton = this.shadowRoot.getElementById('eraser-button')
       this.colorizeButton = this.shadowRoot.getElementById('colorize-button')
+      this.restartButton = this.shadowRoot.getElementById('restart-button')
 
       // Initialize other elements
       this.paintPen = this.shadowRoot.querySelector('paint-pen')
@@ -232,6 +233,12 @@ customElements.define('paint-app',
             this.canvas.classList.remove('colorizer-cursor')
           }
         }, { once: true })
+      })
+
+      // Click event for restart button
+      this.restartButton = this.shadowRoot.getElementById('restart-button')
+      this.restartButton.addEventListener('click', () => {
+        this.clearCanvas()
       })
 
       // Canvas event listeners
@@ -565,4 +572,11 @@ customElements.define('paint-app',
       }
       this.context.putImageData(imageData, 0, 0)
     } */
+
+    /**
+     * Clear the canvas.
+     */
+    clearCanvas () {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    }
   })
