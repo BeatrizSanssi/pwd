@@ -14,15 +14,27 @@ The Paint App is a custom web component that provides a simple canvas for drawin
 
 ### Usage
 
-To use the Paint App in your project, import the paint-app.js file and then use the
-<paint-app></paint-app> tag in your HTML.
+Integrating the Paint App into your web project is straightforward. Follow these simple steps:
 
-Example:
+1. Import the `paint-app.js` script into your HTML file.
+2. Insert the `paint-app` tag where you want the Paint App to appear.
 
-html
+### Example
 
-<script type="module" src="path/to/paint-app.js"></script>
-<paint-app></paint-app>
+```html
+<!DOCTYPE html>
+<html>
+<head> 
+    <script type="module" src="path/to/paint-app.js"></script>
+    <!-- Other head elements -->
+</head>
+<body>
+    <!-- Your content -->
+    <paint-app></paint-app>
+    <!-- More content -->
+</body>
+</html>
+```
 
 ## Components
 

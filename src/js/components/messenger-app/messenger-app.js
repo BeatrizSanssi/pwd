@@ -64,33 +64,47 @@ template.innerHTML = `
 
 .message {
   padding: 5px;
-  margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 10px;
+  align-items: flex-start; 
+}
+
+.message-header {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .sent-message {
   text-align: right;
-  font-style: normal;
-  padding: 5px;
+  padding: 10px;
 }
 
 .received-message {
   text-align: left;
   font-style: italic;
-  padding: 5px;
+  padding: 10px;
 }
 
 .message-time {
   display: block;
   font-size: 0.8em;
   color: gray;
-  margin-left: auto;
+  margin-right: auto;
+  margin-left: 15px;
+  white-space: nowrap;
+}
+
+.message-content {
+  flex-grow: 1;
+  word-break: break-word;
+  padding-left: 5px;
+  margin-right: 20px;
 }
 
 .message-username {
   font-weight: bold;
+  padding-right: 5px;
 }
 
 #send-button {
@@ -142,9 +156,9 @@ customElements.define('messenger-app',
       this.#emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       this.socket = null
       this.messageBuffer = []
-      this.messageSound = new Audio('js/components/messenger-app/messageSound.mp3')
-      this.logInSound = new Audio('js/components/messenger-app/logInSound.mp3')
-      this.sendMessageSound = new Audio('js/components/messenger-app/sendMessageSound.mp3')
+      this.messageSound = new Audio('js/components/messenger-app/messenger-sounds/messageSound.mp3')
+      this.logInSound = new Audio('js/components/messenger-app/messenger-sounds/logInSound.mp3')
+      this.sendMessageSound = new Audio('js/components/messenger-app/messenger-sounds/sendMessageSound.mp3')
 
       // Add event listener
       this.#emojiPicker.addEventListener('emojiSelected', (event) => {
@@ -330,10 +344,12 @@ customElements.define('messenger-app',
 
         // Set the innerHTML of the message
         messageDiv.innerHTML = `
-      <span class="message-username"> ${message.username} : </span>
-      <span class="message-content"> ${message.data} </span>
-      <span class="message-time"> - ${dateTime}</span>
-    `
+        <span class="message-header">
+          <span class="message-username"> ${message.username} </span>:
+        </span>
+        <span class="message-content">  ${message.data} </span>
+        <span class="message-time"> - ${dateTime}</span>
+        `
         this.#messages.appendChild(messageDiv)
       })
 
