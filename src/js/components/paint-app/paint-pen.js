@@ -49,7 +49,7 @@ customElements.define('paint-pen',
       this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
       this.penSize = this.shadowRoot.getElementById('pen-size')
       // this.color = '#cccccc'
-      this.size = 5
+      this.currentPenSize = 5
       // this.isDrawing = false
     }
 
@@ -59,9 +59,9 @@ customElements.define('paint-pen',
     async connectedCallback () {
       this.penSize.addEventListener('input', (event) => {
         console.log('Pen size changed:', event.target.value)
-        this.size = event.target.value
+        this.currentPenSize = event.target.value
         this.dispatchEvent(new CustomEvent('pen-size-change', {
-          detail: this.size,
+          detail: this.currentPenSize,
           bubbles: true
         }))
       })
@@ -82,7 +82,7 @@ customElements.define('paint-pen',
      * @returns {number} The current size of the pen.
      */
     getCurrentSize () {
-      return this.size
+      return this.currentPenSize
     }
 
     /**

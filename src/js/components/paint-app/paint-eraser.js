@@ -21,7 +21,7 @@ template.innerHTML = `
 <div id="paint-eraser">
     <!-- Eraser -->
     <div id="eraser-size-selector" style="display: none;">
-        <input type="range" id="erazor-size" min="1" max="10" value="5">
+        <input type="range" id="eraser-size" min="1" max="10" value="5">
     </div>
 </div>   
 `
@@ -46,6 +46,9 @@ customElements.define('paint-eraser',
 
       // this.eraser = this.shadowRoot.querySelector('#eraser')
       this.eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
+      this.eraserSize = this.shadowRoot.getElementById('eraser-size')
+
+      this.currentEraserSize = 5
     }
 
     /**
@@ -58,9 +61,13 @@ customElements.define('paint-eraser',
         this.dipatchEvent(new CustomEvent('eraser-change', { detail: event.target.value }))
         this.toggleEraser()
       }) */
-      this.eraserSizeSelector.addEventListener('input', (event) => {
-        this.dipatchEvent(new CustomEvent('eraser-size-change', { detail: event.target.value }))
-        this.setEraserSize(event)
+      this.eraserSize.addEventListener('input', (event) => {
+        console.log('Eraser size changed:', event.target.value)
+        this.currentEraserSize = event.target.value
+        this.dipatchEvent(new CustomEvent('eraser-size-change', {
+          detail: this.currentEraserSize,
+          bubbles: true
+        }))
       })
       /* this.eraserButton.addEventListener('click', () => {
         this.toggleEraser()
@@ -73,18 +80,22 @@ customElements.define('paint-eraser',
     }
 
     /**
-     * Toggle eraser mode.
+     * Get the current size of the erasor.
+     *
+     * @returns {number} The current size of the erasor.
      */
-    toggleEraser () {
-      this.eraserSizeSelector.style.display = this.eraserSizeSelector.style.display === 'none' ? 'block' : 'none'
-      this.isErasing = !this.isErasing
-      if (this.isErasing) {
-        this.previousColor = this.context.strokeStyle // Save the current pen color
-        this.context.globalCompositeOperation = 'destination-out' // Set to erase mode
-        this.context.strokeStyle = 'rgba(0,0,0,1)' // Set color to fully opaque black
-      } else {
-        this.context.globalCompositeOperation = 'source-over' // Set back to draw mode
-        this.context.strokeStyle = this.previousColor // Restore the pen color
-      }
+    getEraserCurrentSize () {
+      return this.currentEraserSize
+    }
+
+    /**
+     * Change the size of the eraser.
+     *
+     * @param {event} event - The event.
+     */
+    changeEraserSize (event) {
+      // this.context.lineWidth = event.target.value
+      const isDisplayed = this.eraserSizeSelector.style.display !== 'none'
+      this.eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
   })

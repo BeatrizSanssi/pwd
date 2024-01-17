@@ -149,6 +149,7 @@ customElements.define('paint-app',
       this.defaultColor = '#cccccc'
       this.context.strokeStyle = this.defaultColor
       this.context.lineWidth = 5
+      this.isErasing = false
     }
 
     /**
@@ -182,25 +183,20 @@ customElements.define('paint-app',
         this.colorPicker.changeColor()
       })
 
-      this.eraserButton.addEventListener('click', () => {
-        this.canvas.classList.remove('pen-cursor')
-      })
-
       this.colorButton.addEventListener('click', () => {
         this.canvas.classList.remove('pen-cursor')
       })
 
       // Eraser button event listener
       this.eraserButton.addEventListener('click', () => {
+        this.paintEraser.changeEraserSize()
         this.toggleEraserMode()
-        this.paintEraser.toggleEraser()
-        this.canvas.classList.add('eraser-cursor')
       })
 
       // Handle eraser size change
       this.paintEraser.addEventListener('eraser-size-change', (event) => {
         this.context.lineWidth = event.detail
-        this.context.globalCompositeOperation = 'destination-out'
+        console.log('Eraser size set to:', event.detail) // Debugging line
       })
 
       // Canvas event listeners
@@ -241,7 +237,7 @@ customElements.define('paint-app',
       this.canvas.addEventListener('mousemove', (event) => {
         if (this.isDrawing) {
           const { x, y } = this.getMousePosition(event)
-          this.draw(x, y)
+          this.isErasing ? this.erase(x, y) : this.draw(x, y)
         }
       })
     }
@@ -295,15 +291,35 @@ customElements.define('paint-app',
     }
 
     /**
-     * Erase drawing from canvas.
+     * Toggle the eraser.
      */
     toggleEraserMode () {
+      console.log('Toggling eraser mode. Is erasing: ', this.isErasing)
       if (this.isErasing) {
-        this.context.globalCompositeOperation = 'source-over'
+        this.context.globalCompositeOperation = 'source-over' // For normal drawing
         this.isErasing = false
+        this.canvas.classList.remove('eraser-cursor')
+        this.canvas.classList.add('pen-cursor')
       } else {
-        this.context.globalCompositeOperation = 'destination-out'
+        this.context.globalCompositeOperation = 'destination-out' // For erasing
         this.isErasing = true
+        this.canvas.classList.add('eraser-cursor')
+        this.canvas.classList.remove('pen-cursor')
       }
+    }
+
+    /**
+     * Erase drawing from canvas.
+     *
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
+     */
+    erase (x, y) {
+      if (!this.isErasing) return
+      // Erasing logic (similar to drawing but with 'destination-out' composite operation)
+      this.context.lineTo(x, y)
+      this.context.stroke()
+      this.context.beginPath()
+      this.context.moveTo(x, y)
     }
   })
