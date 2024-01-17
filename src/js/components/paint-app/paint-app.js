@@ -139,6 +139,7 @@ customElements.define('paint-app',
      * Initialize elements.
      */
     initializeElements () {
+      this.paintTools = this.shadowRoot.getElementById('paint-tools')
       this.canvas = this.shadowRoot.getElementById('paint-canvas')
       this.context = this.canvas.getContext('2d')
 
@@ -173,6 +174,11 @@ customElements.define('paint-app',
     // Adjust the canvas size when the window is resized
       window.addEventListener('resize', () => this.adjustCanvasSize())
 
+      // Click event for paint tools
+      this.paintTools.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+
       // Pen size change event listener
       this.paintPen.addEventListener('pen-size-change', (event) => {
         this.context.lineWidth = event.detail
@@ -192,9 +198,6 @@ customElements.define('paint-app',
       // Color change event listener
       this.colorPicker.addEventListener('color-change', (event) => {
         this.currentColor = event.detail
-        console.log('Color changed to:', this.currentColor)
-        // this.context.strokeStyle = event.detail
-        // console.log('Color set to:', event.detail)
       })
 
       // Click event for color button
@@ -213,10 +216,6 @@ customElements.define('paint-app',
       // Eraser size change event listener
       this.paintEraser.addEventListener('eraser-size-change', (event) => {
         this.currentEraserSize = event.detail
-        console.log('Eraser size set to:', this.currentEraserSize)
-        // this.context.lineWidth = event.detail
-        // this.paintEraser.changeEraserSize(event.detail)
-        // console.log('Eraser size set to:', event.detail) // Debugging line
       })
 
       // Click event for colorize button
@@ -335,9 +334,8 @@ customElements.define('paint-app',
      */
     draw (x, y) {
       if (!this.isDrawing || !this.isPenActive) return
-      console.log('Drawing...')
-      this.context.strokeStyle = this.currentColor
 
+      this.context.strokeStyle = this.currentColor
       this.context.lineTo(x, y)
       this.context.stroke()
       this.context.beginPath()
@@ -352,7 +350,6 @@ customElements.define('paint-app',
       this.context.globalCompositeOperation = this.isErasing ? 'destination-out' : 'source-over'
       this.canvas.classList.toggle('eraser-cursor', this.isErasing)
       this.canvas.classList.toggle('pen-cursor', !this.isErasing)
-      console.log('Eraser mode:', this.isErasing)
     }
 
     /**
@@ -364,8 +361,7 @@ customElements.define('paint-app',
     erase (x, y) {
       if (!this.isErasing) return
 
-      const eraserSize = parseInt(this.currentEraserSize, 10)
-      console.log('Eraser size:', eraserSize)
+      const eraserSize = parseInt(this.currentEraserSize)
 
       this.context.save()
       this.context.globalCompositeOperation = 'destination-out'
@@ -374,24 +370,6 @@ customElements.define('paint-app',
       this.context.fill()
       this.context.restore()
     }
-    // Assuming the eraser size is set correctly
-    /* const eraserSize = parseInt(this.currentEraserSize, 10)
-      this.context.beginPath()
-      this.context.arc(x, y, eraserSize / 2, 0, Math.PI * 2)
-      this.context.fill()
-    } */
-    /*
-      const eraserSize = parseInt(this.paintEraser.currentEraserSize)
-
-      this.context.save()
-      this.context.beginPath()
-      this.context.arc(x, y, eraserSize, 0, 2 * Math.PI) // Draw a circle
-      this.context.fillStyle = 'rgba(0,0,0,0)'
-      this.context.fill()
-      this.context.globalCompositeOperation = 'destination-out'
-      this.context.closePath()
-      this.context.restore()
-    } */
 
     /**
      * Handle colorize.
@@ -400,29 +378,16 @@ customElements.define('paint-app',
      * @param {string} hexColor - The hex color.
      */
     handleColorize (event, hexColor) {
-      console.log('handleColorize called with color:', hexColor)
-      console.log('Color Picker Current Color:', this.colorPicker.currentColor) // this.isColorizing = !this.isColorizing
       if (!this.currentColor) {
         console.error('No color selected')
         return
       }
-      // this.canvas.classList.toggle('colorizer-cursor', this.isColorizing)
-      // this.canvas.classList.toggle('pen-cursor', !this.isColorizing)
-      // this.canvas.classList.toggle('eraser-cursor', !this.isColorizing)
       const position = this.getMousePosition(event)
-      // Assuming the colorPicker's currentColor returns a string like "#ff0000"
-      // const hexColor = this.colorPicker.currentColor
 
       // Convert hex color to an RGBA object
       const rgbaColor = this.hexToRgba(hexColor)
-      console.log('Applying flood fill at position:', position, 'with color:', rgbaColor)
 
       this.floodFill(this.canvas, position.x, position.y, rgbaColor)
-      /*
-      this.canvas.addEventListener('click', (e) => {
-        const pos = this.getMousePosition(e)
-        this.fillCanvas(pos.x, pos.y, this.colorPicker.currentColor)
-      }, { once: true }) */
     }
 
     /**
@@ -435,7 +400,7 @@ customElements.define('paint-app',
       const r = parseInt(hexColor.slice(1, 3), 16)
       const g = parseInt(hexColor.slice(3, 5), 16)
       const b = parseInt(hexColor.slice(5, 7), 16)
-      return { r, g, b, a: 255 } // Assuming full opacity
+      return { r, g, b, a: 255 }
     }
 
     /**
@@ -451,11 +416,7 @@ customElements.define('paint-app',
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       const targetColor = this.getColorAtPixel(imageData, x, y)
 
-      console.log(`Target Color at (${x}, ${y}):`, targetColor)
-      console.log('Fill Color:', fillColor)
-
       if (this.colorsMatch(targetColor, fillColor)) {
-        console.log('Target color matches fill color. Flood fill aborted.')
         return
       }
 
@@ -480,7 +441,6 @@ customElements.define('paint-app',
       }
 
       ctx.putImageData(imageData, 0, 0)
-      console.log('Flood fill applied.')
     }
 
     /**
@@ -535,43 +495,6 @@ customElements.define('paint-app',
     colorsMatch (a, b) {
       return a.r === b.r && a.g === b.g && a.b === b.b && a.a === b.a
     }
-
-    /**
-     * Fill the canvas with a color.
-     *
-     * @param {number} x - The x coordinate.
-     * @param {number} y - The y coordinate.
-     * @param {string} fillColor - The color to fill the canvas with.
-     *
-    fillCanvas (x, y, fillColor) {
-      const canvasRect = this.canvas.getBoundingClientRect()
-      const imageData = this.context.getImageData(0, 0, canvasRect.width, canvasRect.height)
-      const data = imageData.data
-      const startPos = (y * imageData.width + x) * 4
-      const startColor = {
-        r: data[startPos],
-        g: data[startPos + 1],
-        b: data[startPos + 2],
-        a: data[startPos + 3]
-      }
-      // Simple flood fill algorithm
-      const stack = [[x, y]]
-      while (stack.length > 0) {
-        const [x, y] = stack.pop()
-        const pos = (y * imageData.width + x) * 4
-        if (data[pos] === startColor.r && data[pos + 1] === startColor.g && data[pos + 2] === startColor.b && data[pos + 3] === startColor.a) {
-          data[pos] = fillColor.r
-          data[pos + 1] = fillColor.g
-          data[pos + 2] = fillColor.b
-          data[pos + 3] = 255 // set alpha to opaque
-          stack.push([x + 1, y])
-          stack.push([x - 1, y])
-          stack.push([x, y + 1])
-          stack.push([x, y - 1])
-        }
-      }
-      this.context.putImageData(imageData, 0, 0)
-    } */
 
     /**
      * Clear the canvas.
