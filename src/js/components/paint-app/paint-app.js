@@ -113,6 +113,11 @@ customElements.define('paint-app',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #paintPen
+    #colorPicker
+    #paintEraser
+    #paintColorizer
+
     /**
      * Creates an instance of the current type.
      */
@@ -130,7 +135,6 @@ customElements.define('paint-app',
      */
     async connectedCallback () {
       await this.initializeElements()
-      console.log(this.paintEraser)
       this.addEventListeners()
       this.initializeCanvas()
     }
@@ -151,16 +155,17 @@ customElements.define('paint-app',
       this.restartButton = this.shadowRoot.getElementById('restart-button')
 
       // Initialize other elements
-      this.paintPen = this.shadowRoot.querySelector('paint-pen')
-      this.colorPicker = this.shadowRoot.querySelector('color-picker')
-      this.paintEraser = this.shadowRoot.querySelector('paint-eraser')
-      this.paintColorizer = this.shadowRoot.querySelector('paint-colorizer')
+      this.#paintPen = this.shadowRoot.querySelector('paint-pen')
+      this.#colorPicker = this.shadowRoot.querySelector('color-picker')
+      this.#paintEraser = this.shadowRoot.querySelector('paint-eraser')
+      this.#paintColorizer = this.shadowRoot.querySelector('paint-colorizer')
 
       // Set default values
       this.isDrawing = false
       this.isPenActive = false
-      this.defaultColor = '#cccccc'
-      this.context.strokeStyle = this.defaultColor
+      this.defaultColor = '#FFFFFF'
+      this.currentColor = this.defaultColor
+      this.context.strokeStyle = this.currentColor
       this.context.lineWidth = 5
       this.isErasing = false
       this.currentEraserSize = 30
@@ -180,41 +185,34 @@ customElements.define('paint-app',
       })
 
       // Pen size change event listener
-      this.paintPen.addEventListener('pen-size-change', (event) => {
+      this.#paintPen.addEventListener('pen-size-change', (event) => {
         this.context.lineWidth = event.detail
       })
 
       // Click event for pen button
-      this.penButton.addEventListener('click', (event) => {
-        this.isPenActive = true
-        this.isErasing = false
-        this.isColorizing = false
-        this.paintPen.changePenSize()
-        this.canvas.classList.add('pen-cursor')
-        this.canvas.classList.remove('eraser-cursor')
-        this.canvas.classList.remove('colorize-cursor')
+      this.penButton.addEventListener('click', () => {
+        this.activatePen()
+        this.#paintPen.changePenSize()
       })
 
       // Color change event listener
-      this.colorPicker.addEventListener('color-change', (event) => {
+      this.#colorPicker.addEventListener('color-change', (event) => {
         this.currentColor = event.detail
       })
 
       // Click event for color button
       this.colorButton.addEventListener('click', () => {
-        this.colorPicker.changeColor()
+        this.#colorPicker.changeColor()
       })
 
       // Click event for eraser button
       this.eraserButton.addEventListener('click', () => {
-        this.isPenActive = false
-        this.isColorizing = false
-        this.toggleEraserMode()
-        this.paintEraser.changeEraserSize()
+        this.activateEraser()
+        this.#paintEraser.changeEraserSize()
       })
 
       // Eraser size change event listener
-      this.paintEraser.addEventListener('eraser-size-change', (event) => {
+      this.#paintEraser.addEventListener('eraser-size-change', (event) => {
         this.currentEraserSize = event.detail
       })
 
@@ -224,9 +222,11 @@ customElements.define('paint-app',
         this.isErasing = false
         this.isColorizing = true
         this.canvas.classList.add('colorizer-cursor')
+        this.canvas.classList.remove('pen-cursor')
+        this.canvas.classList.remove('eraser-cursor')
         this.canvas.addEventListener('click', (event) => {
           if (this.isColorizing) {
-            const currentColor = this.colorPicker.currentColor
+            const currentColor = this.#colorPicker.currentColor
             this.handleColorize(event, currentColor)
             this.isColorizing = false
             this.canvas.classList.remove('colorizer-cursor')
@@ -264,10 +264,10 @@ customElements.define('paint-app',
      */
     setupCanvasEventListeners () {
       this.canvas.addEventListener('click', () => {
-        this.paintPen.hideSizeSelector()
-        this.paintEraser.hideSizeSelector()
-        this.colorPicker.hideColorPicker()
-        this.paintColorizer.hideColorizer()
+        this.#paintPen.hideSizeSelector()
+        this.#paintEraser.hideSizeSelector()
+        this.#colorPicker.hideColorPicker()
+        this.#paintColorizer.hideColorizer()
       })
 
       this.canvas.addEventListener('mousedown', (event) => {
@@ -313,6 +313,32 @@ customElements.define('paint-app',
       const rect = this.getBoundingClientRect()
       this.canvas.width = rect.width
       this.canvas.height = rect.height
+    }
+
+    /**
+     * Activate the pen.
+     */
+    activatePen () {
+      this.isPenActive = true
+      this.isErasing = false
+      this.isColorizing = false
+      this.context.globalCompositeOperation = 'source-over' // Reset to default drawing mode
+      this.context.strokeStyle = this.currentColor
+      this.canvas.classList.add('pen-cursor')
+      this.canvas.classList.remove('eraser-cursor')
+      this.canvas.classList.remove('colorize-cursor')
+    }
+
+    /**
+     * Activate the eraser.
+     */
+    activateEraser () {
+      this.isPenActive = false
+      this.isErasing = true
+      this.isColorizing = false
+      this.context.globalCompositeOperation = 'destination-out' // Set eraser mode
+      this.canvas.classList.add('eraser-cursor')
+      this.canvas.classList.remove('pen-cursor')
     }
 
     /**

@@ -89,13 +89,9 @@ customElements.define('app-window',
       this.#titleBar = this.shadowRoot.querySelector('.title-bar')
       this.#closeBtn = this.shadowRoot.querySelector('.close-btn')
 
-      // this.onMove = this.onMove.bind(this)
-      // this.onUp = this.onUp.bind(this)
       // Add event listeners
-      /* this.#appWindow.addEventListener('click', (e) => {
-        e.stopPropagation()
-      }) */
-      this.#closeBtn.addEventListener('click', () => {
+      this.#closeBtn.addEventListener('click', (event) => {
+        event.preventDefault()
         this.closeWindow()
       })
       this.#appWindow.addEventListener('mousedown', (event) => {
@@ -114,26 +110,6 @@ customElements.define('app-window',
         this.#isDragging = false
       })
     }
-    // this.#appWindow.addEventListener('mousemove', this.onMove)
-    // this.#appWindow.addEventListener('mouseup', this.onUp)
-
-    /* // Add dragging functionality
-      let isDragging = false
-      let xOffset = 0
-      let yOffset = 0
-
-      // this.#titleBar = this.#appWindow.querySelector('title-bar')
-      document.addEventListener('mousemove', (event) => {
-        if (isDragging) {
-          this.#appWindow.style.left = event.clientX + xOffset + 'px'
-          this.#appWindow.style.top = event.clientY + yOffset + 'px'
-        }
-      })
-
-      document.addEventListener('mouseup', (event) => {
-        isDragging = false
-      })
-    } */
 
     /**
      * Called after the element is inserted into the DOM.
@@ -209,7 +185,4 @@ customElements.define('app-window',
       console.log('closeWindow called')
       this.#appWindow.style.display = 'none'
     }
-    // ... other methods like minimize, maximize, etc.
-    // Add functionality to insert content into the window
-    // ...your code here...
   })

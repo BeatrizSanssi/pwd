@@ -33,6 +33,8 @@ customElements.define('paint-eraser',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #eraserSizeSelector
+    #eraserSize
     /**
      * Creates an instance of the current type.
      */
@@ -45,8 +47,8 @@ customElements.define('paint-eraser',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       // Get the eraser and eraser size selector in the shadow DOM
-      this.eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
-      this.eraserSize = this.shadowRoot.getElementById('eraser-size')
+      this.#eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
+      this.#eraserSize = this.shadowRoot.getElementById('eraser-size')
 
       this.currentEraserSize = 40
     }
@@ -55,7 +57,7 @@ customElements.define('paint-eraser',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.eraserSize.addEventListener('input', (event) => {
+      this.#eraserSize.addEventListener('input', (event) => {
         this.currentEraserSize = event.target.value
         this.dispatchEvent(new CustomEvent('eraser-size-change', {
           detail: this.currentEraserSize,
@@ -79,14 +81,14 @@ customElements.define('paint-eraser',
      * @param {event} event - The event.
      */
     changeEraserSize (event) {
-      const isDisplayed = this.eraserSizeSelector.style.display !== 'none'
-      this.eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
+      const isDisplayed = this.#eraserSizeSelector.style.display !== 'none'
+      this.#eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
      * Hide the eraser size selector.
      */
     hideSizeSelector () {
-      this.eraserSizeSelector.style.display = 'none'
+      this.#eraserSizeSelector.style.display = 'none'
     }
   })

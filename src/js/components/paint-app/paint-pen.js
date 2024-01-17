@@ -33,6 +33,8 @@ customElements.define('paint-pen',
    * Represents a pen element.
    */
   class extends HTMLElement {
+    #penSizeSelector
+    #penSize
     /**
      * Creates an instance of the current type.
      */
@@ -45,8 +47,8 @@ customElements.define('paint-pen',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       // Get the pen and pen size selector in the shadow DOM
-      this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
-      this.penSize = this.shadowRoot.getElementById('pen-size')
+      this.#penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
+      this.#penSize = this.shadowRoot.getElementById('pen-size')
 
       this.currentPenSize = 5
     }
@@ -55,7 +57,7 @@ customElements.define('paint-pen',
      * Called after the element is inserted into the DOM.
      */
     async connectedCallback () {
-      this.penSize.addEventListener('input', (event) => {
+      this.#penSize.addEventListener('input', (event) => {
         this.currentPenSize = event.target.value
         this.dispatchEvent(new CustomEvent('pen-size-change', {
           detail: this.currentPenSize,
@@ -79,14 +81,14 @@ customElements.define('paint-pen',
      * @param {event} event - The event.
      */
     changePenSize (event) {
-      const isDisplayed = this.penSizeSelector.style.display !== 'none'
-      this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
+      const isDisplayed = this.#penSizeSelector.style.display !== 'none'
+      this.#penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
      * Hide the eraser size selector.
      */
     hideSizeSelector () {
-      this.penSizeSelector.style.display = 'none'
+      this.#penSizeSelector.style.display = 'none'
     }
   })

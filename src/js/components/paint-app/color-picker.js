@@ -33,6 +33,7 @@ customElements.define('color-picker',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #colorPickerContainer
     /**
      * Creates an instance of the current type.
      */
@@ -45,8 +46,9 @@ customElements.define('color-picker',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       // Get the color picker container in the shadow DOM
-      this.colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
-      this.currentColor = '#000000'
+      this.#colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
+
+      this.currentColor = '#FFFFFF'
     }
 
     /**
@@ -66,8 +68,8 @@ customElements.define('color-picker',
      */
     changeColor (newColor) {
       this.currentColor = newColor
-      const isDisplayed = this.colorPickerContainer.style.display !== 'none'
-      this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
+      const isDisplayed = this.#colorPickerContainer.style.display !== 'none'
+      this.#colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
       this.dispatchEvent(new CustomEvent('color-change', { detail: this.currentColor }))
     }
 
@@ -75,6 +77,6 @@ customElements.define('color-picker',
      * Hide the color picker.
      */
     hideColorPicker () {
-      this.colorPickerContainer.style.display = 'none'
+      this.#colorPickerContainer.style.display = 'none'
     }
   })

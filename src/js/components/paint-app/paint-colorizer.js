@@ -33,6 +33,7 @@ customElements.define('paint-colorizer',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #colorizerContainer
     /**
      * Creates an instance of the current type.
      */
@@ -45,7 +46,7 @@ customElements.define('paint-colorizer',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       // Get the colorizer container in the shadow DOM
-      this.colorizerContainer = this.shadowRoot.querySelector('#colorizer-container')
+      this.#colorizerContainer = this.shadowRoot.querySelector('#colorizer-container')
     }
 
     /**
@@ -65,14 +66,14 @@ customElements.define('paint-colorizer',
      * @param {event} event - The event.
      */
     colorize (event) {
-      const isDisplayed = this.colorizerContainer.style.display !== 'none'
-      this.colorizerContainer.style.display = isDisplayed ? 'none' : 'block'
+      const isDisplayed = this.#colorizerContainer.style.display !== 'none'
+      this.#colorizerContainer.style.display = isDisplayed ? 'none' : 'block'
     }
 
     /**
      * Hide the colorizer.
      */
     hideColorizer () {
-      this.colorizerContainer.style.display = 'none'
+      this.#colorizerContainer.style.display = 'none'
     }
   })

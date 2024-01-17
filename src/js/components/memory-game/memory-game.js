@@ -90,7 +90,7 @@ template.innerHTML = `
 .modal {
     display: none;
     position: absolute;
-    top: 0;
+    top: 20%;
     left: 50%;
     z-index: 1000;
     transform: translate(-50%);
@@ -99,7 +99,7 @@ template.innerHTML = `
     overflow: auto;
     background-color: grey;
     color: white;
-    padding-top: 20px;
+    
     border-radius: 5px;
     border: 1px white solid;
   }
@@ -246,7 +246,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Called after the element is inserted into the DOM.
+     * Starts the game and sets the grid size.
      *
      * @param {string} gridSize - The size of the grid.
      */
@@ -294,7 +294,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Get a random subset of elements from an array.
+     * Gets a random subset of elements from an array.
      *
      * @param {Array} array - The original array.
      * @param {number} size - The size of the subset.
@@ -307,7 +307,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Shuffle the cards.
+     * Shuffles the cards.
      *
      * @param {Array} array - The array to shuffle.
      */
@@ -324,7 +324,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Create the memory grid.
+     * Creates the memory grid.
      */
     async createMemoryGrid () {
       this.#gameBoard.innerHTML = ''
@@ -364,6 +364,7 @@ customElements.define('memory-game',
             this.handleCardClick(cardInner)
           }
         })
+
         // Add click event listener to flip the card on click
         card.addEventListener('click', () =>
           this.handleCardClick(cardInner))
@@ -431,11 +432,13 @@ customElements.define('memory-game',
         this.firstCard.remove()
         this.secondCard.remove()
         this.resetBoard()
+
+        // Check if the game is won
+        this.gameWon()
       }, 1000)
+
       // Remove matched images from cardsArray
       this.cardsArray = this.cardsArray.filter(image => image !== this.firstCard.dataset.image)
-      // Check if the game is won
-      this.gameWon()
     }
 
     /**
@@ -458,7 +461,7 @@ customElements.define('memory-game',
       // Check if there are no more cards on the board
       if (this.cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
-        console.log('Winning message element:', winningMessageElement)
+        // console.log('Winning message element:', winningMessageElement)
         winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
 
         const modal = this.shadowRoot.getElementById('winningModal')
