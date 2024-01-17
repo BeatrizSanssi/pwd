@@ -64,7 +64,7 @@ customElements.define('paint-eraser',
       this.eraserSize.addEventListener('input', (event) => {
         console.log('Eraser size changed:', event.target.value)
         this.currentEraserSize = event.target.value
-        this.dipatchEvent(new CustomEvent('eraser-size-change', {
+        this.dispatchEvent(new CustomEvent('eraser-size-change', {
           detail: this.currentEraserSize,
           bubbles: true
         }))
@@ -94,7 +94,7 @@ customElements.define('paint-eraser',
      * @param {event} event - The event.
      */
     changeEraserSize (event) {
-      // this.context.lineWidth = event.target.value
+      // this.currentEraserSize = newSize
       const isDisplayed = this.eraserSizeSelector.style.display !== 'none'
       this.eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }

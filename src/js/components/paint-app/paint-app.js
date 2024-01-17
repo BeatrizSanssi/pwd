@@ -146,10 +146,12 @@ customElements.define('paint-app',
 
       // Set default values
       this.isDrawing = false
+      this.isPenActive = false
       this.defaultColor = '#cccccc'
       this.context.strokeStyle = this.defaultColor
       this.context.lineWidth = 5
       this.isErasing = false
+      this.currentEraserSize = 5
     }
 
     /**
@@ -166,11 +168,11 @@ customElements.define('paint-app',
 
       // Click event for pen button
       this.penButton.addEventListener('click', (event) => {
-        // event.preventDefault()
-        // event.stopPropagation()
-
+        this.isPenActive = true
+        this.isErasing = false
         this.paintPen.changePenSize()
         this.canvas.classList.add('pen-cursor')
+        this.canvas.classList.remove('eraser-cursor')
       })
 
       // Color change event listener
@@ -189,14 +191,18 @@ customElements.define('paint-app',
 
       // Eraser button event listener
       this.eraserButton.addEventListener('click', () => {
-        this.paintEraser.changeEraserSize()
+        this.isPenActive = false
         this.toggleEraserMode()
+        this.paintEraser.changeEraserSize()
       })
 
-      // Handle eraser size change
+      // Eraser size change event listener
       this.paintEraser.addEventListener('eraser-size-change', (event) => {
-        this.context.lineWidth = event.detail
-        console.log('Eraser size set to:', event.detail) // Debugging line
+        this.currentEraserSize = event.detail
+        console.log('Eraser size set to:', this.currentEraserSize)
+        // this.context.lineWidth = event.detail
+        // this.paintEraser.changeEraserSize(event.detail)
+        // console.log('Eraser size set to:', event.detail) // Debugging line
       })
 
       // Canvas event listeners
@@ -235,9 +241,13 @@ customElements.define('paint-app',
       })
 
       this.canvas.addEventListener('mousemove', (event) => {
+        const { x, y } = this.getMousePosition(event)
         if (this.isDrawing) {
-          const { x, y } = this.getMousePosition(event)
-          this.isErasing ? this.erase(x, y) : this.draw(x, y)
+          if (this.isErasing) {
+            this.erase(x, y)
+          } else {
+            this.draw(x, y)
+          }
         }
       })
     }
@@ -281,7 +291,7 @@ customElements.define('paint-app',
      * @param {number} y - The y coordinate.
      */
     draw (x, y) {
-      if (!this.isDrawing) return
+      if (!this.isDrawing || !this.isPenActive) return
       console.log('Drawing...')
 
       this.context.lineTo(x, y)
@@ -294,18 +304,11 @@ customElements.define('paint-app',
      * Toggle the eraser.
      */
     toggleEraserMode () {
-      console.log('Toggling eraser mode. Is erasing: ', this.isErasing)
-      if (this.isErasing) {
-        this.context.globalCompositeOperation = 'source-over' // For normal drawing
-        this.isErasing = false
-        this.canvas.classList.remove('eraser-cursor')
-        this.canvas.classList.add('pen-cursor')
-      } else {
-        this.context.globalCompositeOperation = 'destination-out' // For erasing
-        this.isErasing = true
-        this.canvas.classList.add('eraser-cursor')
-        this.canvas.classList.remove('pen-cursor')
-      }
+      this.isErasing = !this.isErasing
+      this.context.globalCompositeOperation = this.isErasing ? 'destination-out' : 'source-over'
+      this.canvas.classList.toggle('eraser-cursor', this.isErasing)
+      this.canvas.classList.toggle('pen-cursor', !this.isErasing)
+      console.log('Eraser mode:', this.isErasing)
     }
 
     /**
@@ -316,10 +319,33 @@ customElements.define('paint-app',
      */
     erase (x, y) {
       if (!this.isErasing) return
-      // Erasing logic (similar to drawing but with 'destination-out' composite operation)
-      this.context.lineTo(x, y)
-      this.context.stroke()
+
+      const eraserSize = parseInt(this.currentEraserSize, 10)
+      console.log('Eraser size:', eraserSize)
+
+      this.context.save()
+      this.context.globalCompositeOperation = 'destination-out'
       this.context.beginPath()
-      this.context.moveTo(x, y)
+      this.context.arc(x, y, eraserSize / 2, 0, Math.PI * 2)
+      this.context.fill()
+      this.context.restore()
     }
+    // Assuming the eraser size is set correctly
+    /* const eraserSize = parseInt(this.currentEraserSize, 10)
+      this.context.beginPath()
+      this.context.arc(x, y, eraserSize / 2, 0, Math.PI * 2)
+      this.context.fill()
+    } */
+    /*
+      const eraserSize = parseInt(this.paintEraser.currentEraserSize)
+
+      this.context.save()
+      this.context.beginPath()
+      this.context.arc(x, y, eraserSize, 0, 2 * Math.PI) // Draw a circle
+      this.context.fillStyle = 'rgba(0,0,0,0)'
+      this.context.fill()
+      this.context.globalCompositeOperation = 'destination-out'
+      this.context.closePath()
+      this.context.restore()
+    } */
   })
