@@ -185,10 +185,6 @@ customElements.define('paint-app',
         this.colorPicker.changeColor()
       })
 
-      this.colorButton.addEventListener('click', () => {
-        this.canvas.classList.remove('pen-cursor')
-      })
-
       // Eraser button event listener
       this.eraserButton.addEventListener('click', () => {
         this.isPenActive = false
@@ -231,6 +227,7 @@ customElements.define('paint-app',
       this.canvas.addEventListener('click', () => {
         this.paintPen.hideSizeSelector()
         this.paintEraser.hideSizeSelector()
+        this.colorPicker.hideColorPicker()
       })
 
       this.canvas.addEventListener('mousedown', (event) => {

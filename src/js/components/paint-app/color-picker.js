@@ -69,4 +69,11 @@ customElements.define('color-picker',
       const isDisplayed = this.colorPickerContainer.style.display !== 'none'
       this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
     }
+
+    /**
+     * Hide the color picker.
+     */
+    hideColorPicker () {
+      this.colorPickerContainer.style.display = 'none'
+    }
   })
