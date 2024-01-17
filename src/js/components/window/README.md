@@ -11,11 +11,6 @@ The App Window is a custom web component designed to create movable and closable
 - **Customizable Content**: The window's content can be dynamically added.
 - **Title Bar**: Features a title bar that displays the window's title and serves as a drag handle.
 
-- **Movable Window**: Users can drag and move the window around the screen.
-- **Closable Window**: Features a close button for hiding the window.
-- **Customizable Content**: Dynamic content can be added to the window.
-- **Title Bar**: Includes a title bar that displays the window's title and can be used to drag the window.
-
 ## Installation
 
 To use the App Window in your project, you can either install it via npm or include the `app-window.js` file directly.
@@ -45,6 +40,19 @@ To use the App Window in your project, import the `app-window.js` file and then 
 - `addContent(element, title)`: Adds content to the window and sets the title.
 - `openWindow()`: Opens and displays the window.
 - `closeWindow()`: Closes and hides the window.
+
+## Event Listeners
+
+The App Window component uses event listeners to provide interactive features:
+
+- **Mouse Events for Dragging**: Listens for `mousedown`, `mousemove`, and `mouseup` events to enable the dragging functionality. Users can move the window around by clicking and dragging the title bar.
+- `mousedown` on the title bar initiates the drag action.
+- `mousemove` updates the window's position on the screen.
+- `mouseup` releases the window and stops the dragging action.
+
+- **Click Event for Closing**: The close button listens for a click event. When clicked, it triggers the `closeWindow()` method, hiding the window from view.
+
+- **Content Addition Event**: Custom events can be dispatched to dynamically add content to the window. The `addContent(element, title)` method listens for these events, allowing content to be updated programmatically.
 
 ## Customization
 

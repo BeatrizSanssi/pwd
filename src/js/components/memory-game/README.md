@@ -47,15 +47,15 @@ Integrating the Memory Game into your web project is straightforward. Follow the
 
 ## Event Listeners
 
-- Card Click: Flips a card when clicked and checks for matches or mismatches.
-- Start Game Button: Begins a new game with the selected grid size.
-- Close Button on Modal: Closes the winning modal and offers a new game option.
+- **Card Click**: Flips a card when clicked and checks for matches or mismatches.
+- **Start Game Button**: Begins a new game with the selected grid size.
+- **Close Button on Modal**: Closes the winning modal and offers a new game option.
 
 ## Customization
 
 ### Card Images
 
-Change the cardImages array within the component to customize the images on the cards.
+Change the `cardImages` array within the component to customize the images on the cards.
 
 ### Styling
 

@@ -6,11 +6,17 @@ The Paint App is a custom web component that provides a simple canvas for drawin
 
 ### Features
 
-- Drawing with adjustable pen size.
-- Eraser tool with adjustable size.
-- Color picker for selecting drawing colors.
-- Colorize tool for filling areas with color.
-- Restart button to clear the canvas.
+- **Adjustable Drawing Pen**: Offers a customizable pen tool for varied line thickness, ideal for both detailed drawing and broad strokes.
+
+- **Adjustable Eraser**: Includes an eraser with adjustable size, perfect for precise corrections or erasing larger areas.
+
+- **Color Picker**: A built-in color palette allows users to choose from a variety of colors.
+
+- **Colorizing Tool**: The Paint Colorizer enables easy filling of specific canvas areas with the selected color.
+
+- **Restart Button**: A single-click button to clear the canvas, providing a clean slate for new creations or for trying out different ideas.
+
+- **Responsive Canvas**: The canvas responds fluidly to user inputs, offering a smooth drawing experience with accurate tracking of mouse or touch interactions.
 
 ### Usage
 
@@ -35,6 +41,22 @@ Integrating the Paint App into your web project is straightforward. Follow these
 </body>
 </html>
 ```
+
+## Methods
+
+- `startDrawing(x, y)`: Initializes the drawing process at the specified x and y coordinates on the canvas.
+- `draw(x, y)`: Continues the drawing path to the specified x and y coordinates.
+- `erase(x, y)`: Erases content on the canvas at the specified x and y coordinates.
+- `handleColorize(event, hexColor)`: Fills an area on the canvas with a specified color.
+- `clearCanvas()`: Clears all content from the canvas.
+
+## Event Listeners
+
+The Paint App uses various event listeners for interactive functionality:
+
+- **Canvas Mouse Events**: Listens to `mousedown`, `mouseup`, `mousemove` on the canvas for drawing and erasing.
+- **Tool Button Clicks**: Detects clicks on tool buttons like the eraser, color picker, and restart button.
+- **Color Change**: Listens for changes in color selection from the color picker.
 
 ## Components
 
