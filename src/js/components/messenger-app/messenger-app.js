@@ -73,11 +73,13 @@ template.innerHTML = `
 .sent-message {
   text-align: right;
   font-style: normal;
+  padding: 5px;
 }
 
 .received-message {
   text-align: left;
   font-style: italic;
+  padding: 5px;
 }
 
 .message-time {
@@ -140,6 +142,9 @@ customElements.define('messenger-app',
       this.#emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       this.socket = null
       this.messageBuffer = []
+      this.messageSound = new Audio('js/components/messenger-app/messageSound.mp3')
+      this.logInSound = new Audio('js/components/messenger-app/logInSound.mp3')
+      this.sendMessageSound = new Audio('js/components/messenger-app/sendMessageSound.mp3')
 
       // Add event listener
       this.#emojiPicker.addEventListener('emojiSelected', (event) => {
@@ -200,6 +205,7 @@ customElements.define('messenger-app',
      */
     onSubmit () {
       this.startMessengerApp()
+      this.logInSound.play()
     }
 
     /**
@@ -264,6 +270,7 @@ customElements.define('messenger-app',
 
         this.socket.send(data)
         this.messageInput.value = ''
+        this.sendMessageSound.play()
       }
     }
 
@@ -280,6 +287,13 @@ customElements.define('messenger-app',
 
       // Add new message to the buffer
       this.messageBuffer.push(message)
+
+      // Get the current user's nickname
+      const nickname = localStorage.getItem('nickname')
+
+      if (message.type === 'message' && message.username !== nickname) {
+        this.messageSound.play()
+      }
 
       // Keep only the latest 20 messages
       if (this.messageBuffer.length > 20) {
