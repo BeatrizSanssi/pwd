@@ -21,7 +21,7 @@ template.innerHTML = `
 <div id="paint-eraser">
     <!-- Eraser -->
     <div id="eraser-size-selector" style="display: none;">
-        <input type="range" id="eraser-size" min="5" max="20" value="10">
+        <input type="range" id="eraser-size" min="5" max="100" value="40">
     </div>
 </div>   
 `
@@ -48,7 +48,7 @@ customElements.define('paint-eraser',
       this.eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
       this.eraserSize = this.shadowRoot.getElementById('eraser-size')
 
-      this.currentEraserSize = 10
+      this.currentEraserSize = 40
     }
 
     /**

@@ -161,7 +161,7 @@ customElements.define('paint-app',
       this.context.strokeStyle = this.defaultColor
       this.context.lineWidth = 5
       this.isErasing = false
-      this.currentEraserSize = 5
+      this.currentEraserSize = 30
       this.isColorizing = false
     }
 
