@@ -279,7 +279,8 @@ customElements.define('messenger-app',
           type: 'message',
           data: message,
           username: nickname,
-          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
+          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd',
+          timestamp: new Date()
         })
 
         this.socket.send(data)
@@ -304,6 +305,9 @@ customElements.define('messenger-app',
 
       // Get the current user's nickname
       const nickname = localStorage.getItem('nickname')
+
+      // Add a timestamp to the message
+      message.timestamp = new Date()
 
       if (message.type === 'message' && message.username !== nickname) {
         this.messageSound.play()
@@ -333,7 +337,7 @@ customElements.define('messenger-app',
         const isSentByCurrentUser = message.username === this.username
 
         // Format date and time
-        const dateTime = new Date().toLocaleString('sv-SE')
+        const dateTime = message.timestamp.toLocaleString('sv-SE')
 
         // Apply different styles based on the sender
         if (isSentByCurrentUser) {
