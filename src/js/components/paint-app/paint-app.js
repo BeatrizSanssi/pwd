@@ -8,6 +8,7 @@
 import './paint-pen.js'
 import './color-picker.js'
 import './paint-eraser.js'
+import './paint-colorizer.js'
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
@@ -89,6 +90,7 @@ template.innerHTML = `
           <!-- Colorize Button -->
           <button class="tool-button" id="colorize-button">
               <img src="js/components/paint-app/img/colorize.svg" class="tool-icon" alt="Colorize"/>
+              <paint-colorizer></paint-colorizer>
           </button>
 
           <!-- Restart Button -->
@@ -136,13 +138,17 @@ customElements.define('paint-app',
       this.canvas = this.shadowRoot.getElementById('paint-canvas')
       this.context = this.canvas.getContext('2d')
 
-      // Initialize other elements
+      // Initialize buttons
       this.penButton = this.shadowRoot.getElementById('pen-button')
       this.colorButton = this.shadowRoot.getElementById('color-button')
       this.eraserButton = this.shadowRoot.getElementById('eraser-button')
+      this.colorizeButton = this.shadowRoot.getElementById('colorize-button')
+
+      // Initialize other elements
       this.paintPen = this.shadowRoot.querySelector('paint-pen')
       this.colorPicker = this.shadowRoot.querySelector('color-picker')
       this.paintEraser = this.shadowRoot.querySelector('paint-eraser')
+      this.paintColorizer = this.shadowRoot.querySelector('paint-colorizer')
 
       // Set default values
       this.isDrawing = false
@@ -173,6 +179,7 @@ customElements.define('paint-app',
         this.paintPen.changePenSize()
         this.canvas.classList.add('pen-cursor')
         this.canvas.classList.remove('eraser-cursor')
+        this.canvas.classList.remove('colorize-cursor')
       })
 
       // Color change event listener
@@ -199,6 +206,13 @@ customElements.define('paint-app',
         // this.context.lineWidth = event.detail
         // this.paintEraser.changeEraserSize(event.detail)
         // console.log('Eraser size set to:', event.detail) // Debugging line
+      })
+
+      // Colorize button event listener
+      this.colorizeButton.addEventListener('click', () => {
+        this.isPenActive = false
+        this.isErasing = false
+        this.handleColorize()
       })
 
       // Canvas event listeners
@@ -228,6 +242,7 @@ customElements.define('paint-app',
         this.paintPen.hideSizeSelector()
         this.paintEraser.hideSizeSelector()
         this.colorPicker.hideColorPicker()
+        this.paintColorizer.hideColorizer()
       })
 
       this.canvas.addEventListener('mousedown', (event) => {
@@ -349,5 +364,67 @@ customElements.define('paint-app',
       this.context.globalCompositeOperation = 'destination-out'
       this.context.closePath()
       this.context.restore()
+    } */
+
+    /**
+     * Handle colorize.
+     *
+     * @param {event} event - The event.
+     */
+    handleColorize (event) {
+      const currentColor = this.colorPicker.currentColor
+      this.fillCanvasWithColor(currentColor)
+      /*
+      this.canvas.addEventListener('click', (e) => {
+        const pos = this.getMousePosition(e)
+        this.fillCanvas(pos.x, pos.y, this.colorPicker.currentColor)
+      }, { once: true }) */
+    }
+
+    /**
+     * Fill the canvas with a color.
+     *
+     * @param {string} color - The color to fill the canvas with.
+     */
+    fillCanvasWithColor (color) {
+      this.context.fillStyle = color
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    }
+
+    /**
+     * Fill the canvas with a color.
+     *
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
+     * @param {string} fillColor - The color to fill the canvas with.
+     *
+    fillCanvas (x, y, fillColor) {
+      const canvasRect = this.canvas.getBoundingClientRect()
+      const imageData = this.context.getImageData(0, 0, canvasRect.width, canvasRect.height)
+      const data = imageData.data
+      const startPos = (y * imageData.width + x) * 4
+      const startColor = {
+        r: data[startPos],
+        g: data[startPos + 1],
+        b: data[startPos + 2],
+        a: data[startPos + 3]
+      }
+      // Simple flood fill algorithm
+      const stack = [[x, y]]
+      while (stack.length > 0) {
+        const [x, y] = stack.pop()
+        const pos = (y * imageData.width + x) * 4
+        if (data[pos] === startColor.r && data[pos + 1] === startColor.g && data[pos + 2] === startColor.b && data[pos + 3] === startColor.a) {
+          data[pos] = fillColor.r
+          data[pos + 1] = fillColor.g
+          data[pos + 2] = fillColor.b
+          data[pos + 3] = 255 // set alpha to opaque
+          stack.push([x + 1, y])
+          stack.push([x - 1, y])
+          stack.push([x, y + 1])
+          stack.push([x, y - 1])
+        }
+      }
+      this.context.putImageData(imageData, 0, 0)
     } */
   })
