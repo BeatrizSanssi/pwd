@@ -44,6 +44,7 @@ customElements.define('paint-colorizer',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
+      // Get the colorizer container in the shadow DOM
       this.colorizerContainer = this.shadowRoot.querySelector('#colorizer-container')
     }
 
@@ -64,7 +65,6 @@ customElements.define('paint-colorizer',
      * @param {event} event - The event.
      */
     colorize (event) {
-      // this.context.strokeStyle = event.target.value
       const isDisplayed = this.colorizerContainer.style.display !== 'none'
       this.colorizerContainer.style.display = isDisplayed ? 'none' : 'block'
     }

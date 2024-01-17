@@ -44,7 +44,7 @@ customElements.define('paint-eraser',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      // this.eraser = this.shadowRoot.querySelector('#eraser')
+      // Get the eraser and eraser size selector in the shadow DOM
       this.eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
       this.eraserSize = this.shadowRoot.getElementById('eraser-size')
 
@@ -55,28 +55,13 @@ customElements.define('paint-eraser',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      // Add event listener to eraser
-      /* this.eraser = this.shadowRoot.querySelector('#eraser')
-      this.eraser.addEventListener('click', (event) => {
-        this.dipatchEvent(new CustomEvent('eraser-change', { detail: event.target.value }))
-        this.toggleEraser()
-      }) */
       this.eraserSize.addEventListener('input', (event) => {
-        console.log('Eraser size changed:', event.target.value)
         this.currentEraserSize = event.target.value
         this.dispatchEvent(new CustomEvent('eraser-size-change', {
           detail: this.currentEraserSize,
           bubbles: true
         }))
       })
-      /* this.eraserButton.addEventListener('click', () => {
-        this.toggleEraser()
-        this.isErasing = false
-      }) */
-
-      /* // Add event listeners
-      this.eraser.addEventListener('click', this.toggleEraser.bind(this))
-      this.eraserSize.addEventListener('input', this.setEraserSize.bind(this)) */
     }
 
     /**
@@ -94,7 +79,6 @@ customElements.define('paint-eraser',
      * @param {event} event - The event.
      */
     changeEraserSize (event) {
-      // this.currentEraserSize = newSize
       const isDisplayed = this.eraserSizeSelector.style.display !== 'none'
       this.eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }

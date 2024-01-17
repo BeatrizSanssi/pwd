@@ -44,6 +44,7 @@ customElements.define('color-picker',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
+      // Get the color picker container in the shadow DOM
       this.colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
       this.currentColor = '#000000'
     }
@@ -53,7 +54,7 @@ customElements.define('color-picker',
      */
     connectedCallback () {
       this.colorInput = this.shadowRoot.querySelector('#color-input')
-      this.colorInput.addEventListener('change', (event) => {
+      this.colorInput.addEventListener('change', () => {
         this.changeColor(this.colorInput.value)
       })
     }
@@ -65,8 +66,6 @@ customElements.define('color-picker',
      */
     changeColor (newColor) {
       this.currentColor = newColor
-      console.log('Color selected:', newColor)
-      // this.context.strokeStyle = event.target.value
       const isDisplayed = this.colorPickerContainer.style.display !== 'none'
       this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
       this.dispatchEvent(new CustomEvent('color-change', { detail: this.currentColor }))

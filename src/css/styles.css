@@ -2,14 +2,13 @@ body, html {
     margin: 0;
 	width: 100%;
     height: 100%;
-   
-	background-color: rgb(76, 99, 76);
+	background-color: #ddffc0;
     background-image: linear-gradient(rgb(73, 89, 55), #ddffc0);
     background-repeat: no-repeat;
 }
 
 #desktop {
-    max-height: 100%;
+    height: 100%;
     position: relative;
 }
 

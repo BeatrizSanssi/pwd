@@ -10,13 +10,12 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #pen {
-
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
-    gap: 10px;
-    width: 80%;
-    border-radius: 4px;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 10px;
+  gap: 10px;
+  width: 80%;
+  border-radius: 4px;
 }
 </style>
 <div id="pen">
@@ -48,9 +47,8 @@ customElements.define('paint-pen',
       // Get the pen and pen size selector in the shadow DOM
       this.penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
       this.penSize = this.shadowRoot.getElementById('pen-size')
-      // this.color = '#cccccc'
+
       this.currentPenSize = 5
-      // this.isDrawing = false
     }
 
     /**
@@ -58,7 +56,6 @@ customElements.define('paint-pen',
      */
     async connectedCallback () {
       this.penSize.addEventListener('input', (event) => {
-        console.log('Pen size changed:', event.target.value)
         this.currentPenSize = event.target.value
         this.dispatchEvent(new CustomEvent('pen-size-change', {
           detail: this.currentPenSize,
@@ -66,15 +63,6 @@ customElements.define('paint-pen',
         }))
       })
     }
-
-    /**
-     * Get the current color of the pen.
-     *
-     * @returns {string} The current color of the pen.
-     *
-    getCurrentColor () {
-      return this.color
-    } */
 
     /**
      * Get the current size of the pen.
@@ -91,7 +79,6 @@ customElements.define('paint-pen',
      * @param {event} event - The event.
      */
     changePenSize (event) {
-      // this.context.lineWidth = event.target.value
       const isDisplayed = this.penSizeSelector.style.display !== 'none'
       this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
