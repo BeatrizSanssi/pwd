@@ -95,4 +95,11 @@ customElements.define('paint-pen',
       const isDisplayed = this.penSizeSelector.style.display !== 'none'
       this.penSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
+
+    /**
+     * Hide the eraser size selector.
+     */
+    hideSizeSelector () {
+      this.penSizeSelector.style.display = 'none'
+    }
   })

@@ -98,4 +98,11 @@ customElements.define('paint-eraser',
       const isDisplayed = this.eraserSizeSelector.style.display !== 'none'
       this.eraserSizeSelector.style.display = isDisplayed ? 'none' : 'block'
     }
+
+    /**
+     * Hide the eraser size selector.
+     */
+    hideSizeSelector () {
+      this.eraserSizeSelector.style.display = 'none'
+    }
   })

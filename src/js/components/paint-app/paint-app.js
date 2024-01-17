@@ -228,6 +228,11 @@ customElements.define('paint-app',
      * Setup canvas event listeners.
      */
     setupCanvasEventListeners () {
+      this.canvas.addEventListener('click', () => {
+        this.paintPen.hideSizeSelector()
+        this.paintEraser.hideSizeSelector()
+      })
+
       this.canvas.addEventListener('mousedown', (event) => {
         event.stopPropagation()
         this.isDrawing = true
