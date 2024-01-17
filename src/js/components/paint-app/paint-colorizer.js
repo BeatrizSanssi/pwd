@@ -21,6 +21,7 @@ template.innerHTML = `
 <div id="paint-colorizer">
     <!-- Colorizer -->
     <div id="colorizer-container" style="display: none;">
+        <input type="color" id="paint-colorizer-input">
     </div>
 </div>
 `

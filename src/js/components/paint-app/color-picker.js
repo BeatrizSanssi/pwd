@@ -10,7 +10,6 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #color-picker {
-    
     color: rgb(76, 99, 76);
     padding: 10px;
     margin: 10px;
@@ -22,7 +21,7 @@ template.innerHTML = `
 <div id="color-picker">
     <!-- Color Picker -->
     <div id="color-picker-container" style="display: none;">
-        <input type="color" id="color-picker">
+        <input type="color" id="color-input">
     </div>
 </div>
 `
@@ -46,28 +45,31 @@ customElements.define('color-picker',
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
       this.colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
+      this.currentColor = '#000000'
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.colorPicker = this.shadowRoot.querySelector('#color-picker')
-      this.colorPicker.addEventListener('change', (event) => {
-        this.dispatchEvent(new CustomEvent('color-change', { detail: event.target.value }))
-        this.changeColor(event)
+      this.colorInput = this.shadowRoot.querySelector('#color-input')
+      this.colorInput.addEventListener('change', (event) => {
+        this.changeColor(this.colorInput.value)
       })
     }
 
     /**
      * Change the color of the pen.
      *
-     * @param {event} event - The event.
+     * @param {string} newColor - The new color.
      */
-    changeColor (event) {
+    changeColor (newColor) {
+      this.currentColor = newColor
+      console.log('Color selected:', newColor)
       // this.context.strokeStyle = event.target.value
       const isDisplayed = this.colorPickerContainer.style.display !== 'none'
       this.colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
+      this.dispatchEvent(new CustomEvent('color-change', { detail: this.currentColor }))
     }
 
     /**

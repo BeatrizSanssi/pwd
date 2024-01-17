@@ -181,6 +181,7 @@ customElements.define('paint-app',
       this.penButton.addEventListener('click', (event) => {
         this.isPenActive = true
         this.isErasing = false
+        this.isColorizing = false
         this.paintPen.changePenSize()
         this.canvas.classList.add('pen-cursor')
         this.canvas.classList.remove('eraser-cursor')
@@ -189,7 +190,10 @@ customElements.define('paint-app',
 
       // Color change event listener
       this.colorPicker.addEventListener('color-change', (event) => {
-        this.context.strokeStyle = event.detail
+        this.currentColor = event.detail
+        console.log('Color changed to:', this.currentColor)
+        // this.context.strokeStyle = event.detail
+        // console.log('Color set to:', event.detail)
       })
 
       // Click event for color button
@@ -200,6 +204,7 @@ customElements.define('paint-app',
       // Click event for eraser button
       this.eraserButton.addEventListener('click', () => {
         this.isPenActive = false
+        this.isColorizing = false
         this.toggleEraserMode()
         this.paintEraser.changeEraserSize()
       })
@@ -217,8 +222,16 @@ customElements.define('paint-app',
       this.colorizeButton.addEventListener('click', () => {
         this.isPenActive = false
         this.isErasing = false
-        this.handleColorize()
-        this.canvas.addEventListener('click', (event) => this.handleColorize(event), { once: true })
+        this.isColorizing = true
+        this.canvas.classList.add('colorizer-cursor')
+        this.canvas.addEventListener('click', (event) => {
+          if (this.isColorizing) {
+            const currentColor = this.colorPicker.currentColor
+            this.handleColorize(event, currentColor)
+            this.isColorizing = false
+            this.canvas.classList.remove('colorizer-cursor')
+          }
+        }, { once: true })
       })
 
       // Canvas event listeners
@@ -316,6 +329,7 @@ customElements.define('paint-app',
     draw (x, y) {
       if (!this.isDrawing || !this.isPenActive) return
       console.log('Drawing...')
+      this.context.strokeStyle = this.currentColor
 
       this.context.lineTo(x, y)
       this.context.stroke()
@@ -376,20 +390,45 @@ customElements.define('paint-app',
      * Handle colorize.
      *
      * @param {event} event - The event.
+     * @param {string} hexColor - The hex color.
      */
-    handleColorize (event) {
-      this.isColorizing = !this.isColorizing
-      this.canvas.classList.toggle('colorizer-cursor', this.isColorizing)
-      this.canvas.classList.toggle('pen-cursor', !this.isColorizing)
-      this.canvas.classList.toggle('eraser-cursor', !this.isColorizing)
-      const currentColor = this.colorPicker.currentColor
-      const pos = this.getMousePosition(event)
-      this.floodFill(this.canvas, pos.x, pos.y, currentColor)
+    handleColorize (event, hexColor) {
+      console.log('handleColorize called with color:', hexColor)
+      console.log('Color Picker Current Color:', this.colorPicker.currentColor) // this.isColorizing = !this.isColorizing
+      if (!this.currentColor) {
+        console.error('No color selected')
+        return
+      }
+      // this.canvas.classList.toggle('colorizer-cursor', this.isColorizing)
+      // this.canvas.classList.toggle('pen-cursor', !this.isColorizing)
+      // this.canvas.classList.toggle('eraser-cursor', !this.isColorizing)
+      const position = this.getMousePosition(event)
+      // Assuming the colorPicker's currentColor returns a string like "#ff0000"
+      // const hexColor = this.colorPicker.currentColor
+
+      // Convert hex color to an RGBA object
+      const rgbaColor = this.hexToRgba(hexColor)
+      console.log('Applying flood fill at position:', position, 'with color:', rgbaColor)
+
+      this.floodFill(this.canvas, position.x, position.y, rgbaColor)
       /*
       this.canvas.addEventListener('click', (e) => {
         const pos = this.getMousePosition(e)
         this.fillCanvas(pos.x, pos.y, this.colorPicker.currentColor)
       }, { once: true }) */
+    }
+
+    /**
+     * Convert hex color to an RGBA object.
+     *
+     * @param {string} hexColor - The hex color.
+     * @returns {object} The RGBA object.
+     */
+    hexToRgba (hexColor) {
+      const r = parseInt(hexColor.slice(1, 3), 16)
+      const g = parseInt(hexColor.slice(3, 5), 16)
+      const b = parseInt(hexColor.slice(5, 7), 16)
+      return { r, g, b, a: 255 } // Assuming full opacity
     }
 
     /**
@@ -401,33 +440,40 @@ customElements.define('paint-app',
      * @param {string} fillColor - The color to fill the canvas with.
      */
     floodFill (canvas, x, y, fillColor) {
-      // Get the image data for the entire canvas
       const ctx = canvas.getContext('2d')
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       const targetColor = this.getColorAtPixel(imageData, x, y)
 
-      // Check if the target position is already filled with the target color
+      console.log(`Target Color at (${x}, ${y}):`, targetColor)
+      console.log('Fill Color:', fillColor)
+
       if (this.colorsMatch(targetColor, fillColor)) {
+        console.log('Target color matches fill color. Flood fill aborted.')
         return
       }
 
-      const pixelsToCheck = [x, y]
+      const pixelsToCheck = [[x, y]]
       while (pixelsToCheck.length > 0) {
-        const y = pixelsToCheck.pop()
-        const x = pixelsToCheck.pop()
+        const [currentX, currentY] = pixelsToCheck.pop()
 
-        const currentColor = this.getColorAtPixel(imageData, x, y)
+        // Boundary check
+        if (currentX < 0 || currentX >= canvas.width || currentY < 0 || currentY >= canvas.height) {
+          continue
+        }
+
+        const currentColor = this.getColorAtPixel(imageData, currentX, currentY)
         if (this.colorsMatch(currentColor, targetColor)) {
-          this.setColorAtPixel(imageData, x, y, fillColor)
+          this.setColorAtPixel(imageData, currentX, currentY, fillColor)
 
-          pixelsToCheck.push(x + 1, y)
-          pixelsToCheck.push(x - 1, y)
-          pixelsToCheck.push(x, y + 1)
-          pixelsToCheck.push(x, y - 1)
+          pixelsToCheck.push([currentX + 1, currentY])
+          pixelsToCheck.push([currentX - 1, currentY])
+          pixelsToCheck.push([currentX, currentY + 1])
+          pixelsToCheck.push([currentX, currentY - 1])
         }
       }
 
       ctx.putImageData(imageData, 0, 0)
+      console.log('Flood fill applied.')
     }
 
     /**
@@ -439,6 +485,9 @@ customElements.define('paint-app',
      * @returns {object} The color at the pixel.
      */
     getColorAtPixel (imageData, x, y) {
+      x = Math.floor(x)
+      y = Math.floor(y)
+
       const { width, data } = imageData
       const index = (y * width + x) * 4
       return {
@@ -458,12 +507,15 @@ customElements.define('paint-app',
      * @param {string} color - The color to fill the canvas with.
      */
     setColorAtPixel (imageData, x, y, color) {
+      x = Math.floor(x)
+      y = Math.floor(y)
+
       const { width, data } = imageData
       const index = (y * width + x) * 4
       data[index] = color.r
       data[index + 1] = color.g
       data[index + 2] = color.b
-      data[index + 3] = 255 // Fully opaque
+      data[index + 3] = color.a
     }
 
     /**
