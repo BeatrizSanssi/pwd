@@ -65,6 +65,10 @@ template.innerHTML = `
 .eraser-cursor {
   cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAADaklEQVRYR+2XWchPQRiHvw/ZJZQt8SnZS2TJkr7kRrhCWRJS9iX77kJ2kbVwgSQSF4oQ4kJJtpTsiZCdRPb1+WWGcb6zzfn/1Xfhracz58y87/zmPXNm5hQWlDIrLGV6Cv6FoPYM8iB8hWOwGq6lHXi+BfWm40PwDE5AMdSHH3AERsPDOHH5FDSQjvbAKpjpdFqGsoSuhyJ4C2Ngd5iwfAkaQfBtMAD2x2SgPHXTYQGoPBk2uu3zIWgUAbdAJzgX9zoCdc24Pwo1Qa/1nepzFTTejLA515seYmzTshQ0+e9Do1wFTSDABmgCdzKIkcslaAtLYV4ugibirEmqtN/KIEZv5jYUgbJUCT5mFTQOx02gL+dwBjEV8HkKW42Ynlzb2Di+c0jryGbjrBQr1T5Wm8aPYBZowfwMTeFeFkHDcdoe6F0TconhS4Ky1tRfgUmgudcd9kI91y9thvrjtC+hQ82JsXAStDK7ptdy3BGjuheg55d9BdlgCXr+qtbXMxfOwHzQyj0N1phW+rK0BtUJBk3KkE2zj5iwtnN4uNypeEW5G5TYdOME1TJpzSpGq7c+ghUw2wnSj/JiaBEWOEqQNkStCwraBdp5qNL80TaiOXMVujq+ekWPoSq89xGkDVIjkd0AbZo1YKXpLGogL6lvCNpGGsDvBY9yZXgDneF81ADDAku9jghB+8QDrT1roTEsNEIrmob6CgfDE9DrVqcdTV05E3MQ1wNRYvQ8TNApnhfHOVF3FoaBtg2tvOpQW8Bz0LFC1go0adWHMjcVdiTELSGoGg5Ka1rTPFNGlSX5ae7JvhuBKuuEuAi0VSRaMEOaiFp3fEyD0Emxj+N0kXIHuAvLQB9HKnMFaZQfUnn9aWQzoasbS3F0rxNhqszYkG6QXTwc4inoNO2nwIUQv5E807HWy6wgvftvXp6/GmuNWQf69XFtKDcaoLdZQfoCdBzwNX1ZwYEkHfRj+7CCXtOquqcarcLaFnY6fn0p678ss1lBWoV1LtY1rfWiof6trE8PylrDcrLgZ6/tQu/err5xwetSqVVZ5vsLFBk3ak9SB1pbtEWEmRY7nf6UpZZwPae0OM5J5yFlSkeHGaDN0ZqOD9rX9C/1IF9iFCdJkNtXFW60eeqYqp1c/2M+20wq3T6CUgXMtdF/QUkZ/AnZ7JYliRnM9gAAAABJRU5ErkJggg==') 4 28, auto;
 }
+
+.colorizer-cursor {
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVHhe7ZixTcRAEEWdEVLClUBICYSUcCUQEpJRBmUQXkhICZRASAr/ByNZ1sfePVv27Ow86SVGZ+374g58Q5IkSZIkSWPcw3d4gc+80BMP8Af+jnyDXaDiuxlhLt5sbgS+fxm2REm82cwIL5AHZtjcCDXxpvsRLN78b4Rr4k23I0zjzekIa+LNV+iOM1SHpTbCFvHmDXTH0ghbxdNb6JK5EbbS/Ych/wyqg28h/1V2+etvnOAXVIdfa8ZDt2Q8VIdfa/Px/MRmhPrZkiHiCSNqRwgTb9SMEC7eKB3hEbrl2nijZAR7dnDH2niDX36q1491N8JW8XfwG6p7THUzwhHx5uEj7BXP+6jr9AMewl7xfIQm6lH6Ex7y7L93vDEeobt4g9e7jT+UjIfqwDTjC8h4qO5BM94bXceTruOJOjDtIp6oQ/OLihKajyfq4CWPniHiiTo8nRshTDxRAaYaIVQ8URFjxyOEiycqZCpHeILh4omKqbXZeKKCamw6nqioUpuPJyqsxBDxRMUtGSY+SZIkSZKoDMMfLk4snvGAk3oAAAAASUVORK5CYII=') 4 28, auto;
+}
 </style>
 <div id="paint-app">
     <canvas id="paint-canvas"></canvas>
@@ -158,6 +162,7 @@ customElements.define('paint-app',
       this.context.lineWidth = 5
       this.isErasing = false
       this.currentEraserSize = 5
+      this.isColorizing = false
     }
 
     /**
@@ -192,7 +197,7 @@ customElements.define('paint-app',
         this.colorPicker.changeColor()
       })
 
-      // Eraser button event listener
+      // Click event for eraser button
       this.eraserButton.addEventListener('click', () => {
         this.isPenActive = false
         this.toggleEraserMode()
@@ -208,11 +213,12 @@ customElements.define('paint-app',
         // console.log('Eraser size set to:', event.detail) // Debugging line
       })
 
-      // Colorize button event listener
+      // Click event for colorize button
       this.colorizeButton.addEventListener('click', () => {
         this.isPenActive = false
         this.isErasing = false
         this.handleColorize()
+        this.canvas.addEventListener('click', (event) => this.handleColorize(event), { once: true })
       })
 
       // Canvas event listeners
@@ -372,8 +378,13 @@ customElements.define('paint-app',
      * @param {event} event - The event.
      */
     handleColorize (event) {
+      this.isColorizing = !this.isColorizing
+      this.canvas.classList.toggle('colorizer-cursor', this.isColorizing)
+      this.canvas.classList.toggle('pen-cursor', !this.isColorizing)
+      this.canvas.classList.toggle('eraser-cursor', !this.isColorizing)
       const currentColor = this.colorPicker.currentColor
-      this.fillCanvasWithColor(currentColor)
+      const pos = this.getMousePosition(event)
+      this.floodFill(this.canvas, pos.x, pos.y, currentColor)
       /*
       this.canvas.addEventListener('click', (e) => {
         const pos = this.getMousePosition(e)
@@ -382,13 +393,88 @@ customElements.define('paint-app',
     }
 
     /**
-     * Fill the canvas with a color.
+     * Fill the canvas or a drawing with a color.
      *
+     * @param {object} canvas - The canvas.
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
+     * @param {string} fillColor - The color to fill the canvas with.
+     */
+    floodFill (canvas, x, y, fillColor) {
+      // Get the image data for the entire canvas
+      const ctx = canvas.getContext('2d')
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const targetColor = this.getColorAtPixel(imageData, x, y)
+
+      // Check if the target position is already filled with the target color
+      if (this.colorsMatch(targetColor, fillColor)) {
+        return
+      }
+
+      const pixelsToCheck = [x, y]
+      while (pixelsToCheck.length > 0) {
+        const y = pixelsToCheck.pop()
+        const x = pixelsToCheck.pop()
+
+        const currentColor = this.getColorAtPixel(imageData, x, y)
+        if (this.colorsMatch(currentColor, targetColor)) {
+          this.setColorAtPixel(imageData, x, y, fillColor)
+
+          pixelsToCheck.push(x + 1, y)
+          pixelsToCheck.push(x - 1, y)
+          pixelsToCheck.push(x, y + 1)
+          pixelsToCheck.push(x, y - 1)
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0)
+    }
+
+    /**
+     * Get the color at a pixel.
+     *
+     * @param {object} imageData - The image data.
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
+     * @returns {object} The color at the pixel.
+     */
+    getColorAtPixel (imageData, x, y) {
+      const { width, data } = imageData
+      const index = (y * width + x) * 4
+      return {
+        r: data[index],
+        g: data[index + 1],
+        b: data[index + 2],
+        a: data[index + 3]
+      }
+    }
+
+    /**
+     * Set the color at a pixel.
+     *
+     * @param {object} imageData - The image data.
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
      * @param {string} color - The color to fill the canvas with.
      */
-    fillCanvasWithColor (color) {
-      this.context.fillStyle = color
-      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    setColorAtPixel (imageData, x, y, color) {
+      const { width, data } = imageData
+      const index = (y * width + x) * 4
+      data[index] = color.r
+      data[index + 1] = color.g
+      data[index + 2] = color.b
+      data[index + 3] = 255 // Fully opaque
+    }
+
+    /**
+     * Check if two colors match.
+     *
+     * @param {object} a - The first color.
+     * @param {object} b - The second color.
+     * @returns {boolean} True if the colors match, false otherwise.
+     */
+    colorsMatch (a, b) {
+      return a.r === b.r && a.g === b.g && a.b === b.b && a.a === b.a
     }
 
     /**
