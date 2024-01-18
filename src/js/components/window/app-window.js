@@ -115,7 +115,7 @@ customElements.define('app-window',
      * Called after the element is inserted into the DOM.
      */
     async connectedCallback () {
-      this.openWindow()
+      await this.openWindow()
     }
 
     /**

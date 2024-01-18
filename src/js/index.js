@@ -115,6 +115,12 @@ customElements.define('desktop-app',
           this.openAppWindow(appName)
         }
       })
+      // Focus the window when it's clicked
+      this.shadowRoot.addEventListener('click', event => {
+        if (event.target.matches('app-window')) {
+          this.setFocus(event.target)
+        }
+      })
     }
 
     /**
@@ -208,14 +214,45 @@ customElements.define('desktop-app',
         return
       }
 
+      // Add the app to the window
       if (appElement) {
         appWindow.addContent(appElement, title)
-
         const desktop = this.shadowRoot.getElementById('desktop')
         desktop.appendChild(appWindow)
+        this.openWindows.push(appWindow)
+        this.setFocus(appWindow)
       } else {
         console.error(`Failed to create ${appName} element`)
       }
+    }
+
+    /**
+     * Set focus to the window.
+     *
+     * @param {HTMLElement} appWindow - The window to set focus to.
+     */
+    setFocus (appWindow) {
+      const highestZIndex = this.getHighestZIndex()
+      this.openWindows.forEach(window => {
+        window.style.zIndex = 100 // Reset z-index for all windows
+        appWindow.style.zIndex = highestZIndex + 1 // Bring the focused window to front
+      })
+    }
+
+    /**
+     * Get the highest z-index of all open windows.
+     *
+     * @returns {number} The highest z-index.
+     */
+    getHighestZIndex () {
+      let maxZIndex = 100 // Start from base z-index
+      this.openWindows.forEach(win => {
+        const zIndex = parseInt(win.style.zIndex)
+        if (!isNaN(zIndex) && zIndex > maxZIndex) {
+          maxZIndex = zIndex
+        }
+      })
+      return maxZIndex
     }
     // Append the new window with the app to the desktop
     // this.shadowRoot.getElementById('desktop').appendChild(newWindow)
