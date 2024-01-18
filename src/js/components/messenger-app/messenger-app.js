@@ -200,6 +200,20 @@ customElements.define('messenger-app',
         this.#nicknameForm.innerHTML = ''
       })
 
+      // Prevent elements from being dragged
+      this.#nicknameForm.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+      this.messageInput.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+      this.#emojiPicker.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+      this.sendButton.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+
       // Set attribute to make the elements focusable
       this.messageInput.setAttribute('tabindex', '0')
       this.sendButton.setAttribute('tabindex', '0')
@@ -271,7 +285,7 @@ customElements.define('messenger-app',
     /**
      * Sends a message.
      */
-    sendMessage () {
+    async sendMessage () {
       const message = this.messageInput.value
       const nickname = localStorage.getItem('nickname')
 
@@ -284,7 +298,7 @@ customElements.define('messenger-app',
           timestamp: new Date()
         })
 
-        this.socket.send(data)
+        await this.socket.send(data)
         this.messageInput.value = ''
         this.sendMessageSound.play()
       }
@@ -295,7 +309,7 @@ customElements.define('messenger-app',
      *
      * @param {object} message - The message object.
      */
-    handleIncomingMessage (message) {
+    async handleIncomingMessage (message) {
       if (message.type === 'heartbeat') {
         // Ignore heartbeats
         return
@@ -320,7 +334,7 @@ customElements.define('messenger-app',
       }
 
       // Update the message list
-      this.displayMessages()
+      await this.displayMessages()
     }
 
     /**
