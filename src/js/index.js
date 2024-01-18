@@ -83,6 +83,8 @@ customElements.define('desktop-app',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
+
+      this.openWindows = []
     }
     /*
       // Initialize the components and elements.
@@ -213,8 +215,16 @@ customElements.define('desktop-app',
         console.error('Desktop App: Failed to create app element for:', appName)
         return
       }
+      // Set initial position for the new window
+      appWindow.style.position = 'absolute'
+      appWindow.style.left = '150px'
+      appWindow.style.top = '150px'
 
-      // Add the app to the window
+      // If you want to offset each window slightly
+      appWindow.style.left = `${150 + 40 * this.openWindows.length}px`
+      appWindow.style.top = `${150 + 40 * this.openWindows.length}px`
+
+      // Add the app to the window and set focus
       if (appElement) {
         appWindow.addContent(appElement, title)
         const desktop = this.shadowRoot.getElementById('desktop')
