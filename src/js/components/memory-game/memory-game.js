@@ -10,32 +10,32 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 .memory-grid {
-    display: grid;
-    clear: both;
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 20px;
-    margin: 30px;
+  display: grid;
+  clear: both;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px;
+  margin: 30px;
 }
 
 .memory-card {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    perspective: 1000px;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  perspective: 1000px;
 }
 
 .card-inner {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
-    transform: rotateY(0deg);
-    cursor: pointer;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  transform: rotateY(0deg);
+  cursor: pointer;
 }
 
 .card-inner.flipped {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
   
 .front, .back {
@@ -95,42 +95,42 @@ template.innerHTML = `
 }
 
 .modal {
-    display: none;
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    z-index: 1000;
-    transform: translate(-50%);
-    width: fit-content;
-    height: fit-content;
-    overflow: auto;
-    background-color: grey;
-    color: white;
-    
-    border-radius: 5px;
-    border: 1px white solid;
-  }
+  display: none;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  z-index: 1000;
+  transform: translate(-50%);
+  width: fit-content;
+  height: fit-content;
+  overflow: auto;
+  background-color: grey;
+  color: white;
+  
+  border-radius: 5px;
+  border: 1px white solid;
+}
 
-  .modal-content {
-    font-size: 20px;
-    background-color: grey;
-    margin: 5% auto;
-    padding: 20px;
-    width: 80%;
-  }
+.modal-content {
+  font-size: 20px;
+  background-color: grey;
+  margin: 5% auto;
+  padding: 20px;
+  width: 80%;
+}
 
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
   }
   
 </style>
@@ -219,22 +219,19 @@ customElements.define('memory-game',
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
       this.gameControls = this.shadowRoot.getElementById('game-controls')
-      this.attemptsElement = this.shadowRoot.getElementById('attempts')
-      this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
-      this.attemptCountElement.textContent = this.attemptCount
-      this.timerDisplay = this.shadowRoot.getElementById('timer-display')
-      this.timerText = this.shadowRoot.querySelector('#timer-text')
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     async connectedCallback () {
-      console.log('Memory Game: connectedCallback called')
-
+      this.attemptsElement = this.shadowRoot.getElementById('attempts')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
-      console.log('Attempt Count Element:', this.attemptCountElement)
-      if (this.attemptCountElement && this.timerElement) {
+      this.attemptCountElement.textContent = this.attemptCount
+      this.timerDisplay = this.shadowRoot.getElementById('timer-display')
+      this.timerText = this.shadowRoot.querySelector('#timer-text')
+
+      if (this.attemptCountElement && this.timerDisplay) {
         this.attemptCountElement.innerText = ''
         this.timerText.innerText = ''
       } else {
@@ -244,6 +241,7 @@ customElements.define('memory-game',
         this.shuffle(this.cardsArray)
       }
 
+      // Add eventlistener to the close button
       const modal = this.shadowRoot.getElementById('winningModal')
       const closeButton = this.shadowRoot.querySelector('.close')
       closeButton.addEventListener('click', () => {
@@ -256,6 +254,7 @@ customElements.define('memory-game',
         const gridSize = this.#gridSizeSelector.value
         this.startGame(gridSize)
       })
+
       this.attemptsElement.style.display = 'none'
       this.timerDisplay.style.display = 'none'
     }
@@ -267,11 +266,13 @@ customElements.define('memory-game',
      */
     async startGame (gridSize) {
       this.gameControls.style.display = 'none'
+
       // Show the attempts div and initialize attempt count
       this.attemptsElement.style.display = 'block'
       this.attemptCount = 0
       this.attemptCountElement.textContent = this.attemptCount
       this.gameStarted = true
+
       // Initialize and start the timer
       this.timerDisplay.style.display = 'block'
       this.timerText.textContent = 'Time: 0'
@@ -338,7 +339,7 @@ customElements.define('memory-game',
       if (mins > 0) {
         readableTime += `${mins} minute${mins > 1 ? 's' : ''} `
       }
-      if (secs > 0 || readableTime === '') { // Also handles the case of 0 seconds
+      if (secs > 0 || readableTime === '') {
         readableTime += `${secs} second${secs !== 1 ? 's' : ''}`
       }
 
@@ -447,6 +448,14 @@ customElements.define('memory-game',
           this.handleCardClick(cardInner))
         this.#gameBoard.appendChild(card)
       })
+
+      // Prevent the game board from being dragged
+      this.#memoryGrid.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
+      this.gameControls.addEventListener('mousedown', (event) => {
+        event.stopPropagation()
+      })
     }
 
     /**
@@ -481,7 +490,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Increment and update the attempt count.
+     * Increments and updates the attempt count.
      */
     incrementAttemptCount () {
       this.attemptCount++
@@ -489,7 +498,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Check for match.
+     * Checks for match.
      */
     checkForMatch () {
       const isMatch = this.firstCard.dataset.image === this.secondCard.dataset.image
@@ -501,7 +510,7 @@ customElements.define('memory-game',
     }
 
     /**
-     * Disable cards.
+     * Disables cards.
      */
     disableCards () {
       // Remove the cards from the DOM after a short delay
@@ -512,7 +521,7 @@ customElements.define('memory-game',
 
         // Check if the game is won
         this.gameWon()
-      }, 1000)
+      }, 500)
 
       // Remove matched images from cardsArray
       this.cardsArray = this.cardsArray.filter(image => image !== this.firstCard.dataset.image)

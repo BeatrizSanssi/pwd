@@ -4,6 +4,7 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  * @version 1.0.0
  */
+
 import '../js/components/memory-game/index.js'
 import '../js/components/messenger-app/index.js'
 import '../js/components/paint-app/index.js'
@@ -51,7 +52,9 @@ template.innerHTML = `
   top: 30px;
   left: 30px;
 }
+
 </style>
+
 <div id="desktop">
   <!-- Icons in the dock to open windows -->
   <div id="dock">
@@ -100,6 +103,7 @@ customElements.define('desktop-app',
           this.openAppWindow(appName)
         }
       })
+
       // Focus the window when it's clicked
       this.shadowRoot.addEventListener('click', event => {
         if (event.target.matches('app-window')) {
@@ -131,8 +135,8 @@ customElements.define('desktop-app',
 
       // Position the tooltip below the icon
       tooltip.style.position = 'absolute'
-      tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px` // Center horizontally
-      tooltip.style.top = `${rect.bottom + window.scrollY + 10}px` // Position below the icon, adjust with scrollY for scrolling
+      tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`
+      tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`
 
       tooltip.style.visibility = 'visible'
     }
@@ -156,8 +160,6 @@ customElements.define('desktop-app',
      * @param {string} appName - The name of the app to open.
      */
     openAppWindow (appName) {
-      console.log('openWindow called with:', appName)
-
       // Create a new window
       const appWindow = document.createElement('app-window')
 
@@ -172,20 +174,16 @@ customElements.define('desktop-app',
         appElement = document.createElement('paint-app')
       }
 
-      console.log('Created app element:', appElement)
       switch (appName) {
         case 'memoryGame':
-          console.log('Desktop App: Creating memory-game element')
           appElement = document.createElement('memory-game')
           title = 'Memory Game'
           break
         case 'messengerApp':
-          console.log('Desktop App: Creating messenger-app element')
           appElement = document.createElement('messenger-app')
           title = 'Messenger App'
           break
         case 'paintApp':
-          console.log('Desktop App: Creating paint-app element')
           appElement = document.createElement('paint-app')
           title = 'Paint App'
           break
@@ -198,12 +196,13 @@ customElements.define('desktop-app',
         console.error('Desktop App: Failed to create app element for:', appName)
         return
       }
+
       // Set initial position for the new window
       appWindow.style.position = 'absolute'
       appWindow.style.left = '150px'
       appWindow.style.top = '150px'
 
-      // If you want to offset each window slightly
+      // Offset each window
       appWindow.style.left = `${150 + 40 * this.openWindows.length}px`
       appWindow.style.top = `${150 + 40 * this.openWindows.length}px`
 

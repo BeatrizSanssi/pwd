@@ -9,44 +9,44 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-  #nickname-form {
-    font-family: 'NT Adventure';
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    justify-self: center;
-    padding: 10px;
-    margin: 10px;
-    max-width: 500px;
-  }
+#nickname-form {
+  font-family: 'NT Adventure';
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  justify-self: center;
+  padding: 10px;
+  margin: 10px;
+  max-width: 500px;
+}
 
-  #nickname-form p {
-    padding: 10px;
-    max-width: 800px;
-    justify-self: center;
-    color: rgb(76, 99, 76);
-    font-size: 20px;
-  }
+#nickname-form p {
+  padding: 10px;
+  max-width: 800px;
+  justify-self: center;
+  color: rgb(76, 99, 76);
+  font-size: 20px;
+}
 
-  button {
-    background-color: rgb(76, 99, 76);
-    color: white;
-    font-family: 'NT Adventure';
-    max-width: fit-content;
-    font-size: 20px;
-  }
+button {
+  background-color: rgb(76, 99, 76);
+  color: white;
+  font-family: 'NT Adventure';
+  max-width: fit-content;
+  font-size: 20px;
+}
 
-  input {
-    font-family: 'NT Adventure';
-    color: rgb(76, 99, 76);
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    justify-self: center;
-    margin: 10px;
-    padding: 0px;
-    max-width: 100px;
-  }
+input {
+  font-family: 'NT Adventure';
+  color: rgb(76, 99, 76);
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  justify-self: center;
+  margin: 10px;
+  padding: 0px;
+  max-width: 100px;
+}
 
 </style>
 <form id="nickname-form">
@@ -106,7 +106,7 @@ customElements.define('nickname-form',
     }
 
     /**
-     * Clear the nickname input field.
+     * Clears the nickname input field.
      */
     clearForm () {
       this.#nickname.value = ''

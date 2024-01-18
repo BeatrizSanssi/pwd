@@ -7,60 +7,61 @@
 
 import './nickname-form.js'
 import './emoji-picker.js'
+
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #messenger-app {
-    font-family: 'NT Adventure';
-    background-color: rgb(76, 99, 76);
-    align-items: center;
-    color: white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 15px;
-    border: 1px solid black;
-    width: 500px;
-    max-height: 100%;
+  font-family: 'NT Adventure';
+  background-color: rgb(76, 99, 76);
+  align-items: center;
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  border: 1px solid black;
+  width: 500px;
+  max-height: 100%;
 }
 
 #messages {
-    font-family: 'NT Adventure';
-    background-color: white;
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
-    width: 80%;
-    max-height: 300px;
-    overflow-y: auto;
+  font-family: 'NT Adventure';
+  background-color: white;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 10px;
+  width: 80%;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 #message-input {
-    font-family: 'NT Adventure';
-    background-color: white;
-    color: rgb(76, 99, 76);
-    padding: 9px;
-    margin: 8px;
-    width: 80%;
-    height: 90%;
+  font-family: 'NT Adventure';
+  background-color: white;
+  color: rgb(76, 99, 76);
+  padding: 9px;
+  margin: 8px;
+  width: 80%;
+  height: 90%;
 }
 
 .close {
-    color: gray;
-    float: right;
-    font-size: 40px;
-    font-weight: bold;
-    margin: 10px;
-  }
+  color: gray;
+  float: right;
+  font-size: 40px;
+  font-weight: bold;
+  margin: 10px;
+}
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
 
 .message {
   padding: 5px;
@@ -114,15 +115,13 @@ template.innerHTML = `
 </style>
 <nickname-form></nickname-form>
 <div id="messenger-app">
-<span class="close">&times;</span>
+  <span class="close">&times;</span>
     <div id="messages"></div>
     <textarea id="message-input"></textarea>
     <emoji-picker></emoji-picker>
     <button id="send-button">Send</button>
 </div>
-
 `
-
 /*
  * Define custom element.
  */
@@ -156,6 +155,8 @@ customElements.define('messenger-app',
       this.#emojiPicker = this.shadowRoot.querySelector('emoji-picker')
       this.socket = null
       this.messageBuffer = []
+
+      // Create audio elements
       this.messageSound = new Audio('js/components/messenger-app/messenger-sounds/messageSound.mp3')
       this.logInSound = new Audio('js/components/messenger-app/messenger-sounds/logInSound.mp3')
       this.sendMessageSound = new Audio('js/components/messenger-app/messenger-sounds/sendMessageSound.mp3')
@@ -170,15 +171,16 @@ customElements.define('messenger-app',
     /**
      * Called after the element is inserted into the DOM.
      */
-    connectedCallback () {
+    async connectedCallback () {
       // Add event listener to nickname form
       this.#nicknameForm.addEventListener('nicknameSubmitted', (event) => {
         const nickname = event.detail.nickname
         console.log(`Nickname submitted: ${nickname}`)
         this.onSubmit()
       })
+
       this.initializeWebSocket()
-      this.hideMessengerComponents()
+      await this.hideMessengerComponents()
       this.messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
       this.sendButton = this.shadowRoot.getElementById('send-button')
@@ -205,7 +207,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Hide the messenger components.
+     * Hides the messenger components and displays the nickname form.
      */
     hideMessengerComponents () {
       this.#nicknameForm.style.display = 'block'
@@ -214,16 +216,15 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Handles the click event when the Start Quiz button is clicked.
-     * Starts the quiz, displays the next question, and starts the timer.
+     * Starts the messenger app when the nickname is submitted.
      */
-    onSubmit () {
-      this.startMessengerApp()
+    async onSubmit () {
+      await this.startMessengerApp()
       this.logInSound.play()
     }
 
     /**
-     * Start the messenger app.
+     * Hides the nickname form and displays the messenger app elements.
      */
     startMessengerApp () {
       this.#nicknameForm.style.display = 'none'
@@ -232,7 +233,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Initialize the WebSocket connection.
+     * Initializes the WebSocket connection.
      */
     initializeWebSocket () {
       this.socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
@@ -258,7 +259,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Insert an emoji into the message input.
+     * Inserts an emoji into the message input.
      *
      * @param {string} emoji - The emoji to insert.
      */
@@ -268,7 +269,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Send a message.
+     * Sends a message.
      */
     sendMessage () {
       const message = this.messageInput.value
@@ -290,7 +291,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Handle incoming message.
+     * Handles incoming message.
      *
      * @param {object} message - The message object.
      */
@@ -323,7 +324,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Display messages.
+     * Displays messages.
      */
     displayMessages () {
       this.#messages.innerHTML = ''
@@ -362,7 +363,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Scroll messages to bottom.
+     * Scrolls messages to bottom.
      */
     scrollMessagesToBottom () {
       setTimeout(() => {
@@ -371,7 +372,7 @@ customElements.define('messenger-app',
     }
 
     /**
-     * Handle input keydown.
+     * Handles input keydown.
      *
      * @param {Event} event - The event.
      */

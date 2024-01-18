@@ -36,16 +36,17 @@ template.innerHTML = `
   justify-content: center;
 }
   
-.close-btn {
+.close-button {
   margin: 5px;
   float: right;
   cursor: pointer;
 }
 
 </style>
+
 <div class="app-window">
   <div class="title-bar"></div>
-    <button class="close-btn">Close</button>
+    <button class="close-button">Close</button>
   <div class="content"></div>
 </div>
 `
@@ -72,7 +73,7 @@ customElements.define('app-window',
      *
      * @type {HTMLButtonElement}
      */
-    #closeBtn
+    #closeButton
     /**
      * Creates an instance of the current type.
      */
@@ -87,18 +88,20 @@ customElements.define('app-window',
       // Get the window element in the shadow root.
       this.#appWindow = this.shadowRoot.querySelector('.app-window')
       this.#titleBar = this.shadowRoot.querySelector('.title-bar')
-      this.#closeBtn = this.shadowRoot.querySelector('.close-btn')
+      this.#closeButton = this.shadowRoot.querySelector('.close-button')
 
       // Add event listeners
-      this.#closeBtn.addEventListener('click', (event) => {
+      this.#closeButton.addEventListener('click', (event) => {
         event.preventDefault()
         this.closeWindow()
       })
+
       this.#appWindow.addEventListener('mousedown', (event) => {
         this.#isDragging = true
         this.#startX = event.clientX - this.#appWindow.offsetLeft
         this.#startY = event.clientY - this.#appWindow.offsetTop
       })
+
       document.addEventListener('mousemove', (event) => {
         if (this.#isDragging) {
           this.#appWindow.style.left = (event.clientX - this.#startX) + 'px'
@@ -119,12 +122,12 @@ customElements.define('app-window',
     }
 
     /**
-     * Insert content into the window.
+     * Inserts content into the window.
      *
      * @param {Element} element - The element to insert.
      * @param {string} title - The title of the window.
      */
-    async addContent (element, title) {
+    addContent (element, title) {
       const contentDiv = this.shadowRoot.querySelector('.content')
       const titleBar = this.shadowRoot.querySelector('.title-bar')
 
@@ -147,42 +150,44 @@ customElements.define('app-window',
     }
 
     /**
-     * Open the window.
+     * Opens the window.
+     *
+     * @param {Element} element - The element to insert.
+     * @param {string} title - The title of the window.
      */
-    async openWindow () {
+    async openWindow (element, title) {
       this.#appWindow.style.display = 'block'
-      this.#closeBtn.style.display = 'block'
+      this.#closeButton.style.display = 'block'
       this.#titleBar.style.display = 'block'
-      await this.addContent()
+      if (element && title) {
+        await this.addContent(element, title)
+      }
     }
 
     /**
-     * Start dragging the window.
+     * Starts dragging the window.
      *
      * @param {MouseEvent} event - The event object.
      */
     onMove (event) {
-      console.log('onMove called')
       this.#appWindow.style.left = event.clientX + 'px'
       this.#appWindow.style.top = event.clientY + 'px'
     }
 
     /**
-     * Stop dragging the window.
+     * Stops dragging the window.
      *
      * @param {MouseEvent} event - The event object.
      */
     onUp (event) {
-      console.log('onUp called')
       this.#appWindow.style.left = event.clientX + 'px'
       this.#appWindow.style.top = event.clientY + 'px'
     }
 
     /**
-     * Close the window.
+     * Closes the window.
      */
     closeWindow () {
-      console.log('closeWindow called')
       this.#appWindow.style.display = 'none'
     }
   })

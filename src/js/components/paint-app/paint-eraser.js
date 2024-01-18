@@ -10,12 +10,12 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #paint-eraser {
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
-    gap: 10px;
-    width: 80%;
-    border-radius: 4px;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 10px;
+  gap: 10px;
+  width: 80%;
+  border-radius: 4px;
 }
 </style>
 <div id="paint-eraser">
@@ -50,6 +50,7 @@ customElements.define('paint-eraser',
       this.#eraserSizeSelector = this.shadowRoot.getElementById('eraser-size-selector')
       this.#eraserSize = this.shadowRoot.getElementById('eraser-size')
 
+      // Set the default eraser size to 40
       this.currentEraserSize = 40
     }
 
@@ -67,7 +68,7 @@ customElements.define('paint-eraser',
     }
 
     /**
-     * Get the current size of the erasor.
+     * Gets the current size of the erasor.
      *
      * @returns {number} The current size of the erasor.
      */
@@ -76,7 +77,7 @@ customElements.define('paint-eraser',
     }
 
     /**
-     * Change the size of the eraser.
+     * Changes the size of the eraser.
      *
      * @param {event} event - The event.
      */
@@ -86,7 +87,7 @@ customElements.define('paint-eraser',
     }
 
     /**
-     * Hide the eraser size selector.
+     * Hides the eraser size selector.
      */
     hideSizeSelector () {
       this.#eraserSizeSelector.style.display = 'none'

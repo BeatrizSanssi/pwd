@@ -10,12 +10,12 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #color-picker {
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
-    gap: 10px;
-    width: 80%;
-    border-radius: 4px;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 10px;
+  gap: 10px;
+  width: 80%;
+  border-radius: 4px;
 }
 </style>
 <div id="color-picker">
@@ -48,6 +48,7 @@ customElements.define('color-picker',
       // Get the color picker container in the shadow DOM
       this.#colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
 
+      // Set the default color to white
       this.currentColor = '#FFFFFF'
     }
 
@@ -62,7 +63,7 @@ customElements.define('color-picker',
     }
 
     /**
-     * Change the color of the pen.
+     * Changes the color of the pen.
      *
      * @param {string} newColor - The new color.
      */
@@ -74,7 +75,7 @@ customElements.define('color-picker',
     }
 
     /**
-     * Hide the color picker.
+     * Hides the color picker.
      */
     hideColorPicker () {
       this.#colorPickerContainer.style.display = 'none'

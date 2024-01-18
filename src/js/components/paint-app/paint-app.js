@@ -9,6 +9,7 @@ import './paint-pen.js'
 import './color-picker.js'
 import './paint-eraser.js'
 import './paint-colorizer.js'
+
 // Define template.
 const template = document.createElement('template')
 template.innerHTML = `
@@ -58,6 +59,7 @@ template.innerHTML = `
   height: 24px;
 }
 
+/** ------- Cursors -------**/
 .pen-cursor {
   cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAABJklEQVRYR+3WoQ7CMBAG4A2D4Y1QPARBEYJBoEAhECRIFA4DeN4Az0sQnoBnQAD/CE1I0/buul2Z2JLLlnXbfbneuuVZjba8RpaswfhmQ7MyQyRdIU6IJacdtDBjJN8jWl/EFvs5BdLAjJD0+AMxBhKkgeki+xnRcVRig3OLFD3TR5IL4o4IgdoYf7hAVVXG9MgNSXoB0A5jU83K2M169YAOOD9BPLUwNsTksUEDDMxCkOLGMtPkg7hA1Fv9GY/FUBCTfI2DYuFjbTEYLoTsEVsoxahBpNOkCpFg1CFcTBIIB5MMQmGSQkKY5BAf5i8QH+bFWC7FCxrjmc7PAYVRgcRURg0ixahCJBh1CLXOcHqu0mukX+1Kk5f9hWgwqhXwPbzpGV9l3pVeSyTrnRavAAAAAElFTkSuQmCC') 4 28, auto;
 }
@@ -140,7 +142,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Initialize elements.
+     * Initializes elements.
      */
     initializeElements () {
       this.paintTools = this.shadowRoot.getElementById('paint-tools')
@@ -173,7 +175,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Add event listeners.
+     * Adds event listeners.
      */
     addEventListeners () {
     // Adjust the canvas size when the window is resized
@@ -245,22 +247,22 @@ customElements.define('paint-app',
     }
 
     /**
-     * Get the mouse position relative to the canvas.
+     * Gets the mouse position relative to the canvas.
      *
      * @param {event} event - The event.
      * @returns {object} The mouse position relative to the canvas.
      */
     getMousePosition (event) {
       const rect = this.canvas.getBoundingClientRect()
-      const scaleX = this.canvas.width / rect.width // the scale factor for width
-      const scaleY = this.canvas.height / rect.height // the scale factor for height
-      const x = (event.clientX - rect.left) * scaleX // scale mouse coordinates after they have
-      const y = (event.clientY - rect.top) * scaleY // been adjusted to be relative to canvas
+      const scaleX = this.canvas.width / rect.width
+      const scaleY = this.canvas.height / rect.height
+      const x = (event.clientX - rect.left) * scaleX
+      const y = (event.clientY - rect.top) * scaleY
       return { x, y }
     }
 
     /**
-     * Setup canvas event listeners.
+     * Sets up canvas event listeners.
      */
     setupCanvasEventListeners () {
       this.canvas.addEventListener('click', () => {
@@ -295,7 +297,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Initialize the canvas.
+     * Initializes the canvas.
      */
     initializeCanvas () {
       this.context = this.canvas.getContext('2d')
@@ -307,7 +309,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Adjust the canvas size.
+     * Adjusts the canvas size.
      */
     adjustCanvasSize () {
       const rect = this.getBoundingClientRect()
@@ -316,13 +318,13 @@ customElements.define('paint-app',
     }
 
     /**
-     * Activate the pen.
+     * Activates the pen.
      */
     activatePen () {
       this.isPenActive = true
       this.isErasing = false
       this.isColorizing = false
-      this.context.globalCompositeOperation = 'source-over' // Reset to default drawing mode
+      this.context.globalCompositeOperation = 'source-over'
       this.context.strokeStyle = this.currentColor
       this.canvas.classList.add('pen-cursor')
       this.canvas.classList.remove('eraser-cursor')
@@ -330,19 +332,19 @@ customElements.define('paint-app',
     }
 
     /**
-     * Activate the eraser.
+     * Activates the eraser.
      */
     activateEraser () {
       this.isPenActive = false
       this.isErasing = true
       this.isColorizing = false
-      this.context.globalCompositeOperation = 'destination-out' // Set eraser mode
+      this.context.globalCompositeOperation = 'destination-out'
       this.canvas.classList.add('eraser-cursor')
       this.canvas.classList.remove('pen-cursor')
     }
 
     /**
-     * Start drawing on the canvas.
+     * Starts drawing on the canvas.
      *
      * @param {number} x - The x coordinate.
      * @param {number} y - The y coordinate.
@@ -353,7 +355,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Draw on the canvas.
+     * Draws on the canvas.
      *
      * @param {number} x - The x coordinate.
      * @param {number} y - The y coordinate.
@@ -369,7 +371,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Toggle the eraser.
+     * Toggles the eraser.
      */
     toggleEraserMode () {
       this.isErasing = !this.isErasing
@@ -379,7 +381,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Erase drawing from canvas.
+     * Erases drawing from canvas.
      *
      * @param {number} x - The x coordinate.
      * @param {number} y - The y coordinate.
@@ -398,7 +400,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Handle colorize.
+     * Handles colorizer.
      *
      * @param {event} event - The event.
      * @param {string} hexColor - The hex color.
@@ -417,7 +419,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Convert hex color to an RGBA object.
+     * Converts hex color to an RGBA object.
      *
      * @param {string} hexColor - The hex color.
      * @returns {object} The RGBA object.
@@ -430,7 +432,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Fill the canvas or a drawing with a color.
+     * Fills the canvas or a drawing with a color.
      *
      * @param {object} canvas - The canvas.
      * @param {number} x - The x coordinate.
@@ -470,7 +472,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Get the color at a pixel.
+     * Gets the color at a pixel.
      *
      * @param {object} imageData - The image data.
      * @param {number} x - The x coordinate.
@@ -492,7 +494,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Set the color at a pixel.
+     * Sets the color at a pixel.
      *
      * @param {object} imageData - The image data.
      * @param {number} x - The x coordinate.
@@ -512,7 +514,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Check if two colors match.
+     * Checks if two colors match.
      *
      * @param {object} a - The first color.
      * @param {object} b - The second color.
@@ -523,7 +525,7 @@ customElements.define('paint-app',
     }
 
     /**
-     * Clear the canvas.
+     * Clears the canvas.
      */
     clearCanvas () {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)

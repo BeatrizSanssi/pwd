@@ -10,12 +10,12 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 #paint-colorizer {
-    color: rgb(76, 99, 76);
-    padding: 10px;
-    margin: 10px;
-    gap: 10px;
-    width: 80%;
-    border-radius: 4px;
+  color: rgb(76, 99, 76);
+  padding: 10px;
+  margin: 10px;
+  gap: 10px;
+  width: 80%;
+  border-radius: 4px;
 }
 </style>
 <div id="paint-colorizer">
@@ -61,7 +61,7 @@ customElements.define('paint-colorizer',
     }
 
     /**
-     * Choose a color for the colorizer.
+     * Chooses a color for the colorizer.
      *
      * @param {event} event - The event.
      */
@@ -71,7 +71,7 @@ customElements.define('paint-colorizer',
     }
 
     /**
-     * Hide the colorizer.
+     * Hides the colorizer.
      */
     hideColorizer () {
       this.#colorizerContainer.style.display = 'none'

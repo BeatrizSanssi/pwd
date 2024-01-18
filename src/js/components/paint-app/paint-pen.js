@@ -50,6 +50,7 @@ customElements.define('paint-pen',
       this.#penSizeSelector = this.shadowRoot.getElementById('pen-size-selector')
       this.#penSize = this.shadowRoot.getElementById('pen-size')
 
+      // Set the default pen size to 5
       this.currentPenSize = 5
     }
 
@@ -67,7 +68,7 @@ customElements.define('paint-pen',
     }
 
     /**
-     * Get the current size of the pen.
+     * Gets the current size of the pen.
      *
      * @returns {number} The current size of the pen.
      */
@@ -76,7 +77,7 @@ customElements.define('paint-pen',
     }
 
     /**
-     * Change the size of the pen.
+     * Changes the size of the pen.
      *
      * @param {event} event - The event.
      */
@@ -86,7 +87,7 @@ customElements.define('paint-pen',
     }
 
     /**
-     * Hide the eraser size selector.
+     * Hides the eraser size selector.
      */
     hideSizeSelector () {
       this.#penSizeSelector.style.display = 'none'

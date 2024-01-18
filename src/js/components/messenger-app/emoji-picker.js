@@ -10,25 +10,25 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 .emoji-picker {
-    position: absolute;
-    display: none;
-    border: 1px solid black;
-    padding: 10px;
-    background-color: white;
+  position: absolute;
+  display: none;
+  border: 1px solid black;
+  padding: 10px;
+  background-color: white;
 }
 
 .emoji {
-    cursor: pointer;
-    padding: 5px;
+  cursor: pointer;
+  padding: 5px;
 }
 
 #emoji-button {
-    margin: 10px;
-    padding: 5px;
+  margin: 10px;
+  padding: 5px;
 }
 
 .emoji:focus {
-    outline: 2px solid blue; 
+  outline: 2px solid blue; 
 }
   
 </style>
@@ -249,9 +249,7 @@ template.innerHTML = `
     <span class="emoji">👩‍🦱</span>
     <span class="emoji">🧑‍🦱</span>
 </div>
-
 `
-
 /*
  * Define custom element.
  */
@@ -261,6 +259,11 @@ customElements.define('emoji-picker',
    */
   class extends HTMLElement {
     emojiPicker
+    /**
+     * The element representing the emoji button.
+     *
+     * @type {HTMLButtonElement}
+     */
     emojiButton
 
     /**
@@ -310,14 +313,14 @@ customElements.define('emoji-picker',
     }
 
     /**
-     * Close the emoji picker.
+     * Closes the emoji picker.
      */
     closeEmojiPicker () {
       this.emojiPicker.style.display = 'none'
     }
 
     /**
-     * Toggle the visibility of the emoji picker.
+     * Toggles the visibility of the emoji picker.
      */
     toggleEmojiPicker () {
       this.emojiPicker.style.display = this.emojiPicker.style.display === 'block' ? 'none' : 'block'
@@ -325,23 +328,22 @@ customElements.define('emoji-picker',
     }
 
     /**
-     * Handle keydown events.
+     * Handles keydown events.
      *
      * @param {KeyboardEvent} event - The keydown event.
      */
     handleKeyDown (event) {
       if (event.key === 'Enter' && this.emojiPicker.style.display === 'block') {
-        // Enter key is pressed while emoji picker is open, select the emoji
+        // Select the emoji
         const selectedEmoji = this.emojiPicker.querySelectorAll('.emoji.focused')[0]
         if (selectedEmoji) {
-          console.log('Selected emoji:', selectedEmoji.textContent)
           this.toggleEmojiPicker()
         }
       }
     }
 
     /**
-     * Update the focus.
+     * Updates the focus.
      */
     updateFocus () {
       // Remove focus from all emojis
@@ -352,14 +354,12 @@ customElements.define('emoji-picker',
     }
 
     /**
-     * Select the emoji.
+     * Selects the emoji.
      *
      * @param {HTMLElement} emojiElement - The emoji element.
      */
     selectEmoji (emojiElement) {
-      // Logic to handle emoji selection
       const selectedEmoji = emojiElement.textContent
       this.dispatchEvent(new CustomEvent('emojiSelected', { detail: { emoji: selectedEmoji }, bubbles: true }))
-      console.log('Selected emoji:', selectedEmoji)
     }
   })
