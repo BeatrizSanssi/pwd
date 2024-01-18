@@ -70,7 +70,7 @@ template.innerHTML = `
   cursor: pointer;
 }
 
-#attemptsText {
+#attemptsText, #timer-text {
   font-weight: bold;
   color: white;
   margin: 10px;
@@ -85,6 +85,13 @@ template.innerHTML = `
   float: left;
   margin: 10px;
   padding: 10px;
+}
+
+#timer-display {
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  top: 10px;
 }
 
 .modal {
@@ -129,7 +136,8 @@ template.innerHTML = `
 </style>
 <div class="memory-game">
 <div id="attempts"><p id="attemptsText">Attempts: <span id="attemptCount"> 0</span></p>
-</div>  
+</div> 
+<div id="timer-display"><p id="timer-text">Time: 0</div></p> 
     <div id="game-controls">
     <p>Select grid size</p>
       <select id="gridSizeSelector">
@@ -189,6 +197,9 @@ customElements.define('memory-game',
     secondCard = null
     hasFlippedCard = false
     #gameBoard
+    startTime = null
+    timerInterval = null
+    elapsedTime = 0
 
     /**
      * Creates an instance of the current type.
@@ -211,20 +222,23 @@ customElements.define('memory-game',
       this.attemptsElement = this.shadowRoot.getElementById('attempts')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
       this.attemptCountElement.textContent = this.attemptCount
+      this.timerDisplay = this.shadowRoot.getElementById('timer-display')
+      this.timerText = this.shadowRoot.querySelector('#timer-text')
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
-    connectedCallback () {
+    async connectedCallback () {
       console.log('Memory Game: connectedCallback called')
 
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
       console.log('Attempt Count Element:', this.attemptCountElement)
-      if (this.attemptCountElement) {
+      if (this.attemptCountElement && this.timerElement) {
         this.attemptCountElement.innerText = ''
+        this.timerText.innerText = ''
       } else {
-        console.error('Attempt count element not found')
+        console.error('Attempt count element and timer element not found')
       }
       if (this.cardsArray) {
         this.shuffle(this.cardsArray)
@@ -238,11 +252,12 @@ customElements.define('memory-game',
       })
 
       // Add eventlistener to the start game button
-      this.#startGame.addEventListener('click', () => {
+      await this.#startGame.addEventListener('click', () => {
         const gridSize = this.#gridSizeSelector.value
         this.startGame(gridSize)
       })
       this.attemptsElement.style.display = 'none'
+      this.timerDisplay.style.display = 'none'
     }
 
     /**
@@ -257,6 +272,15 @@ customElements.define('memory-game',
       this.attemptCount = 0
       this.attemptCountElement.textContent = this.attemptCount
       this.gameStarted = true
+      // Initialize and start the timer
+      this.timerDisplay.style.display = 'block'
+      this.timerText.textContent = 'Time: 0'
+      this.startTime = Date.now()
+      this.timerInterval = setInterval(() => {
+        const currentTime = Date.now()
+        this.elapsedTime = Math.floor((currentTime - this.startTime) / 1000)
+        this.updateTimerDisplay()
+      }, 1000)
 
       // Set number of pairs based on grid size
       const pairsNeeded = this.getPairsCount(gridSize)
@@ -266,6 +290,59 @@ customElements.define('memory-game',
 
       this.resetBoard()
       await this.createMemoryGrid()
+    }
+
+    /**
+     * Updates the timer.
+     */
+    updateTimerDisplay () {
+      const timeElement = this.shadowRoot.getElementById('timer-text')
+      const hours = Math.floor(this.elapsedTime / 3600)
+      const minutes = Math.floor((this.elapsedTime % 3600) / 60)
+      const seconds = this.elapsedTime % 60
+
+      const formattedTime = this.formatTime(hours, minutes, seconds)
+      timeElement.textContent = `Time: ${formattedTime}`
+    }
+
+    /**
+     * Formats the timer.
+     *
+     * @param {number} hours - The number of hours.
+     * @param {number} minutes - The number of minutes.
+     * @param {number} seconds - The number of seconds.
+     * @returns {string} The formatted time.
+     */
+    formatTime (hours, minutes, seconds) {
+      return [hours, minutes, seconds]
+        .map(val => val < 10 ? `0${val}` : val)
+        .join(':')
+    }
+
+    /**
+     * Formats the elapsed time.
+     *
+     * @param {number} seconds - The number of seconds.
+     * @returns {string} The formatted elapsed time.
+     */
+    formatReadableTime (seconds) {
+      const hrs = Math.floor(seconds / 3600)
+      const mins = Math.floor((seconds % 3600) / 60)
+      const secs = seconds % 60
+
+      let readableTime = ''
+
+      if (hrs > 0) {
+        readableTime += `${hrs} hour${hrs > 1 ? 's' : ''} `
+      }
+      if (mins > 0) {
+        readableTime += `${mins} minute${mins > 1 ? 's' : ''} `
+      }
+      if (secs > 0 || readableTime === '') { // Also handles the case of 0 seconds
+        readableTime += `${secs} second${secs !== 1 ? 's' : ''}`
+      }
+
+      return readableTime.trim()
     }
 
     /**
@@ -461,11 +538,13 @@ customElements.define('memory-game',
       // Check if there are no more cards on the board
       if (this.cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
-        // console.log('Winning message element:', winningMessageElement)
-        winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts!`
+        const formattedTime = this.formatReadableTime(this.elapsedTime)
+        winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts in ${formattedTime}!`
 
         const modal = this.shadowRoot.getElementById('winningModal')
         modal.style.display = 'block'
+        // Stop the timer
+        clearInterval(this.timerInterval)
       }
     }
 
@@ -476,6 +555,7 @@ customElements.define('memory-game',
       this.resetBoard()
       this.gameControls.style.display = 'block'
       this.attemptsElement.style.display = 'none'
+      this.timerDisplay.style.display = 'none'
       this.#gridSizeSelector.value = '4x4'
     }
 

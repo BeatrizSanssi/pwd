@@ -9,7 +9,8 @@ The Memory Game is a custom web component designed to provide an interactive and
 - **Dynamic Grid Layout**: Choose between different grid sizes (4x4, 4x2, 2x2) to adjust the difficulty level.
 - **Interactive Cards**: Cards flip to reveal images and flip back if a match is not found.
 - **Attempts Counter**: Keeps track of the number of attempts made by the player.
-- **Winning Modal**: Displays a congratulatory message upon completing the game.
+- **Timer**: Keeps track of the time a game is played.
+- **Winning Modal**: Displays a congratulatory message upon completing the game with the number of attempts and the time it took to find all the pairs.
 - **Customizable Images**: Ability to customize card images through an array of image paths.
 - **Responsive Design**: Adapts to various screen sizes and resolutions.
 
