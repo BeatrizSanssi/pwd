@@ -66,13 +66,6 @@ customElements.define('desktop-app',
    * Represents the desktop app.
    */
   class extends HTMLElement {
-    /* #desktop
-    #dockIcons
-    #dockIcon
-    #dock
-    #memoryGame
-    #messengerApp
-    #appWindow */
     /**
      * Creates an instance of the current type.
      */
@@ -86,16 +79,6 @@ customElements.define('desktop-app',
 
       this.openWindows = []
     }
-    /*
-      // Initialize the components and elements.
-      this.#desktop = this.shadowRoot.getElementById('desktop')
-      c
-      this.#memoryGame = this.shadowRoot.querySelector('memory-game')
-      this.#messengerApp = this.shadowRoot.querySelector('messenger-app')
-      this.#appWindow = this.shadowRoot.querySelector('app-window')
-      this.#dock = this.shadowRoot.getElementById('dock')
-    }
-    */
 
     /**
      * Called after the element is inserted into the DOM.
@@ -126,7 +109,7 @@ customElements.define('desktop-app',
     }
 
     /**
-     * Show the tooltip for the icon.
+     * Shows the tooltip for the icon.
      *
      * @param {Event} event - The event.
      */
@@ -155,7 +138,7 @@ customElements.define('desktop-app',
     }
 
     /**
-     * Hide the tooltip for the icon.
+     * Hides the tooltip for the icon.
      *
      * @param {Event} event - The event.
      */
@@ -231,31 +214,45 @@ customElements.define('desktop-app',
         desktop.appendChild(appWindow)
         this.openWindows.push(appWindow)
         this.setFocus(appWindow)
+
+        // Add event listener to the window
+        appWindow.addEventListener('click', event => {
+          this.setFocus(appWindow)
+        })
+
+        // If the title bar is a separate element inside appWindow, add an event listener to it as well
+        const titleBar = appWindow.querySelector('.title-bar')
+        if (titleBar) {
+          titleBar.addEventListener('click', event => {
+            this.setFocus(appWindow)
+            event.stopPropagation()
+          })
+        }
       } else {
         console.error(`Failed to create ${appName} element`)
       }
     }
 
     /**
-     * Set focus to the window.
+     * Sets focus to the window.
      *
      * @param {HTMLElement} appWindow - The window to set focus to.
      */
     setFocus (appWindow) {
       const highestZIndex = this.getHighestZIndex()
       this.openWindows.forEach(window => {
-        window.style.zIndex = 100 // Reset z-index for all windows
-        appWindow.style.zIndex = highestZIndex + 1 // Bring the focused window to front
+        window.style.zIndex = 100
+        appWindow.style.zIndex = highestZIndex + 1
       })
     }
 
     /**
-     * Get the highest z-index of all open windows.
+     * Gets the highest z-index of all open windows.
      *
      * @returns {number} The highest z-index.
      */
     getHighestZIndex () {
-      let maxZIndex = 100 // Start from base z-index
+      let maxZIndex = 100
       this.openWindows.forEach(win => {
         const zIndex = parseInt(win.style.zIndex)
         if (!isNaN(zIndex) && zIndex > maxZIndex) {
@@ -264,41 +261,4 @@ customElements.define('desktop-app',
       })
       return maxZIndex
     }
-    // Append the new window with the app to the desktop
-    // this.shadowRoot.getElementById('desktop').appendChild(newWindow)
-    // }
-    /* openWindow (appName) {
-      console.log('openWindow called with:', appName)
-      const newWindow = document.createElement('app-window')
-      if (!newWindow) {
-        console.error('Could not create new window.')
-        return
-      }
-
-      let appElement
-      if (appName === 'memoryGame') {
-        appElement = document.createElement('memory-game')
-        // newWindow.appendChild(memoryGame)
-      } else if (appName === 'messengerApp') {
-        appElement = document.createElement('messenger-app')
-        // newWindow.appendChild(messengerApp)
-      }
-      if (!appElement) {
-        console.error(`Failed to create ${appName} element`)
-        return
-      }
-
-      newWindow.appendChild(appElement)
-      const desktop = this.shadowRoot.getElementById('desktop')
-      if (desktop) {
-        desktop.appendChild(newWindow)
-      } else {
-        console.error('Desktop element not found')
-      }
-    } */
-
-    /* this.#appWindow.removeEventListener('mousemove', onMove)
-        .addEventListener('mousemove', onMove)
-      this.#appWindow.removeEventListener('mousemove', onMove)
-        .addEventListener('mouseup', onUp) */
   })
