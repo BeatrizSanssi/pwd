@@ -90,8 +90,12 @@ customElements.define('desktop-app',
       // Set up event listeners for each dock icon
       const dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
       dockIcons.forEach(icon => {
-        icon.addEventListener('mouseover', this.showTooltip.bind(this))
-        icon.addEventListener('mouseout', this.hideTooltip.bind(this))
+        icon.addEventListener('mouseover', (event) => {
+          this.showTooltip(event)
+          icon.addEventListener('mouseout', (event) => {
+            this.hideTooltip(event)
+          })
+        })
       })
 
       // Event delegation for dock icon clicks
