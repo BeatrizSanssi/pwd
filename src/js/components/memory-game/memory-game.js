@@ -106,7 +106,6 @@ template.innerHTML = `
   overflow: auto;
   background-color: grey;
   color: white;
-  
   border-radius: 5px;
   border: 1px white solid;
 }
