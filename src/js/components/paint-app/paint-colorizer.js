@@ -33,6 +33,7 @@ customElements.define('paint-colorizer',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #paintColorizer
     #colorizerContainer
     /**
      * Creates an instance of the current type.
@@ -53,8 +54,8 @@ customElements.define('paint-colorizer',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.paintColorizer = this.shadowRoot.querySelector('#paint-colorizer')
-      this.paintColorizer.addEventListener('fill', (event) => {
+      this.#paintColorizer = this.shadowRoot.querySelector('#paint-colorizer')
+      this.#paintColorizer.addEventListener('fill', (event) => {
         this.dispatchEvent(new CustomEvent('color-fill', { detail: event.target.value }))
         this.colorize(event)
       })

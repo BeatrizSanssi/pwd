@@ -21,7 +21,7 @@ template.innerHTML = `
 <div id="color-picker">
     <!-- Color Picker -->
     <div id="color-picker-container" style="display: none;">
-        <input type="color" id="color-input">
+        <input type="color" id="color-input" value="#FFFFFF">
     </div>
 </div>
 `
@@ -34,6 +34,8 @@ customElements.define('color-picker',
    */
   class extends HTMLElement {
     #colorPickerContainer
+    #defaultColor
+    #colorInput
     /**
      * Creates an instance of the current type.
      */
@@ -49,16 +51,19 @@ customElements.define('color-picker',
       this.#colorPickerContainer = this.shadowRoot.querySelector('#color-picker-container')
 
       // Set the default color to white
-      this.currentColor = '#FFFFFF'
+      this.#defaultColor = '#FFFFFF'
+      this.currentColor = this.#defaultColor
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
-    connectedCallback () {
-      this.colorInput = this.shadowRoot.querySelector('#color-input')
-      this.colorInput.addEventListener('change', () => {
-        this.changeColor(this.colorInput.value)
+    async connectedCallback () {
+      await this.getCurrentColor()
+
+      this.#colorInput = this.shadowRoot.querySelector('#color-input')
+      this.#colorInput.addEventListener('change', () => {
+        this.changeColor(this.#colorInput.value)
       })
     }
 
@@ -68,10 +73,21 @@ customElements.define('color-picker',
      * @param {string} newColor - The new color.
      */
     changeColor (newColor) {
+      // this.#colorInput.value
+      newColor = this.#colorInput.value
       this.currentColor = newColor
       const isDisplayed = this.#colorPickerContainer.style.display !== 'none'
       this.#colorPickerContainer.style.display = isDisplayed ? 'none' : 'block'
       this.dispatchEvent(new CustomEvent('color-change', { detail: this.currentColor }))
+    }
+
+    /**
+     * Gets the current color.
+     *
+     * @returns {string} The current color.
+     */
+    getCurrentColor () {
+      return this.currentColor
     }
 
     /**

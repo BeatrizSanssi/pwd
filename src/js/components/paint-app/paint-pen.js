@@ -35,6 +35,7 @@ customElements.define('paint-pen',
   class extends HTMLElement {
     #penSizeSelector
     #penSize
+    #currentPenSize
     /**
      * Creates an instance of the current type.
      */
@@ -51,7 +52,7 @@ customElements.define('paint-pen',
       this.#penSize = this.shadowRoot.getElementById('pen-size')
 
       // Set the default pen size to 5
-      this.currentPenSize = 5
+      this.#currentPenSize = 5
     }
 
     /**
@@ -59,9 +60,9 @@ customElements.define('paint-pen',
      */
     async connectedCallback () {
       this.#penSize.addEventListener('input', (event) => {
-        this.currentPenSize = event.target.value
+        this.#currentPenSize = event.target.value
         this.dispatchEvent(new CustomEvent('pen-size-change', {
-          detail: this.currentPenSize,
+          detail: this.#currentPenSize,
           bubbles: true
         }))
       })
@@ -73,7 +74,7 @@ customElements.define('paint-pen',
      * @returns {number} The current size of the pen.
      */
     getCurrentSize () {
-      return this.currentPenSize
+      return this.#currentPenSize
     }
 
     /**
