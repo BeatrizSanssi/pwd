@@ -341,6 +341,7 @@ customElements.define('paint-app',
       this.context.globalCompositeOperation = 'destination-out'
       this.canvas.classList.add('eraser-cursor')
       this.canvas.classList.remove('pen-cursor')
+      this.canvas.classList.remove('colorize-cursor')
     }
 
     /**
@@ -378,6 +379,7 @@ customElements.define('paint-app',
       this.context.globalCompositeOperation = this.isErasing ? 'destination-out' : 'source-over'
       this.canvas.classList.toggle('eraser-cursor', this.isErasing)
       this.canvas.classList.toggle('pen-cursor', !this.isErasing)
+      this.canvas.classList.toggle('colorize-cursor', !this.isErasing)
     }
 
     /**
