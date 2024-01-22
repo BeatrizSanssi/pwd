@@ -151,6 +151,47 @@ customElements.define('paint-app',
       await this.initializeElements()
       this.addEventListeners()
       this.initializeCanvas()
+
+      // Add event listener for keyboard navigation
+      document.addEventListener('keydown', (event) => {
+        this.handleKeyDown(event)
+      })
+    }
+
+    /**
+     * Handles keydown events.
+     *
+     * @param {event} event - The event.
+     */
+    handleKeyDown (event) {
+      if (!this.#isPenActive && !this.#isColorizing && !this.#isErasing) {
+        return
+      }
+
+      const step = 5 // Adjust this value for movement speed
+      let deltaX = 0
+      let deltaY = 0
+
+      switch (event.key) {
+        case 'ArrowUp':
+          deltaY = -step
+          break
+        case 'ArrowDown':
+          deltaY = step
+          // eslint-disable-next-line semi
+          break
+        case 'ArrowLeft':
+          deltaX = -step
+          break
+        case 'ArrowRight':
+          deltaX = step
+          break
+        default:
+          return // Do nothing for other keys
+      }
+
+      // Update position for pen or colorizer
+      this.updateToolPosition(deltaX, deltaY)
     }
 
     /**
@@ -324,6 +365,32 @@ customElements.define('paint-app',
       const rect = this.getBoundingClientRect()
       this.#canvas.width = rect.width
       this.#canvas.height = rect.height
+    }
+
+    /**
+     * Updates the position of the pen or colorizer.
+     *
+     * @param {number} deltaX - The change in the x coordinate.
+     * @param {number} deltaY - The change in the y coordinate.
+     */
+    updateToolPosition (deltaX, deltaY) {
+      const rect = this.#canvas.getBoundingClientRect()
+      const x = rect.x + deltaX
+      const y = rect.y + deltaY
+      this.#canvas.style.left = `${x}px`
+      this.#canvas.style.top = `${y}px`
+
+      this.setToolPosition(x, y)
+      // If you're drawing with the pen, continue drawing at the new position
+      if (this.#isPenActive) {
+        this.draw(x, y)
+      }
+      if (this.#isColorizing) {
+        this.handleColorize(x, y)
+      }
+      if (this.#isErasing) {
+        this.erase(x, y)
+      }
     }
 
     /**
@@ -540,5 +607,15 @@ customElements.define('paint-app',
      */
     clearCanvas () {
       this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height)
+    }
+
+    /**
+     * Sets the tool position.
+     *
+     * @param {number} x - The x coordinate.
+     * @param {number} y - The y coordinate.
+     */
+    setToolPosition (x, y) {
+    
     }
   })

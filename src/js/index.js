@@ -27,7 +27,7 @@ template.innerHTML = `
   z-index: 1000; 
 }
 
-.dock-icon {
+.app-button {
   margin: 10px;
   padding: 10px;
   width: 100px;
@@ -36,7 +36,7 @@ template.innerHTML = `
   background-color: transparent;
   background-repeat: no-repeat;
   border-radius: 5px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s;
 }
 
@@ -58,10 +58,16 @@ template.innerHTML = `
 <div id="desktop">
   <!-- Icons in the dock to open windows -->
   <div id="dock">
-    <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
-    <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" data-title="Messenger App" alt="Messenger App Icon">
-    <img src="css/img/draw.svg" class="dock-icon" data-app="paintApp" data-title="Paint App" alt="Paint App Icon">
-  </div>
+    <button class="app-button">
+      <img src="css/img/seedling-solid.svg" class="dock-icon" data-app="memoryGame" data-title="Memory Game" alt="Memory Game Icon">
+    </button>
+    <button class="app-button">
+      <img src="css/img/comments-solid.svg" class="dock-icon" data-app="messengerApp" data-title="Messenger App" alt="Messenger App Icon">
+    </button>
+    <button class="app-button">
+      <img src="css/img/pen.svg" class="dock-icon" data-app="paintApp" data-title="Paint App" alt="Paint App Icon">
+    </button>
+    </div>
 </div>
 `
 customElements.define('desktop-app',
@@ -69,6 +75,15 @@ customElements.define('desktop-app',
    * Represents the desktop app.
    */
   class extends HTMLElement {
+    #openWindows
+    #focusableElements
+    #dockIcons
+    #appButton
+    #dockIcon
+    #openAppWindow
+    #desktop
+    #dock
+
     /**
      * Creates an instance of the current type.
      */
@@ -80,27 +95,36 @@ customElements.define('desktop-app',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.openWindows = []
+      this.#dock = this.shadowRoot.getElementById('dock')
+      this.#appButton = this.shadowRoot.querySelectorAll('.dock-icon')
+      this.#openWindows = []
+      this.#focusableElements = []
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      // Set up event listeners for each dock icon
+      // Add event listener for keyboard navigation
+      this.#dock.querySelectorAll('.app-button').forEach(button => {
+        button.addEventListener('keydown', (event) => {
+          this.handleKeyDown(event)
+        })
+      })
+
+      // Add event listener for mouseover and mouseout events
       const dockIcons = this.shadowRoot.querySelectorAll('.dock-icon')
-      dockIcons.forEach(icon => {
-        icon.addEventListener('mouseover', (event) => {
+      dockIcons.forEach(Icon => {
+        Icon.addEventListener('mouseover', (event) => {
           this.showTooltip(event)
-          icon.addEventListener('mouseout', (event) => {
+          Icon.addEventListener('mouseout', (event) => {
             this.hideTooltip(event)
           })
         })
       })
 
-      // Event delegation for dock icon clicks
-      const dock = this.shadowRoot.getElementById('dock')
-      dock.addEventListener('click', event => {
+      // Add event listener for dock icon clicks
+      this.#dock.addEventListener('click', event => {
         const target = event.target
         if (target.classList.contains('dock-icon')) {
           const appName = target.dataset.app
@@ -159,6 +183,57 @@ customElements.define('desktop-app',
     }
 
     /**
+     * Handles the keydown event.
+     *
+     * @param {Event} event - The event.
+     */
+    handleKeyDown (event) {
+      if (event.key === 'Tab') {
+        event.preventDefault()
+        this.moveFocus(event.target, event.shiftKey ? 'backward' : 'forward')
+      } else if (event.key === 'Enter') {
+        // Find the dock icon inside the button
+        const dockIcon = event.target.querySelector('.dock-icon')
+        if (dockIcon) {
+          const appName = dockIcon.dataset.app
+          this.openAppWindow(appName)
+        }
+      }
+    }
+
+    /**
+     * Update the focusable elements.
+     */
+    updateFocusableElements () {
+      this.#focusableElements = Array.from(this.#dock.querySelectorAll('.app-button'))
+      this.#openWindows.forEach(window => {
+        this.#focusableElements.push(window)
+      })
+    }
+
+    /**
+     * Moves focus to the next or previous icon.
+     *
+     * @param {HTMLElement} currentElement - The current element.
+     * @param {string} direction - The direction to move focus to.
+     */
+    moveFocus (currentElement, direction) {
+      this.updateFocusableElements()
+
+      const currentIndex = this.#focusableElements.indexOf(currentElement)
+
+      let nextIndex = direction === 'forward' ? currentIndex + 1 : currentIndex - 1
+      if (nextIndex >= this.#focusableElements.length) {
+        nextIndex = 0
+      } else if (nextIndex < 0) {
+        nextIndex = this.#focusableElements.length - 1
+      }
+
+      // Set focus to the next element
+      this.#focusableElements[nextIndex].focus()
+    }
+
+    /**
      * Opens a new window.
      *
      * @param {string} appName - The name of the app to open.
@@ -201,21 +276,23 @@ customElements.define('desktop-app',
         return
       }
 
+      appWindow.tabIndex = 0
+
       // Set initial position for the new window
       appWindow.style.position = 'absolute'
       appWindow.style.left = '150px'
       appWindow.style.top = '150px'
 
       // Offset each window
-      appWindow.style.left = `${150 + 40 * this.openWindows.length}px`
-      appWindow.style.top = `${150 + 40 * this.openWindows.length}px`
+      appWindow.style.left = `${150 + 40 * this.#openWindows.length}px`
+      appWindow.style.top = `${150 + 40 * this.#openWindows.length}px`
 
       // Add the app to the window and set focus
       if (appElement) {
         appWindow.addContent(appElement, title)
         const desktop = this.shadowRoot.getElementById('desktop')
         desktop.appendChild(appWindow)
-        this.openWindows.push(appWindow)
+        this.#openWindows.push(appWindow)
         this.setFocus(appWindow)
 
         // Add event listener to the window
@@ -234,6 +311,7 @@ customElements.define('desktop-app',
       } else {
         console.error(`Failed to create ${appName} element`)
       }
+      this.updateFocusableElements()
     }
 
     /**
@@ -243,7 +321,7 @@ customElements.define('desktop-app',
      */
     setFocus (appWindow) {
       const highestZIndex = this.getHighestZIndex()
-      this.openWindows.forEach(window => {
+      this.#openWindows.forEach(window => {
         window.style.zIndex = 100
         appWindow.style.zIndex = highestZIndex + 1
       })
@@ -256,7 +334,7 @@ customElements.define('desktop-app',
      */
     getHighestZIndex () {
       let maxZIndex = 100
-      this.openWindows.forEach(win => {
+      this.#openWindows.forEach(win => {
         const zIndex = parseInt(win.style.zIndex)
         if (!isNaN(zIndex) && zIndex > maxZIndex) {
           maxZIndex = zIndex
