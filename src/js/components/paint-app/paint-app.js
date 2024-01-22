@@ -151,47 +151,6 @@ customElements.define('paint-app',
       await this.initializeElements()
       this.addEventListeners()
       this.initializeCanvas()
-
-      // Add event listener for keyboard navigation
-      document.addEventListener('keydown', (event) => {
-        this.handleKeyDown(event)
-      })
-    }
-
-    /**
-     * Handles keydown events.
-     *
-     * @param {event} event - The event.
-     */
-    handleKeyDown (event) {
-      if (!this.#isPenActive && !this.#isColorizing && !this.#isErasing) {
-        return
-      }
-
-      const step = 5 // Adjust this value for movement speed
-      let deltaX = 0
-      let deltaY = 0
-
-      switch (event.key) {
-        case 'ArrowUp':
-          deltaY = -step
-          break
-        case 'ArrowDown':
-          deltaY = step
-          // eslint-disable-next-line semi
-          break
-        case 'ArrowLeft':
-          deltaX = -step
-          break
-        case 'ArrowRight':
-          deltaX = step
-          break
-        default:
-          return // Do nothing for other keys
-      }
-
-      // Update position for pen or colorizer
-      this.updateToolPosition(deltaX, deltaY)
     }
 
     /**
@@ -303,9 +262,14 @@ customElements.define('paint-app',
      * @returns {object} The mouse position relative to the canvas.
      */
     getMousePosition (event) {
+      // Get the bounding rectangle of the canvas to understand its position and size.
       const rect = this.#canvas.getBoundingClientRect()
+      // Calculate the scale factors for x and y coordinates.
       const scaleX = this.#canvas.width / rect.width
       const scaleY = this.#canvas.height / rect.height
+      // Adjust the mouse event's clientX and clientY properties (relative to the viewport)
+      // to get the mouse position relative to the canvas.
+      // Subtract the left and top offset of the canvas, and then apply the scale factors.
       const x = (event.clientX - rect.left) * scaleX
       const y = (event.clientY - rect.top) * scaleY
       return { x, y }
@@ -365,32 +329,6 @@ customElements.define('paint-app',
       const rect = this.getBoundingClientRect()
       this.#canvas.width = rect.width
       this.#canvas.height = rect.height
-    }
-
-    /**
-     * Updates the position of the pen or colorizer.
-     *
-     * @param {number} deltaX - The change in the x coordinate.
-     * @param {number} deltaY - The change in the y coordinate.
-     */
-    updateToolPosition (deltaX, deltaY) {
-      const rect = this.#canvas.getBoundingClientRect()
-      const x = rect.x + deltaX
-      const y = rect.y + deltaY
-      this.#canvas.style.left = `${x}px`
-      this.#canvas.style.top = `${y}px`
-
-      this.setToolPosition(x, y)
-      // If you're drawing with the pen, continue drawing at the new position
-      if (this.#isPenActive) {
-        this.draw(x, y)
-      }
-      if (this.#isColorizing) {
-        this.handleColorize(x, y)
-      }
-      if (this.#isErasing) {
-        this.erase(x, y)
-      }
     }
 
     /**
@@ -503,6 +441,8 @@ customElements.define('paint-app',
      * @returns {object} The RGBA object.
      */
     hexToRgba (hexColor) {
+      // Extract the red, green and bluecomponent from the hex color string.
+      // Convert each component to a decimal number using the parseInt() function
       const r = parseInt(hexColor.slice(1, 3), 16)
       const g = parseInt(hexColor.slice(3, 5), 16)
       const b = parseInt(hexColor.slice(5, 7), 16)
@@ -518,14 +458,22 @@ customElements.define('paint-app',
      * @param {string} fillColor - The color to fill the canvas with.
      */
     floodFill (canvas, x, y, fillColor) {
+      // Get the 2D rendering context for the canvas.
       const ctx = this.#canvas.getContext('2d')
+
+      // Retrieve the current image data from the entire canvas.
       const imageData = ctx.getImageData(0, 0, this.#canvas.width, this.#canvas.height)
+
+      // Get the color of the pixel at the starting coordinates (x, y).
       const targetColor = this.getColorAtPixel(imageData, x, y)
 
+      // If the target color matches the fill color, there's nothing to change, so return.
       if (this.colorsMatch(targetColor, fillColor)) {
         return
       }
 
+      // Initialize a queue with the starting pixel coordinates.
+      // Process each pixel in the queue and check its neighbors.
       const pixelsToCheck = [[x, y]]
       while (pixelsToCheck.length > 0) {
         const [currentX, currentY] = pixelsToCheck.pop()
@@ -535,6 +483,7 @@ customElements.define('paint-app',
           continue
         }
 
+        // If the current pixel's color matches the target color, fill it and add its neighbors to the queue.
         const currentColor = this.getColorAtPixel(imageData, currentX, currentY)
         if (this.colorsMatch(currentColor, targetColor)) {
           this.setColorAtPixel(imageData, currentX, currentY, fillColor)
@@ -607,15 +556,5 @@ customElements.define('paint-app',
      */
     clearCanvas () {
       this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height)
-    }
-
-    /**
-     * Sets the tool position.
-     *
-     * @param {number} x - The x coordinate.
-     * @param {number} y - The y coordinate.
-     */
-    setToolPosition (x, y) {
-    
     }
   })

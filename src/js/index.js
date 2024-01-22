@@ -190,7 +190,10 @@ customElements.define('desktop-app',
     handleKeyDown (event) {
       if (event.key === 'Tab') {
         event.preventDefault()
+        // Move focus to the next or previous focusable element,
+        // depending on whether the 'Shift' key is also pressed.
         this.moveFocus(event.target, event.shiftKey ? 'backward' : 'forward')
+        // Check if the 'Enter' key is pressed
       } else if (event.key === 'Enter') {
         // Find the dock icon inside the button
         const dockIcon = event.target.querySelector('.dock-icon')
