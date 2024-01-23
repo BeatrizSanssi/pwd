@@ -170,7 +170,6 @@ customElements.define('memory-game',
     // Define class properties
     #memoryGame
     #memoryGrid
-    #attemptCount
     /**
      * The game board element.
      *
@@ -207,6 +206,12 @@ customElements.define('memory-game',
      * @type {HTMLElement}
      */
     #timerText
+    /**
+     * The attempts element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #attempts
     #cardImages = [
       'js/components/memory-game/img/cat1.png',
       'js/components/memory-game/img/cat2.png',
@@ -233,6 +238,7 @@ customElements.define('memory-game',
     #startTime = null
     #timerInterval = null
     #elapsedTime = 0
+    #attemptCount = 0
 
     /**
      * Creates an instance of the current type.
@@ -251,22 +257,22 @@ customElements.define('memory-game',
       this.#memoryGrid = this.shadowRoot.querySelector('.memory-grid')
       this.#startGame = this.shadowRoot.getElementById('start-game')
       this.#gridSizeSelector = this.shadowRoot.getElementById('gridSizeSelector')
-      this.gameControls = this.shadowRoot.getElementById('game-controls')
+      this.#gameControls = this.shadowRoot.getElementById('game-controls')
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     async connectedCallback () {
-      this.attemptsElement = this.shadowRoot.getElementById('attempts')
+      this.#attempts = this.shadowRoot.getElementById('attempts')
       this.attemptCountElement = this.shadowRoot.querySelector('#attemptCount')
-      this.attemptCountElement.textContent = this.attemptCount
-      this.timerDisplay = this.shadowRoot.getElementById('timer-display')
-      this.timerText = this.shadowRoot.querySelector('#timer-text')
+      this.attemptCountElement.textContent = this.#attemptCount
+      this.#timerDisplay = this.shadowRoot.getElementById('timer-display')
+      this.#timerText = this.shadowRoot.querySelector('#timer-text')
 
-      if (this.attemptCountElement && this.timerDisplay) {
+      if (this.attemptCountElement && this.#timerDisplay) {
         this.attemptCountElement.innerText = ''
-        this.timerText.innerText = ''
+        this.#timerText.innerText = ''
       } else {
         console.error('Attempt count element and timer element not found')
       }
@@ -274,22 +280,32 @@ customElements.define('memory-game',
         this.shuffle(this.#cardsArray)
       }
 
-      // Add eventlistener to the close button
+      // Add eventlistener to the close button when clicking
       const modal = this.shadowRoot.getElementById('winningModal')
       const closeButton = this.shadowRoot.querySelector('.close')
+      closeButton.setAttribute('tabindex', '0')
       closeButton.addEventListener('click', () => {
         modal.style.display = 'none'
         this.offerNewGame()
       })
 
+      // Add eventlistener to the close button
+      closeButton.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          modal.style.display = 'none'
+          this.offerNewGame()
+        }
+      })
+
       // Add eventlistener to the start game button
+      this.#startGame.setAttribute('tabindex', '0')
       await this.#startGame.addEventListener('click', () => {
         const gridSize = this.#gridSizeSelector.value
         this.startGame(gridSize)
       })
 
-      this.attemptsElement.style.display = 'none'
-      this.timerDisplay.style.display = 'none'
+      this.#attempts.style.display = 'none'
+      this.#timerDisplay.style.display = 'none'
     }
 
     /**
@@ -301,7 +317,7 @@ customElements.define('memory-game',
       this.#gameControls.style.display = 'none'
 
       // Show the attempts div and initialize attempt count
-      this.attemptsElement.style.display = 'block'
+      this.#attempts.style.display = 'block'
       this.#attemptCount = 0
       this.attemptCountElement.textContent = this.#attemptCount
       this.#gameStarted = true
@@ -474,6 +490,10 @@ customElements.define('memory-game',
           if (event.key === 'Enter' || event.key === ' ') {
             this.handleCardClick(cardInner)
           }
+          // Add arrow navigation handler
+          if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+            this.handleKeydown(event)
+          }
         })
 
         // Add click event listener to flip the card on click
@@ -486,7 +506,7 @@ customElements.define('memory-game',
       this.#memoryGrid.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
-      this.gameControls.addEventListener('mousedown', (event) => {
+      this.#gameControls.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
     }
@@ -499,7 +519,7 @@ customElements.define('memory-game',
     handleCardClick (cardInner) {
       if (this.#lockBoard || cardInner === this.#firstCard) return
 
-      if (cardInner === this.#firstCard) return
+      // if (cardInner === this.#firstCard) return
 
       cardInner.classList.add('flipped')
 
@@ -523,11 +543,55 @@ customElements.define('memory-game',
     }
 
     /**
+     * Handle keydown events.
+     *
+     * @param {event} event - The keydown event.
+     */
+    handleKeydown (event) {
+      const cardInner = event.target // The current focused cardInner element
+      if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+        return // Exit if it's not an arrow key
+      }
+
+      const cardInners = Array.from(this.shadowRoot.querySelectorAll('.card-inner'))
+      const cardIndex = cardInners.indexOf(cardInner)
+      const gridSize = this.#gridSizeSelector.value
+      const [rows, cols] = gridSize.split('x').map(Number)
+      let nextCardIndex = cardIndex // Default to current index
+
+      switch (event.key) {
+        case 'ArrowLeft':
+          // Move left only if not on the left edge
+          if (cardIndex % cols > 0) nextCardIndex--
+          break
+        case 'ArrowRight':
+          // Move right only if not on the right edge
+          if (cardIndex % cols < cols - 1) nextCardIndex++
+          break
+        case 'ArrowUp':
+          // Move up only if not on the top row
+          if (cardIndex >= cols) nextCardIndex -= cols
+          break
+        case 'ArrowDown':
+          // Move down only if not on the bottom row
+          if (cardIndex < cols * (rows - 1)) nextCardIndex += cols
+          break
+      }
+
+      // Ensure the next card index is within bounds
+      nextCardIndex = Math.max(0, Math.min(nextCardIndex, cardInners.length - 1))
+
+      // Find and focus the next card
+      const nextCard = cardInners[nextCardIndex]
+      nextCard.focus()
+    }
+
+    /**
      * Increments and updates the attempt count.
      */
     incrementAttemptCount () {
-      this.attemptCount++
-      this.attemptCountElement.textContent = this.attemptCount
+      this.#attemptCount++
+      this.attemptCountElement.textContent = this.#attemptCount
     }
 
     /**
@@ -581,7 +645,7 @@ customElements.define('memory-game',
       if (this.#cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
         const formattedTime = this.formatReadableTime(this.#elapsedTime)
-        winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts in ${formattedTime}!`
+        winningMessageElement.textContent = `Yay! You found all the pairs with ${this.#attemptCount} attempts in ${formattedTime}!`
 
         const modal = this.shadowRoot.getElementById('winningModal')
         modal.style.display = 'block'
@@ -595,9 +659,9 @@ customElements.define('memory-game',
      */
     offerNewGame () {
       this.resetBoard()
-      this.gameControls.style.display = 'block'
-      this.attemptsElement.style.display = 'none'
-      this.timerDisplay.style.display = 'none'
+      this.#gameControls.style.display = 'block'
+      this.#attempts.style.display = 'none'
+      this.#timerDisplay.style.display = 'none'
       this.#gridSizeSelector.value = '4x4'
     }
 
