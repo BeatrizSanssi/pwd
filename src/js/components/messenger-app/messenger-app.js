@@ -130,14 +130,39 @@ customElements.define('messenger-app',
    * Represents a memory game
    */
   class extends HTMLElement {
-    messageInput
-    #messages
-    sendButton
-    #sendMessage
     #nicknameForm
-    #messengerApp
     #emojiPicker
-    #emojis
+    #socket
+    /**
+     * The message input element.
+     *
+     * @type {HTMLTextAreaElement}
+     */
+    #messageInput
+    /**
+     * The messages div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #messages
+    /**
+     * The send button element.
+     *
+     * @type {HTMLButtonElement}
+     */
+    #sendButton
+    /**
+     * The messenger app div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #messengerApp
+    /**
+     * The close button element.
+     *
+     * @type {HTMLSpanElement}
+     */
+    #closeButton
 
     /**
      * Creates an instance of the current type.
@@ -153,7 +178,7 @@ customElements.define('messenger-app',
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#messengerApp = this.shadowRoot.getElementById('messenger-app')
       this.#emojiPicker = this.shadowRoot.querySelector('emoji-picker')
-      this.socket = null
+      this.#socket = null
       this.messageBuffer = []
 
       // Create audio elements
@@ -181,43 +206,44 @@ customElements.define('messenger-app',
 
       this.initializeWebSocket()
       await this.hideMessengerComponents()
-      this.messageInput = this.shadowRoot.getElementById('message-input')
+      this.#messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
-      this.sendButton = this.shadowRoot.getElementById('send-button')
-      const closeButton = this.shadowRoot.querySelector('.close')
+      this.#sendButton = this.shadowRoot.getElementById('send-button')
+      this.#closeButton = this.shadowRoot.querySelector('.close')
 
       // Add keydown event listener to message input
-      this.messageInput.addEventListener('keydown', (event) => {
+      this.#messageInput.addEventListener('keydown', (event) => {
         this.handleInputKeydown(event)
       })
 
       // Add event listener to send button
-      this.sendButton.addEventListener('click', () => this.sendMessage())
+      this.#sendButton.addEventListener('click', () => this.sendMessage())
 
       // Add event listener to the close button
-      closeButton.addEventListener('click', () => {
+      this.#closeButton.addEventListener('click', () => {
         this.#messengerApp.style.display = 'none'
         this.#nicknameForm.innerHTML = ''
+        this.#socket.close()
       })
 
       // Prevent elements from being dragged
       this.#nicknameForm.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
-      this.messageInput.addEventListener('mousedown', (event) => {
+      this.#messageInput.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
       this.#emojiPicker.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
-      this.sendButton.addEventListener('mousedown', (event) => {
+      this.#sendButton.addEventListener('mousedown', (event) => {
         event.stopPropagation()
       })
 
       // Set attribute to make the elements focusable
-      this.messageInput.setAttribute('tabindex', '0')
-      this.sendButton.setAttribute('tabindex', '0')
-      closeButton.setAttribute('tabindex', '0')
+      this.#messageInput.setAttribute('tabindex', '0')
+      this.#sendButton.setAttribute('tabindex', '0')
+      this.#closeButton.setAttribute('tabindex', '0')
     }
 
     /**
@@ -250,19 +276,19 @@ customElements.define('messenger-app',
      * Initializes the WebSocket connection.
      */
     initializeWebSocket () {
-      this.socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
+      this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
 
-      this.socket.addEventListener('open', (event) => {
+      this.#socket.addEventListener('open', (event) => {
         console.log('WebSocket open:', event)
       })
 
-      this.socket.addEventListener('message', (event) => {
+      this.#socket.addEventListener('message', (event) => {
         const message = JSON.parse(event.data)
         this.handleIncomingMessage(message)
         this.scrollMessagesToBottom()
       })
 
-      this.socket.addEventListener('error', (error) => {
+      this.#socket.addEventListener('error', (error) => {
         console.error('WebSocket error:', error)
         const errorMessage = document.createElement('p')
         errorMessage.textContent = 'Error connecting to server. Please try again later.'
@@ -278,15 +304,15 @@ customElements.define('messenger-app',
      * @param {string} emoji - The emoji to insert.
      */
     insertEmoji (emoji) {
-      this.messageInput.value += emoji
-      this.messageInput.focus()
+      this.#messageInput.value += emoji
+      this.#messageInput.focus()
     }
 
     /**
      * Sends a message.
      */
     async sendMessage () {
-      const message = this.messageInput.value
+      const message = this.#messageInput.value
       const nickname = localStorage.getItem('nickname')
 
       if (message) {
@@ -298,8 +324,8 @@ customElements.define('messenger-app',
           timestamp: new Date()
         })
 
-        await this.socket.send(data)
-        this.messageInput.value = ''
+        await this.#socket.send(data)
+        this.#messageInput.value = ''
         this.sendMessageSound.play()
       }
     }

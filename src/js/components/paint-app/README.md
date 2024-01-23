@@ -58,6 +58,12 @@ The Paint App uses various event listeners for interactive functionality:
 - **Tool Button Clicks**: Detects clicks on tool buttons like the eraser, color picker, and restart button.
 - **Color Change**: Listens for changes in color selection from the color picker.
 
+## Attributes
+
+- `canvasWidth`: Sets the width of the canvas.
+- `canvasHeight`: Sets the height of the canvas.
+- `defaultPenColor`: Specifies the default color of the pen.
+
 ## Components
 
 ### Paint Pen (paint-pen.js)
