@@ -68,7 +68,7 @@ A subcomponent that provides an emoji selection interface, allowing users to exp
 
 ### Nickname Form (nickname-form.js)
 
-A form component that allows users to set and submit a nickname, which is then displayed alongside their messages.
+A form component that allows users to set and submit a nickname, which is then displayed alongside their messages. A big part of this component is used from a previous assignment i have done, "the quiz" (B2) from the cource 1DV025.
 
 ## Customization
 
