@@ -25,7 +25,7 @@ To use the App Window in your project, import the `app-window.js` file and then 
 <!DOCTYPE html>
 <html>
 <head>
-    <script type="module" src="js/components/window/index.js"></script>
+    <script type="module" src="./js/components/window/index.js"></script>
     <!-- Head content -->
 </head>
 <body>

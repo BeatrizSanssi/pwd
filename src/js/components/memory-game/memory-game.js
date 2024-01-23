@@ -171,9 +171,43 @@ customElements.define('memory-game',
     #memoryGame
     #memoryGrid
     #attemptCount
+    /**
+     * The game board element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #gameBoard
+    /**
+     * The start game button.
+     *
+     * @type {HTMLButtonElement}
+     */
     #startGame
+    /**
+     * The grid size selector.
+     *
+     * @type {HTMLElement}
+     */
     #gridSizeSelector
-    cardImages = [
+    /**
+     * The game controls div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #gameControls
+    /**
+     * The timer display div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #timerDisplay
+    /**
+     * The timer text element.
+     *
+     * @type {HTMLElement}
+     */
+    #timerText
+    #cardImages = [
       'js/components/memory-game/img/cat1.png',
       'js/components/memory-game/img/cat2.png',
       'js/components/memory-game/img/monkey2.png',
@@ -190,15 +224,15 @@ customElements.define('memory-game',
       'js/components/memory-game/img/racoonPeace1.png'
     ]
 
-    cardsArray = []
-    lockBoard = false
-    firstCard = null
-    secondCard = null
-    hasFlippedCard = false
-    #gameBoard
-    startTime = null
-    timerInterval = null
-    elapsedTime = 0
+    #cardsArray = []
+    #lockBoard = false
+    #firstCard = null
+    #secondCard = null
+    #hasFlippedCard = false
+    #gameStarted = false
+    #startTime = null
+    #timerInterval = null
+    #elapsedTime = 0
 
     /**
      * Creates an instance of the current type.
@@ -236,8 +270,8 @@ customElements.define('memory-game',
       } else {
         console.error('Attempt count element and timer element not found')
       }
-      if (this.cardsArray) {
-        this.shuffle(this.cardsArray)
+      if (this.#cardsArray) {
+        this.shuffle(this.#cardsArray)
       }
 
       // Add eventlistener to the close button
@@ -264,21 +298,21 @@ customElements.define('memory-game',
      * @param {string} gridSize - The size of the grid.
      */
     async startGame (gridSize) {
-      this.gameControls.style.display = 'none'
+      this.#gameControls.style.display = 'none'
 
       // Show the attempts div and initialize attempt count
       this.attemptsElement.style.display = 'block'
-      this.attemptCount = 0
-      this.attemptCountElement.textContent = this.attemptCount
-      this.gameStarted = true
+      this.#attemptCount = 0
+      this.attemptCountElement.textContent = this.#attemptCount
+      this.#gameStarted = true
 
       // Initialize and start the timer
-      this.timerDisplay.style.display = 'block'
-      this.timerText.textContent = 'Time: 0'
-      this.startTime = Date.now()
-      this.timerInterval = setInterval(() => {
+      this.#timerDisplay.style.display = 'block'
+      this.#timerText.textContent = 'Time: 0'
+      this.#startTime = Date.now()
+      this.#timerInterval = setInterval(() => {
         const currentTime = Date.now()
-        this.elapsedTime = Math.floor((currentTime - this.startTime) / 1000)
+        this.#elapsedTime = Math.floor((currentTime - this.#startTime) / 1000)
         this.updateTimerDisplay()
       }, 1000)
 
@@ -297,9 +331,9 @@ customElements.define('memory-game',
      */
     updateTimerDisplay () {
       const timeElement = this.shadowRoot.getElementById('timer-text')
-      const hours = Math.floor(this.elapsedTime / 3600)
-      const minutes = Math.floor((this.elapsedTime % 3600) / 60)
-      const seconds = this.elapsedTime % 60
+      const hours = Math.floor(this.#elapsedTime / 3600)
+      const minutes = Math.floor((this.#elapsedTime % 3600) / 60)
+      const seconds = this.#elapsedTime % 60
 
       const formattedTime = this.formatTime(hours, minutes, seconds)
       timeElement.textContent = `Time: ${formattedTime}`
@@ -363,11 +397,11 @@ customElements.define('memory-game',
      */
     setCardsArray (pairsNeeded) {
       // Get a random subset of card images
-      const selectedImages = this.getRandomSubset(this.cardImages, pairsNeeded)
+      const selectedImages = this.getRandomSubset(this.#cardImages, pairsNeeded)
 
       // Double and shuffle the array for pairs
-      this.cardsArray = [...selectedImages, ...selectedImages]
-      this.shuffle(this.cardsArray)
+      this.#cardsArray = [...selectedImages, ...selectedImages]
+      this.shuffle(this.#cardsArray)
     }
 
     /**
@@ -406,7 +440,7 @@ customElements.define('memory-game',
     async createMemoryGrid () {
       this.#gameBoard.innerHTML = ''
 
-      this.cardsArray.forEach(image => {
+      this.#cardsArray.forEach(image => {
         const card = document.createElement('div')
         card.classList.add('memory-card')
         card.dataset.image = image
@@ -463,20 +497,20 @@ customElements.define('memory-game',
      * @param {HTMLElement} cardInner - The card inner element.
      */
     handleCardClick (cardInner) {
-      if (this.lockBoard || cardInner === this.firstCard) return
+      if (this.#lockBoard || cardInner === this.#firstCard) return
 
-      if (cardInner === this.firstCard) return
+      if (cardInner === this.#firstCard) return
 
       cardInner.classList.add('flipped')
 
-      if (!this.hasFlippedCard) {
+      if (!this.#hasFlippedCard) {
         // First card is flipped
-        this.hasFlippedCard = true
-        this.firstCard = cardInner
+        this.#hasFlippedCard = true
+        this.#firstCard = cardInner
       } else {
         // Second card is flipped
-        this.secondCard = cardInner
-        this.lockBoard = true
+        this.#secondCard = cardInner
+        this.#lockBoard = true
 
         // Check for a match after a short delay
         setTimeout(() => {
@@ -500,7 +534,7 @@ customElements.define('memory-game',
      * Checks for match.
      */
     checkForMatch () {
-      const isMatch = this.firstCard.dataset.image === this.secondCard.dataset.image
+      const isMatch = this.#firstCard.dataset.image === this.#secondCard.dataset.image
       if (isMatch) {
         this.disableCards()
       } else {
@@ -514,8 +548,8 @@ customElements.define('memory-game',
     disableCards () {
       // Remove the cards from the DOM after a short delay
       setTimeout(() => {
-        this.firstCard.remove()
-        this.secondCard.remove()
+        this.#firstCard.remove()
+        this.#secondCard.remove()
         this.resetBoard()
 
         // Check if the game is won
@@ -523,7 +557,7 @@ customElements.define('memory-game',
       }, 500)
 
       // Remove matched images from cardsArray
-      this.cardsArray = this.cardsArray.filter(image => image !== this.firstCard.dataset.image)
+      this.#cardsArray = this.#cardsArray.filter(image => image !== this.#firstCard.dataset.image)
     }
 
     /**
@@ -531,8 +565,8 @@ customElements.define('memory-game',
      */
     unflipCards () {
       setTimeout(() => {
-        this.firstCard.classList.remove('flipped')
-        this.secondCard.classList.remove('flipped')
+        this.#firstCard.classList.remove('flipped')
+        this.#secondCard.classList.remove('flipped')
 
         this.resetBoard()
         this.gameWon()
@@ -544,15 +578,15 @@ customElements.define('memory-game',
      */
     gameWon () {
       // Check if there are no more cards on the board
-      if (this.cardsArray.length === 0) {
+      if (this.#cardsArray.length === 0) {
         const winningMessageElement = this.shadowRoot.getElementById('winningMessage')
-        const formattedTime = this.formatReadableTime(this.elapsedTime)
+        const formattedTime = this.formatReadableTime(this.#elapsedTime)
         winningMessageElement.textContent = `Yay! You found all the pairs with ${this.attemptCount} attempts in ${formattedTime}!`
 
         const modal = this.shadowRoot.getElementById('winningModal')
         modal.style.display = 'block'
         // Stop the timer
-        clearInterval(this.timerInterval)
+        clearInterval(this.#timerInterval)
       }
     }
 
@@ -571,6 +605,6 @@ customElements.define('memory-game',
      * Reset board.
      */
     resetBoard () {
-      [this.hasFlippedCard, this.lockBoard, this.firstCard, this.secondCard] = [false, false, null, null]
+      [this.#hasFlippedCard, this.#lockBoard, this.#firstCard, this.#secondCard] = [false, false, null, null]
     }
   })

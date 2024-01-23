@@ -31,7 +31,7 @@ Integrating the Paint App into your web project is straightforward. Follow these
 <!DOCTYPE html>
 <html>
 <head> 
-    <script type="module" src="path/to/paint-app.js"></script>
+    <script type="module" src="./js/components/paint-app/index.js"></script>
     <!-- Other head elements -->
 </head>
 <body>

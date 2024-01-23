@@ -27,7 +27,7 @@ Integrating the Memory Game into your web project is straightforward. Follow the
 <!DOCTYPE html>
 <html>
 <head>
-    <script type="module" src="path/to/memory-game.js"></script>
+    <script type="module" src="./js/components/memory-game/index.js"></script>
     <!-- Head content -->
 </head>
 <body>
@@ -69,5 +69,4 @@ This component is built with vanilla JavaScript and uses modern web standards. I
 ## Author
 
 Beatriz Sanssi - <bs222eh@student.lnu.se>
-
 Version: 1.0.0
