@@ -519,8 +519,6 @@ customElements.define('memory-game',
     handleCardClick (cardInner) {
       if (this.#lockBoard || cardInner === this.#firstCard) return
 
-      // if (cardInner === this.#firstCard) return
-
       cardInner.classList.add('flipped')
 
       if (!this.#hasFlippedCard) {
