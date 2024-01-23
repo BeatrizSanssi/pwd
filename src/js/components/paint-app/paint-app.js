@@ -121,15 +121,55 @@ customElements.define('paint-app',
     #paintColorizer
     #isDrawing
     #isPenActive
-    #context
     #isErasing
     #isColorizing
-    #paintTools
+    /**
+     * The canvas context.
+     *
+     * @type {CanvasRenderingContext2D}
+     */
+    #context
+    /**
+     * The canvas element.
+     *
+     * @type {HTMLCanvasElement}
+     */
     #canvas
+    /**
+     * The paint tools element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #paintTools
+    /**
+     * The pen button element.
+     *
+     * @type {HTMLButtonElement}
+     */
     #penButton
+    /**
+     * The color picker button element.
+     *
+     * @type {HTMLButtonElement}
+     */
     #colorButton
+    /**
+     * The eraser button element.
+     *
+     * @type {HTMLButtonElement}
+     */
     #eraserButton
+    /**
+     * The colorize button element.
+     *
+     * @type {HTMLButtonElement}
+     */
     #colorizeButton
+    /**
+     * The restart button element.
+     *
+     * @type {HTMLButtonElement}
+     */
     #restartButton
 
     /**
