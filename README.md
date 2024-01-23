@@ -55,6 +55,8 @@ The paint app should enable the user to choose a color (#23).
 The paint app should enable the user to choose a size to the pen and eraser (#24).
 The paint app should enable the user to colorize the whole canvas or parts of the users drawings (#25).
 
+The paint app should enable the user to restart the drawing (#26).
+
 ## Requirements for a passing grade
 
 Read [all application requirements](../../issues/). This includes: (#1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16, #17, #18).
