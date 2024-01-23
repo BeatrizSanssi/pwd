@@ -49,6 +49,13 @@ The Messenger App provides several methods to interact with the web component:
 
 The component also uses various event listeners to handle user interactions such as submitting a nickname, selecting an emoji, and closing the chat interface.
 
+- **Nickname submission**: When the user submits their nickname the messenger app is initialized and establishes a WebSocket connection for real-time messaging.
+- **Message Input Keydown**: This event listener on the message input field allows users to send messages by pressing the Enter key, providing a smooth messaging experience.
+- **Send Message**: The send button comes with an event listener to dispatch the sendMessage function, sending the typed message to the chat.
+- **Emoji Selection**: When a user selects an emoji from the emoji-picker component, the emojiSelected event is triggered. This event inserts the chosen emoji into the message input field.
+- **Close Chat Interface**: The close button (#closeButton) is set up to close the WebSocket connection and hide the messenger interface when clicked.
+- **WebSocket events**: Several event listeners are attached to the WebSocket for handling open, message, error, and close events. These listeners manage real-time message reception and error handling.
+
 ## Components
 
 ### Messenger App (messenger-app.js)

@@ -204,7 +204,6 @@ customElements.define('messenger-app',
         this.onSubmit()
       })
 
-      this.initializeWebSocket()
       await this.hideMessengerComponents()
       this.#messageInput = this.shadowRoot.getElementById('message-input')
       this.#messages = this.shadowRoot.getElementById('messages')
@@ -220,12 +219,27 @@ customElements.define('messenger-app',
       this.#sendButton.addEventListener('click', () => this.sendMessage())
 
       // Add event listener to the close button
-      this.#closeButton.addEventListener('click', () => {
+      this.#closeButton.addEventListener('click', async () => {
+        const nickname = localStorage.getItem('nickname')
+        if (this.#socket && this.#socket.readyState === WebSocket.OPEN) {
+          // Send a message to the server that the user has left
+          const logoutMessage = JSON.stringify({
+            type: 'logout',
+            data: `${nickname} has left the chat.`,
+            username: nickname,
+            key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd',
+            timestamp: new Date()
+          })
+          await this.#socket.send(logoutMessage)
+
+          // Close the WebSocket connection
+          this.#socket.close()
+        }
+
+        // Hide the messenger app UI
         this.#messengerApp.style.display = 'none'
         this.#nicknameForm.innerHTML = ''
-        this.#socket.close()
       })
-
       // Prevent elements from being dragged
       this.#nicknameForm.addEventListener('mousedown', (event) => {
         event.stopPropagation()
@@ -260,6 +274,7 @@ customElements.define('messenger-app',
      */
     async onSubmit () {
       await this.startMessengerApp()
+      this.initializeWebSocket()
       this.logInSound.play()
     }
 
@@ -295,6 +310,11 @@ customElements.define('messenger-app',
         errorMessage.style.color = 'red'
         // Append error message to the message list
         this.#messages.appendChild(errorMessage)
+      })
+
+      // Add event listener to the WebSocket close event
+      this.#socket.addEventListener('close', (event) => {
+        console.log('WebSocket closed:', event)
       })
     }
 
