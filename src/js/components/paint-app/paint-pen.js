@@ -9,7 +9,7 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
-#pen {
+#paint-pen {
   color: rgb(76, 99, 76);
   padding: 10px;
   margin: 10px;
@@ -18,7 +18,7 @@ template.innerHTML = `
   border-radius: 4px;
 }
 </style>
-<div id="pen">
+<div id="paint-pen">
     <!-- Pen -->
     <div id="pen-size-selector" style="display: none;">
         <input type="range" id="pen-size" min="1" max="10" value="5">
@@ -33,9 +33,20 @@ customElements.define('paint-pen',
    * Represents a pen element.
    */
   class extends HTMLElement {
-    #penSizeSelector
-    #penSize
     #currentPenSize
+    /**
+     * The pen size selector div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #penSizeSelector
+    /**
+     * The pen size input element.
+     *
+     * @type {HTMLInputElement}
+     */
+    #penSize
+
     /**
      * Creates an instance of the current type.
      */

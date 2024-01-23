@@ -246,8 +246,7 @@ customElements.define('paint-app',
       })
 
       // Color change event listener
-      this.#colorPicker.addEventListener('color-change', (event) => {
-        // this.#colorPicker.currentColor = event.detail
+      this.#colorPicker.addEventListener('color-change', () => {
         this.#colorPicker.getCurrentColor()
       })
 
@@ -263,7 +262,7 @@ customElements.define('paint-app',
       })
 
       // Eraser size change event listener
-      this.#paintEraser.addEventListener('eraser-size-change', (event) => {
+      this.#paintEraser.addEventListener('eraser-size-change', () => {
         this.#paintEraser.getCurrentEraserSize()
       })
 

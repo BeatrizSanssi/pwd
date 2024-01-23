@@ -34,6 +34,11 @@ customElements.define('paint-colorizer',
    */
   class extends HTMLElement {
     #paintColorizer
+    /**
+     * The colorizer container div element.
+     *
+     * @type {HTMLDivElement}
+     */
     #colorizerContainer
     /**
      * Creates an instance of the current type.

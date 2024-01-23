@@ -33,7 +33,18 @@ customElements.define('paint-eraser',
    * Represents a painting app element.
    */
   class extends HTMLElement {
+    #defaultEraserSize
+    /**
+     * The eraser size selector div element.
+     *
+     * @type {HTMLDivElement}
+     */
     #eraserSizeSelector
+    /**
+     * The eraser size input element.
+     *
+     * @type {HTMLInputElement}
+     */
     #eraserSize
     /**
      * Creates an instance of the current type.
@@ -51,7 +62,8 @@ customElements.define('paint-eraser',
       this.#eraserSize = this.shadowRoot.getElementById('eraser-size')
 
       // Set the default eraser size to 40
-      this.currentEraserSize = 40
+      this.#defaultEraserSize = 40
+      this.currentEraserSize = this.#defaultEraserSize
     }
 
     /**

@@ -33,9 +33,20 @@ customElements.define('color-picker',
    * Represents a painting app element.
    */
   class extends HTMLElement {
-    #colorPickerContainer
     #defaultColor
+    /**
+     * The Color-picker container div element.
+     *
+     * @type {HTMLDivElement}
+     */
+    #colorPickerContainer
+    /**
+     * The color input element.
+     *
+     * @type {HTMLInputElement}
+     */
     #colorInput
+
     /**
      * Creates an instance of the current type.
      */
