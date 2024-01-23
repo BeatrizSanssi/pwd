@@ -38,6 +38,10 @@ The Messages sub-app should be extended with at least one additional custom feat
 
 For a complete list of requirements, refer to #9.
 
+The user should be able to log out from the socket when closing the messenger app (#21)
+
+The messenger app indicates when the socket is connected, when a message is sent and when a message is recieved with a unic sound for each event (#22)
+
 ## 4. The Custom sub-app
 
 As a third application, you are supposed to let your creativity come into play. Think of an application that you want to create and do that as your third application! Why not use this opportunity to try out some of the APIs in the browser that we still have not used?
@@ -46,6 +50,10 @@ To fulfill this part of the application, you should create an Issue describing y
 
 - Question: "Is it okay to just create a simple "about" application with some text?"
 - Answer: Yes. However, one of the grading criteria for this assignment will be how well you can adapt to using APIs that you have not yet used in the course.
+
+The paint app should enable the user to choose a color (#23).
+The paint app should enable the user to choose a size to the pen and eraser (#24).
+The paint app should enable the user to colorize the whole canvas or parts of the users drawings (#25).
 
 ## Requirements for a passing grade
 
